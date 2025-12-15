@@ -1,0 +1,114 @@
+{
+    "Admin": {
+        "title": "Tableau de bord Admin",
+        "hero": "Gérez votre application en toute confiance",
+        "subHero": "Un tableau de bord puissant, sécurisé et intuitif.",
+        "getStarted": "Commencer",
+        "signIn": "Se connecter",
+        "features": {
+            "analytics": {
+                "title": "Analyses en temps réel",
+                "description": "Surveillez les performances."
+            },
+            "security": {
+                "title": "Accès sécurisé",
+                "description": "Sécurité de niveau entreprise."
+            },
+            "performance": {
+                "title": "Rapide et efficace",
+                "description": "Construit sur des technologies modernes."
+            }
+        },
+        "dashboard": {
+            "overview": "Aperçu",
+            "users": "Utilisateurs",
+            "settings": "Paramètres",
+            "logout": "Déconnexion",
+            "totalRevenue": "Revenu total",
+            "subscriptions": "Abonnements",
+            "sales": "Ventes",
+            "activeNow": "Actif maintenant",
+            "recentSales": "Ventes récentes",
+            "recentSalesDesc": "Vous avez fait 265 ventes ce mois-ci.",
+            "chartPlaceholder": "Graphique",
+            "downloadReport": "Télécharger le rapport",
+            "dashboardTitle": "Tableau de bord",
+            "dashboardDesc": "Aperçu des performances.",
+            "lastMonth": "depuis le mois dernier",
+            "sinceLastHour": "depuis la dernière heure",
+            "welcomeMessage": "Bon retour ! Votre thème est {theme}."
+        },
+        "auth": {
+            "welcomeBack": "Bon retour",
+            "enterCredentials": "Entrez vos identifiants pour accéder au portail d'administration",
+            "email": "Adresse e-mail",
+            "password": "Mot de passe",
+            "forgotPassword": "Mot de passe oublié ?",
+            "signIn": "Se connecter",
+            "verifying": "Vérification...",
+            "dontHaveAccount": "Vous n'avez pas de compte ?",
+            "createAccount": "Créer un compte",
+            "createAccountTitle": "Créer un compte",
+            "getStarted": "Commencez votre parcours d'administrateur",
+            "fullName": "Nom complet",
+            "confirmPassword": "Confirmer",
+            "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+            "creatingAccount": "Création du compte...",
+            "alreadyHaveAccount": "Vous avez déjà un compte ?",
+            "forgotPasswordTitle": "Mot de passe oublié",
+            "forgotPasswordDesc": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+            "sendResetLink": "Envoyer le lien de réinitialisation",
+            "backToLogin": "Retour à la connexion",
+            "nameRequired": "Le nom doit comporter au moins 2 caractères.",
+            "emailInvalid": "Adresse e-mail invalide.",
+            "passwordRequired": "Mot de passe requis.",
+            "passwordMin": "Le mot de passe doit comporter au moins 8 caractères.",
+            "authFailed": "Authentification échouée.",
+            "unexpectedError": "Une erreur inattendue s'est produite.",
+            "registrationFailed": "L'inscription a échoué."
+        },
+        "sidebar": {
+            "content": "Contenu",
+            "customers": "Clients",
+            "dashboard": "Tableau de bord",
+            "finance": "Finance",
+            "orders": "Commandes",
+            "products": "Produits",
+            "settings": "Paramètres"
+        },
+        "products": {
+            "add": "Ajouter un produit",
+            "delete": "Supprimer",
+            "description": "Gérez l'inventaire de votre magasin",
+            "edit": "Modifier",
+            "empty": "Aucun produit trouvé",
+            "table": {
+                "actions": "Actions",
+                "name": "Nom",
+                "price": "Prix",
+                "product": "Produit",
+                "status": "Statut",
+                "stock": "Stock",
+                "type": "Type",
+                "viewDetails": "Voir les détails"
+            },
+            "title": "Produits"
+        },
+        "orders": {
+            "title": "Commandes"
+        },
+        "customers": {
+            "title": "Clients",
+            "table": {
+                "actions": "Actions",
+                "viewDetails": "Voir les détails"
+            }
+        },
+        "finance": {
+            "title": "Finance"
+        },
+        "settings": {
+            "title": "Paramètres"
+        }
+    }
+}

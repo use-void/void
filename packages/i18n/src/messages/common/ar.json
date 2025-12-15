@@ -1,0 +1,8 @@
+{
+    "Common": {
+        "welcome": "مرحباً بك في",
+        "description": "هذا مثال Turborepo مع Next.js و next-intl.",
+        "learnMore": "اعرف المزيد",
+        "docs": "الوثائق"
+    }
+}

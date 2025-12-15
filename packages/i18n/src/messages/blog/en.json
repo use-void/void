@@ -1,0 +1,9 @@
+{
+    "Blog": {
+        "title": "Blog App",
+        "description": "Read our latest stories",
+        "hero": "Read our latest stories",
+        "readMore": "Read More",
+        "author": "Written by"
+    }
+}

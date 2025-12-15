@@ -1,0 +1,9 @@
+{
+    "Store": {
+        "title": "Store App",
+        "description": "Shop our latest products",
+        "hero": "The best products for you",
+        "cart": "Cart",
+        "buy": "Buy Now"
+    }
+}

@@ -1,0 +1,148 @@
+{
+    "Admin": {
+        "auth": {
+            "alreadyHaveAccount": "Already have an account?",
+            "authFailed": "Authentication failed.",
+            "backToLogin": "Back to Login",
+            "confirmPassword": "Confirm",
+            "createAccount": "Create an account",
+            "createAccountTitle": "Create Account",
+            "creatingAccount": "Creating account...",
+            "dontHaveAccount": "Don't have an account?",
+            "email": "Email Address",
+            "emailInvalid": "Invalid email address.",
+            "enterCredentials": "Enter your credentials to access the admin portal",
+            "forgotPassword": "Forgot password?",
+            "forgotPasswordDesc": "Enter your email address and we'll send you a link to reset your password.",
+            "forgotPasswordTitle": "Forgot Password",
+            "fullName": "Full Name",
+            "getStarted": "Get started with your admin journey",
+            "nameRequired": "Name must be at least 2 characters.",
+            "password": "Password",
+            "passwordMin": "Password must be at least 8 characters.",
+            "passwordRequired": "Password is required.",
+            "passwordsDontMatch": "Passwords don't match",
+            "registrationFailed": "Registration failed.",
+            "sendResetLink": "Send Reset Link",
+            "signIn": "Sign In",
+            "unexpectedError": "An unexpected error occurred.",
+            "verifying": "Verifying...",
+            "welcomeBack": "Welcome Back"
+        },
+        "dashboard": {
+            "activeNow": "Active Now",
+            "chartPlaceholder": "Chart Placeholder (Recharts)",
+            "dashboardDesc": "Overview of your store's performance.",
+            "dashboardTitle": "Dashboard",
+            "downloadReport": "Download Report",
+            "lastMonth": "from last month",
+            "logout": "Logout",
+            "overview": "Overview",
+            "recentSales": "Recent Sales",
+            "recentSalesDesc": "You made 265 sales this month.",
+            "sales": "Sales",
+            "settings": "Settings",
+            "sinceLastHour": "since last hour",
+            "stats": {
+                "active": "Active",
+                "activeNow": "Active Now",
+                "activeUsers": "Active Users",
+                "change": {
+                    "fromLastMonth": "from last month",
+                    "newProducts": "new products",
+                    "sinceLastHour": "since last hour"
+                },
+                "products": "Products",
+                "totalRevenue": "Total Revenue"
+            },
+            "subscriptions": "Subscriptions",
+            "totalRevenue": "Total Revenue",
+            "users": "Users",
+            "welcomeMessage": "Welcome back! Your theme is {theme}."
+        },
+        "products": {
+            "add": "Add Product",
+            "delete": "Delete",
+            "description": "Manage your store inventory",
+            "edit": "Edit",
+            "empty": "No products found",
+            "table": {
+                "actions": "Actions",
+                "name": "Name",
+                "price": "Price",
+                "product": "Product",
+                "status": "Status",
+                "stock": "Stock",
+                "type": "Type",
+                "viewDetails": "View Details"
+            },
+            "title": "Products"
+        },
+        "setup": {
+            "buttons": {
+                "back": "Back",
+                "complete": "Complete Setup",
+                "next": "Next Step"
+            },
+            "errors": {
+                "generic": "Something went wrong"
+            },
+            "fields": {
+                "address": "Address",
+                "adminName": "Admin Name",
+                "city": "City",
+                "confirmPassword": "Confirm Password",
+                "country": "Country",
+                "currency": "Currency",
+                "description": "Description",
+                "email": "Email",
+                "firstName": "First Name",
+                "lastName": "Last Name",
+                "logo": "Store Logo (Optional)",
+                "mobile": "Mobile (Optional)",
+                "password": "Password",
+                "passwordsDoNotMatch": "Passwords do not match",
+                "phone": "Phone (Optional)",
+                "seedData": "Seed Demo Data?",
+                "seedDesc": "We can populate your store with example products and categories so you can explore the dashboard immediately.",
+                "storeName": "Store Name",
+                "timezone": "Timezone"
+            },
+            "steps": {
+                "admin": "Admin Account",
+                "finish": "Finish",
+                "store": "Store Info"
+            },
+            "successRedirect": "You will be redirected to the dashboard in {seconds} seconds...",
+            "successTitle": "Store Configured Successfully!",
+            "welcomeDesc": "Let's set up your store in a few minutes.",
+            "welcomeTitle": "Welcome to Void"
+        },
+        "sidebar": {
+            "content": "Content",
+            "customers": "Customers",
+            "dashboard": "Dashboard",
+            "finance": "Finance",
+            "orders": "Orders",
+            "products": "Products",
+            "settings": "Settings"
+        },
+        "title": "Admin Dashboard",
+        "orders": {
+            "title": "Orders"
+        },
+        "customers": {
+            "title": "Customers",
+            "table": {
+                "actions": "Actions",
+                "viewDetails": "View Details"
+            }
+        },
+        "finance": {
+            "title": "Finance"
+        },
+        "settings": {
+            "title": "Settings"
+        }
+    }
+}

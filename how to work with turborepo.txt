@@ -1,0 +1,2057 @@
+
+import { Callout } from '#components/callout';
+import { PackageManagerTabs, Tab, Tabs } from '#components/tabs';
+import { Step, Steps } from '#components/steps';
+import { File, Folder, Files } from '#components/files';
+import { LinkToDocumentation } from '#components/link-to-documentation';
+
+`turbo` is built on top of [Workspaces](https://vercel.com/docs/vercel-platform/glossary#workspace), a feature of package managers in the JavaScript ecosystem that allows you to group multiple packages in one repository.
+
+Following these conventions is important because it allows you to:
+
+- Lean on those conventions for all your repo's tooling
+- Quickly, incrementally adopt Turborepo into an existing repository
+
+In this guide, we'll walk through setting up a multi-package workspace (monorepo) so we can set the groundwork for `turbo`.
+
+## Getting started
+
+Setting up a workspace's structure can be tedious to do by hand. If you're new to monorepos, we recommend [using `create-turbo` to get started](/docs/getting-started/installation) with a valid workspace structure right away.
+
+<PackageManagerTabs>
+
+
+</Tab>
+
+<Tab value="npm">
+```bash title="Terminal"
+npx create-turbo@latest
+```
+
+</Tab>
+
+
+</PackageManagerTabs>
+
+You can then review the repository for the characteristics described in this guide.
+
+## Anatomy of a workspace
+
+In JavaScript, a workspace can either be [a single package](/docs/guides/single-package-workspaces) or a collection of packages. In these guides, we'll be focusing on [a multi-package workspace](https://vercel.com/docs/vercel-platform/glossary#monorepo), often called a "monorepo".
+
+Below, the structural elements of `create-turbo` that make it a valid workspace are highlighted.
+
+<PackageManagerTabs>
+
+
+
+<Tab value="npm">
+  <Files>
+    <File name="package.json" green />
+    <File name="package-lock.json" green />
+    <File name="turbo.json" />
+    <Folder name="apps" defaultOpen>
+      <Folder name="docs" className="text-foreground" defaultOpen>
+        <File name="package.json" green />
+      </Folder>
+      <Folder name="web">
+        <File name="package.json" green />
+      </Folder>
+    </Folder>
+    <Folder name="packages">
+      <Folder name="ui">
+        <File name="package.json" green />
+      </Folder>
+    </Folder>
+  </Files>
+</Tab>
+
+</PackageManagerTabs>
+
+### Minimum requirements
+
+- [Packages as described by your package manager](#specifying-packages-in-a-monorepo)
+- [A package manager lockfile](#package-manager-lockfile)
+- [Root `package.json`](#root-packagejson)
+- [Root `turbo.json`](#root-turbojson)
+- [`package.json` in each package](#packagejson-in-each-package)
+
+### Specifying packages in a monorepo
+
+<Steps>
+<Step>
+
+#### Declaring directories for packages
+
+First, your package manager needs to describe the locations of your packages. We recommend starting with splitting your packages into `apps/` for applications and services and `packages/` for everything else, like libraries and tooling.
+
+<PackageManagerTabs>
+
+
+  <Tab value="npm">
+  ```json title="./package.json"
+  {
+    "workspaces": [
+      "apps/*",
+      "packages/*"
+    ]
+  }
+  ```
+
+  <LinkToDocumentation href="https://docs.npmjs.com/cli/v7/using-npm/workspaces#defining-workspaces">npm workspace documentation</LinkToDocumentation>
+  </Tab>
+
+
+</PackageManagerTabs>
+
+Using this configuration, every directory **with a `package.json`** in the `apps` or `packages` directories will be considered a package.
+
+<Callout type="error">
+Turborepo does not support nested packages like `apps/**` or `packages/**` due to ambiguous behavior among package managers in the JavaScript ecosystem. Using a structure that would put a package at `apps/a` and another at `apps/a/b` will result in an error.
+
+If you'd like to group packages by directory, you can do this using globs like `packages/*` and `packages/group/*` and **not** creating a `packages/group/package.json` file.
+
+</Callout>
+</Step>
+
+<Step>
+
+#### `package.json` in each package
+
+In the directory of the package, there must be a `package.json` to make the package discoverable to your package manager and `turbo`. The [requirements for the `package.json` of a package](#anatomy-of-a-package) are below.
+
+</Step>
+</Steps>
+
+### Root `package.json`
+
+The root `package.json` is the base for your workspace. Below is a common example of what you would find in a root `package.json`:
+
+<PackageManagerTabs>
+
+
+
+<Tab value="npm">
+
+```json title="./package.json"
+{
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "packageManager": "npm@10.0.0",
+  "workspaces": ["apps/*", "packages/*"]
+}
+```
+
+</PackageManagerTabs>
+
+### Root `turbo.json`
+
+`turbo.json` is used to configure the behavior of `turbo`. To learn more about how to configure your tasks, visit the [Configuring tasks](/docs/crafting-your-repository/configuring-tasks) page.
+
+### Package manager lockfile
+
+A lockfile is key to reproducible behavior for both your package manager and `turbo`. Additionally, Turborepo uses the lockfile to understand the dependencies between your [Internal Packages](/docs/core-concepts/internal-packages) within your Workspace.
+
+<Callout type="warn">
+  If you do not have a lockfile present when you run `turbo`, you may see
+  unpredictable behavior.
+</Callout>
+
+## Anatomy of a package
+
+It's often best to start thinking about designing a package as its own unit within the Workspace. At a high-level, each package is almost like its own small "project", with its own `package.json`, tooling configuration, and source code. There are limits to this idea—but its a good mental model to _start_ from.
+
+Additionally, a package has specific entrypoints that other packages in your Workspace can use to access the package, specified by [`exports`](#exports).
+
+### `package.json` for a package
+
+#### `name`
+
+[The `name` field](https://nodejs.org/api/packages.html#name) is used to identify the package. It should be unique within your workspace.
+
+<Callout type="info">
+It's best practice to use a namespace prefix for your [Internal Packages](/docs/core-concepts/internal-packages) to avoid conflicts with other packages on the npm registry. For example, if your organization is named `acme`, you might name your packages `@acme/package-name`.
+
+We use `@repo` in our docs and examples because it is an unused, unclaimable namespace on the npm registry. You can choose to keep it or use your own prefix.
+
+</Callout>
+
+#### `scripts`
+
+The `scripts` field is used to define scripts that can be run in the package's context. Turborepo will use the name of these scripts to identify what scripts to run (if any) in a package. We talk more about these scripts on the [Running Tasks](/docs/crafting-your-repository/running-tasks) page.
+
+#### `exports`
+
+[The `exports` field](https://nodejs.org/api/packages.html#exports) is used to specify the entrypoints for other packages that want to use the package. When you want to use code from one package in another package, you'll import from that entrypoint.
+
+For example, if you had a `@repo/math` package, you might have the following `exports` field:
+
+```json title="./packages/math/package.json"
+{
+  "exports": {
+    ".": "./src/constants.ts",
+    "./add": "./src/add.ts",
+    "./subtract": "./src/subtract.ts"
+  }
+}
+```
+
+Note that this example uses the [Just-in-Time Package](/docs/core-concepts/internal-packages#just-in-time-packages) pattern for simplicity. It exports TypeScript directly, but you might choose to use the [Compiled Package](/docs/core-concepts/internal-packages#compiled-packages) pattern instead.
+
+<Callout type="info">
+  The `exports` field in this example requires modern versions of Node.js and
+  TypeScript.
+</Callout>
+
+This would allow you to import `add` and `subtract` functions from the `@repo/math` package like so:
+
+```ts title="./apps/my-app/src/index.ts"
+import { GRAVITATIONAL_CONSTANT, SPEED_OF_LIGHT } from '@repo/math';
+import { add } from '@repo/math/add';
+import { subtract } from '@repo/math/subtract';
+```
+
+Using exports this way provides three major benefits:
+
+- **Avoiding barrel files**: Barrel files are files that re-export other files in the same package, creating one entrypoint for the entire package. While they might appear convenient, they're [difficult for compilers and bundlers to handle](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js#what's-the-problem-with-barrel-files) and can quickly lead to performance problems.
+- **More powerful features**: `exports` also has other powerful features compared to [the `main` field](https://nodejs.org/api/packages.html#main) like [Conditional Exports](https://nodejs.org/api/packages.html#conditional-exports). In general, we recommend using `exports` over `main` whenever possible as it is the more modern option.
+- **IDE autocompletion**: By specifying the entrypoints for your package using `exports`, you can ensure that your code editor can provide auto-completion for the package's exports.
+
+#### `imports` (optional)
+
+[The `imports` field](https://nodejs.org/api/packages.html#imports) gives you a way to create subpaths to other modules within your package. You can think of these like "shortcuts" to write simpler import paths that are more resilient to refactors that move files. To learn how, visit [the TypeScript page](/docs/guides/tools/typescript#use-nodejs-subpath-imports-instead-of-typescript-compiler-paths).
+
+<Callout type="info">
+You may be more familiar with TypeScript's `compilerOptions#paths` option, which accomplishes a similar goal. As of TypeScript 5.4, TypeScript can infer subpaths from `imports`, making it a better option since you'll be working with Node.js conventions. For more information, visit [our TypeScript guide](/docs/guides/tools/typescript#use-nodejs-subpath-imports-instead-of-typescript-compiler-paths).
+
+</Callout>
+
+### Source code
+
+Of course, you'll want some source code in your package. Packages commonly use a `src` directory to store their source code and compile to a `dist` directory (that should also be located within the package), although this is not a requirement.
+
+## Common pitfalls
+
+- If you're using TypeScript, you likely don't need a `tsconfig.json` in the root of your workspace. Packages should independently specify their own configurations, usually building off of a shared `tsconfig.json` from a separate package in the workspace. For more information, visit [the TypeScript guide](/docs/guides/tools/typescript#you-likely-dont-need-a-tsconfigjson-file-in-the-root-of-your-project).
+- You want to avoid accessing files across package boundaries as much as possible. If you ever find yourself writing `../` to get from one package to another, you likely have an opportunity to re-think your approach by installing the package where it's needed and importing it into your code.
+
+## Next steps
+
+With your Workspace configured, you can now use your package manager to [install dependencies into your packages](/docs/crafting-your-repository/managing-dependencies).
+
+
+
+
+
+import { PackageManagerTabs, Tab } from '#components/tabs';
+import { Callout } from '#components/callout';
+import { LinkToDocumentation } from '#components/link-to-documentation';
+
+- **External dependencies** come from [the npm registry](https://www.npmjs.com/), allowing you to leverage valuable code from the ecosystem to build your applications and libraries faster.
+- **Internal dependencies** let you share functionality within your repository, dramatically improving discoverability and usability of shared code. We will discuss how to build an Internal Package in [the next guide](/docs/crafting-your-repository/creating-an-internal-package).
+
+<PackageManagerTabs>
+
+<Tab value="npm">
+```json title="./apps/web/package.json"
+{
+  "dependencies": {
+    "next": "latest", // External dependency
+    "@repo/ui": "*" // Internal dependency
+  }
+}
+```
+</Tab>
+
+</PackageManagerTabs>
+
+## Best practices for dependency installation
+
+### Install dependencies where they're used
+
+When you install a dependency in your repository, you should install it directly in the package that uses it. The package's `package.json` will have every dependency that the package needs. This is true for both external and internal dependencies.
+
+<Callout type="good-to-know">
+  Note that your package manager may choose to [use a different node_modules
+  location than the package](#node_modules-locations).
+</Callout>
+
+To quickly install dependencies in multiple packages, you can use your package manager:
+
+<PackageManagerTabs>
+
+
+<Tab value="npm">
+
+```bash title="Terminal"
+npm install jest --workspace=web --workspace=@repo/ui --save-dev
+```
+
+<LinkToDocumentation href="https://docs.npmjs.com/cli/v7/using-npm/config#workspace">npm documentation</LinkToDocumentation>
+</Tab>
+
+</PackageManagerTabs>
+
+This practice has several benefits:
+
+- **Improved clarity**: It's easier to understand what a package depends on when its dependencies are listed in its `package.json`. Developers working in the repository can see at a glance what dependencies are used within the package.
+- **Enhanced flexibility**: In a monorepo at scale, it can be unrealistic to expect each package to use the same version of an external dependency. When there are many teams working in the same codebase, there will be differing priorities, timelines, and needs due to the realities of [operating at scale](https://vercel.com/blog/how-to-scale-a-large-codebase). By installing dependencies in the package that uses them, you can enable your `ui` team to bump to the latest version of TypeScript, while your `web` team can prioritize shipping new features and bumping TypeScript later. Additionally, if you still want to keep dependency versions in sync, [you can do that, too](/docs/crafting-your-repository/managing-dependencies#keeping-dependencies-on-the-same-version).
+- **Better caching ability**: If you install too many dependencies in the root of your repository, you'll be changing the workspace root whenever you add, update, or delete a dependency, leading to unnecessary cache misses.
+- **Pruning unused dependencies**: For Docker users, [Turborepo's pruning feature](/docs/reference/prune) can remove unused dependencies from Docker images to create lighter images. When dependencies are installed in the packages that they are meant for, Turborepo can read your lockfile and remove dependencies that aren't used in the packages you need.
+
+### Few dependencies in the root
+
+
+Following the first principle above to [install dependencies in the package where they're used](#install-dependencies-where-theyre-used), you'll find that you naturally end up with few dependencies in the root of your workspace.
+
+The only dependencies that belong in the workspace root are **tools for managing the repository** whereas dependencies for building applications and libraries are installed in their respective packages. Some examples of dependencies that make sense to install in the root are [`turbo`](https://www.npmjs.com/package/turbo), [`husky`](https://www.npmjs.com/package/husky), or [`lint-staged`](https://www.npmjs.com/package/lint-staged).
+
+## Managing dependencies
+
+### Turborepo does not manage dependencies
+
+Note that Turborepo does not play a role in managing your dependencies, leaving that work up to your package manager of choice.
+
+It's up to the package manager to handle things like downloading the right external dependency version, symlinking, and resolving modules. The recommendations on this page are best practices for managing dependencies in a Workspace, and are not enforced by Turborepo.
+
+### Module resolution differs amongst package managers
+
+Package managers have different module resolution algorithms, which leads to differences in behavior that can be difficult to predict.
+
+In the Turborepo documentation, we make many recommendations according to the expected behaviors of the package managers. Our coverage of how to handle dependencies is best effort and you may need to adapt the documented behavior for your package manager or repository's needs.
+
+However, if you find an issue with the documentation that appears to be universally incorrect for all package managers or a specific one, please let us know with a GitHub Issue so we can improve.
+
+### node_modules locations
+
+Depending on your choice of package manager, version, settings, and where your dependencies are installed in your Workspace, you may see `node_modules` and the dependencies inside it in various locations within the Workspace. Dependencies could be found in the root `node_modules`, in packages' `node_modules`, or both.
+
+As long as your scripts and tasks are able to find the dependencies they need, your package manager is working correctly.
+
+<Callout type="info" title="Referencing `node_modules` in your code">
+The specific locations for `node_modules` within the Workspace are not a part of the public API of package managers. This means that referencing `node_modules` directly (like `node ./node_modules/a-package/dist/index.js`) can be brittle, since the location of the dependency on disk can change with other dependency changes around the Workspace.
+
+Instead, rely on conventions of the Node.js ecosystem for accessing dependency modules whenever possible.
+
+</Callout>
+
+### Keeping dependencies on the same version
+
+Some monorepo maintainers prefer to keep dependencies on the same version across all packages by rule. There are several ways to achieve this:
+
+#### Using purpose-built tooling
+
+Tools like [`syncpack`](https://www.npmjs.com/package/syncpack), [`manypkg`](https://www.npmjs.com/package/@manypkg/cli), and [`sherif`](https://www.npmjs.com/package/sherif) can be used for this specific purpose.
+
+#### Using your package manager
+
+You can use your package manager to update dependency versions in one command.
+
+<PackageManagerTabs>
+
+
+<Tab value="npm">
+```bash title="Terminal"
+npm install typescript@latest --workspaces
+```
+  <small>[→ npm documentation](https://docs.npmjs.com/cli/v7/using-npm/config#workspaces)</small>
+
+</Tab>
+
+</PackageManagerTabs>
+
+#### pnpm catalogs
+
+In pnpm v9.5+, you can use catalogs to define dependency version ranges as reusable constants. This will keep dependencies on the same version since you're referencing the same value across the workspace.
+
+To learn more, [visit the pnpm catalogs documentation](https://pnpm.io/catalogs).
+
+#### Using an IDE
+
+Your IDE's refactoring tooling can find and replace the version of a dependency across all `package.json` files in your repository at once. Try using a regex like `"next": ".*"` on `package.json` files to find all instances of the `next` package and replace them with the version you want. When you're done, make sure to run your package manager's install command to update your lockfile.
+
+## Next steps
+
+Now that you know how to manage dependencies effectively in a workspace, let's [create an Internal Package](/docs/crafting-your-repository/creating-an-internal-package) to be used as a dependency in your monorepo.
+
+
+
+
+import { Callout } from '#components/callout';
+import { Steps, Step } from '#components/steps';
+import { PackageManagerTabs, Tabs, Tab } from '#components/tabs';
+import { Files, File, Folder } from '#components/files';
+
+[Internal Packages](/docs/core-concepts/internal-packages) are the building blocks of your workspace, giving you a powerful way to share code and functionality across your repo. Turborepo automatically understands the relationships between Internal Packages using the dependencies in `package.json`, creating a [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph) under the hood to optimize your repository's workflows.
+
+![Visual representation of a Package Graph in a Turborepo.](/images/docs/package-graph.png)
+
+Let's create your first Internal Package to share math utilities in your repo using the guidance in the [Anatomy of a package](/docs/crafting-your-repository/structuring-a-repository#anatomy-of-a-package) section and the [Compiled Packages](/docs/core-concepts/internal-packages#compiled-packages) pattern. In the steps below, we assume you've [created a new repository using `create-turbo`](/docs/getting-started/installation) or are using a similarly structured repository.
+
+<Steps>
+<Step>
+### Create an empty directory
+
+You'll need a directory to put the package in. Let's create one at `./packages/math`.
+
+<Files>
+  <File name="package.json" />
+  <File name="turbo.json" />
+  <Folder name="apps" />
+  <Folder name="packages" defaultOpen>
+    <Folder name="math" green defaultOpen />
+    <Folder name="ui">
+      <File name="package.json" />
+    </Folder>
+    <Folder name="eslint-config">
+      <File name="package.json" />
+    </Folder>
+    <Folder name="typescript-config">
+      <File name="package.json" />
+    </Folder>
+  </Folder>
+</Files>
+
+</Step>
+<Step>
+### Add a package.json
+
+Next, create the `package.json` for the package. By adding this file, you'll fulfill [the two requirements for an Internal Package](/docs/crafting-your-repository/structuring-a-repository#specifying-packages-in-a-monorepo), making it discoverable to Turborepo and the rest of your Workspace.
+
+<Callout type="warn">
+  The `name` field in your `package.json` determines how your package can be
+  imported throughout your workspace. The name you choose here (e.g.
+  `@repo/math`) is exactly how other packages will import it (e.g. `import {add}
+  from '@repo/math/add'`).
+</Callout>
+
+<PackageManagerTabs>
+
+
+<Tab value="npm">
+```json title="./packages/math/package.json"
+{
+  "name": "@repo/math",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./add": {
+      "types": "./src/add.ts",
+      "default": "./dist/add.js"
+    },
+    "./subtract": {
+      "types": "./src/subtract.ts",
+      "default": "./dist/subtract.js"
+    }
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "typescript": "latest"
+  }
+}
+```
+
+</Tab>
+
+</PackageManagerTabs>
+
+Let's break down this `package.json` piece-by-piece:
+
+- **`name`**: This is the most critical field for package discoverability. The value `@repo/math` becomes the exact identifier used in import statements throughout your workspace. If you change this name, you must update all import statements accordingly.
+- **`scripts`**: The `dev` and `build` script compile the package using [the TypeScript compiler](https://www.typescriptlang.org/docs/handbook/compiler-options.html). The `dev` script will watch for changes to source code and automatically recompile the package.
+- **`devDependencies`**: `typescript` and `@repo/typescript-config` are `devDependencies` so you can use those packages in the `@repo/math` package. In a real-world package, you will likely have more `devDependencies` and `dependencies` - but we can keep it simple for now.
+- **`exports`**: Defines multiple entrypoints for the package so it can be used in other packages (`import { add } from '@repo/math/add'`).
+
+Notably, this `package.json` declares an Internal Package, `@repo/typescript-config`, as a dependency. Turborepo will recognize `@repo/math` as a dependent of `@repo/typescript-config` for ordering your tasks.
+
+</Step>
+
+<Step>
+  ### Add a `tsconfig.json`
+
+Specify the TypeScript configuration for this package by adding a `tsconfig.json` file to **the root of the package**. TypeScript has [an `extends` key](https://www.typescriptlang.org/tsconfig#extends), allowing you to use a base configuration throughout your repository and overwrite with different options as needed.
+
+```json title="./packages/math/tsconfig.json"
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+You've done four important things here:
+
+- The `@repo/typescript-config/base.json` configuration that lives in `./packages/typescript-config` has all the configuration you need so you extend from it.
+- [The `outDir` key](https://www.typescriptlang.org/tsconfig/#outDir) in `compilerOptions` tells TypeScript where to put the compiled output. It matches the directory specified in your `exports` in `package.json`.
+- [The `rootDir` key in `compilerOptions`](https://www.typescriptlang.org/tsconfig/#rootDir) ensures that the output in `outDir` uses the same structure as the `src` directory.
+- The [`include`](https://www.typescriptlang.org/tsconfig/#include) and [`exclude`](https://www.typescriptlang.org/tsconfig/#exclude) keys are not inherited from the base configuration, [according to the TypeScript specification](https://www.typescriptlang.org/tsconfig#include), so you've included them here.
+
+<Callout type="info">
+  There's a lot more to learn about TypeScript configuration, but this is a good
+  place to start for now. If you'd like to learn more, visit [the official
+  TypeScript documentation](https://www.typescriptlang.org/tsconfig) or [our
+  TypeScript guide](/docs/guides/tools/typescript).
+</Callout>
+
+</Step>
+
+<Step>
+### Add a `src` directory with source code
+
+You can now write some code for your package. Create two files inside a `src` directory:
+
+<Tabs items={['add.ts', 'subtract.ts']}>
+  <Tab value="add.ts">
+
+    ```ts title="./packages/math/src/add.ts"
+    export const add = (a: number, b: number) => a + b;
+    ```
+
+  </Tab>
+  <Tab value="subtract.ts">
+
+    ```ts title="./packages/math/src/subtract.ts"
+    export const subtract = (a: number, b: number) => a - b;
+    ```
+
+  </Tab>
+</Tabs>
+
+These files map to the outputs that will be created by `tsc` when you run `turbo build` in a moment.
+
+</Step>
+
+<Step>
+### Add the package to an application
+
+You're ready to use your new package in an application. Let's add it to the `web` application.
+
+<PackageManagerTabs>
+
+
+<Tab value="npm">
+```diff title="apps/web/package.json"
+  "dependencies": {
++   "@repo/math": "*",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+```
+</Tab>
+
+</PackageManagerTabs>
+
+<Callout type="warn">
+  You just changed the dependencies in your repo. Make sure to run your package
+  manager's installation command to update your lockfile.
+</Callout>
+
+`@repo/math` is now available in the `web` application, you can use it in your code:
+
+```tsx title="apps/web/src/app/page.tsx"
+import { add } from '@repo/math/add';
+
+function Page() {
+  return <div>{add(1, 2)}</div>;
+}
+
+export default Page;
+```
+
+</Step>
+
+<Step>
+### Edit `turbo.json`
+
+Add the artifacts for the new `@repo/math` library to the `outputs` for the `build` task in `turbo.json`. This ensures that its build outputs will be cached by Turborepo, so they can be restored instantly when you start running builds.
+
+```json title="./turbo.json"
+// [!code word:"dist/**"]
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    }
+  }
+}
+```
+
+</Step>
+
+<Step>
+### Run `turbo build`
+
+If you've [installed `turbo` globally](/docs/getting-started/installation#global-installation), run `turbo build` in your terminal at the root of your Workspace. You can also run the `build` script from `package.json` with your package manager, which will use `turbo run build`.
+
+The `@repo/math` package built before the `web` application built so that the runtime code in `./packages/math/dist` is available to the `web` application when it bundles.
+
+<Callout type="info">
+  You can run `turbo build` again to see your `web` application rebuild in
+  **milliseconds**. We'll discuss this at length in [the Caching
+  guide](/docs/crafting-your-repository/caching).
+</Callout>
+
+</Step>
+</Steps>
+
+## Best practices for Internal Packages
+
+### One "purpose" per package
+
+When you're creating Internal Packages, it's recommended to create packages that have a single "purpose". This isn't a strict science or rule, but a best practice depending on your repository, your scale, your organization, what your teams need, and more. This strategy has several advantages:
+
+- **Easier to understand**: As a repository scales, developers working in the repository will more easily be able to find the code they need.
+- **Reducing dependencies per package**: Using fewer dependencies per package makes it so Turborepo can more effectively [prune the dependencies of your package graph](/docs/reference/prune).
+
+Some examples include:
+
+- **`@repo/ui`**: A package containing all of your shared UI components
+- **`@repo/tool-specific-config`**: A package for managing configuration of a specific tool
+- **`@repo/graphs`**: A domain-specific library for creating and manipulating graphical data
+
+### Application Packages do not contain shared code
+
+When you're creating [Application Packages](/docs/core-concepts/package-types#application-packages), it's best to avoid putting shared code in those packages. Instead, you should create a separate package for the shared code and have the application packages depend on that package.
+
+Additionally, Application Packages are not meant to be installed into other packages. Instead, they should be thought of as an entrypoint to your [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph).
+
+<Callout type="good-to-know">
+  There are [rare
+  exceptions](/docs/core-concepts/package-types#installing-an-applicaiton-package-into-another-package)
+  to this rule.
+</Callout>
+
+## Next steps
+
+With a new Internal Package in place, you can start [configuring tasks](/docs/crafting-your-repository/configuring-tasks).
+
+
+
+
+
+import { LinkToDocumentation } from '#components/link-to-documentation';
+import { Callout } from '#components/callout';
+import { Tabs, Tab } from '#components/tabs';
+import { Files, File, Folder } from '#components/files';
+import { ThemeAwareImage } from '#components/theme-aware-image';
+
+A task is a script that Turborepo runs. You can express relationships between tasks in your [`turbo.json` configuration](/docs/reference/configuration) and [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph).
+
+Turborepo will always parallelize any work that it can to ensure everything runs as fast as possible. This is faster than running tasks one at a time, and it's a part of what makes Turborepo so fast.
+
+For example, <code style={{textWrap: "wrap"}}>yarn workspaces run lint && yarn workspaces run build && yarn workspaces run test</code> would look like this:
+
+<ThemeAwareImage
+  dark={{
+    alt: 'A graphical representation of `turbo run lint test build`. It shows all tasks running in parallel, with much less empty space where scripts are not being ran.',
+    src: '/images/docs/slow-tasks-dark.png',
+    props: {
+      width: 778,
+      height: 331,
+    },
+  }}
+  light={{
+    alt: 'A graphical representation of `turbo run lint test build`. It shows all tasks running in parallel, with much less empty space where scripts are not being ran.',
+    src: '/images/docs/slow-tasks-light.png',
+    props: {
+      width: 778,
+      height: 331,
+    },
+  }}
+/>
+
+But, to get the same work done **faster** with Turborepo, you can use `turbo run lint build test`:
+
+<ThemeAwareImage
+  dark={{
+    alt: 'A graphical representation of `turbo run lint test build`. It shows all tasks running in parallel, with much less empty space where scripts are not being ran.',
+    src: '/images/docs/turborepo-tasks-fast-dark.png',
+    props: {
+      width: 778,
+      height: 448,
+    },
+  }}
+  light={{
+    alt: 'A graphical representation of `turbo run lint test build`. It shows all tasks running in parallel, with much less empty space where scripts are not being ran.',
+    src: '/images/docs/turborepo-tasks-fast-light.png',
+    props: {
+      width: 778,
+      height: 448,
+    },
+  }}
+/>
+
+## Getting started
+
+The root `turbo.json` file is where you'll register the tasks that Turborepo will run. Once you have your tasks defined, you'll be able to run one or more tasks using [`turbo run`](/docs/reference/run).
+
+- If you're starting fresh, we recommend [creating a new repository using `create-turbo`](/docs/getting-started/installation) and editing the `turbo.json` file to try out the snippets in this guide.
+- If you're adopting Turborepo in an existing repository, create a `turbo.json` file in the root of your repository. You'll be using it to learn about the rest of the configuration options in this guide.
+
+<Files>
+  <File name="turbo.json" green />
+  <File name="package.json" />
+  <Folder name="apps" />
+  <Folder name="packages" />
+</Files>
+
+## Defining tasks
+
+Each key in the `tasks` object is a task that can be executed by `turbo run`. Turborepo will search your packages for **scripts in their `package.json` that have the same name as the task**.
+
+To define a task, use [the `tasks` object](/docs/reference/configuration#tasks) in `turbo.json`. For example, a basic task with no dependencies and no outputs named `build` might look like this:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {} // Incorrect! // [!code highlight]
+  }
+}
+```
+
+If you run `turbo run build` at this point, Turborepo will run all `build` scripts in your packages in parallel and won't cache any file outputs. **This will quickly lead to errors.** You're missing a few important pieces to make this work how you'd expect.
+
+### Running tasks in the right order
+
+[The `dependsOn` key](/docs/reference/configuration#dependson) is used to specify the tasks that must complete before a different task begins running. For example, in most cases, you want the `build` script for your libraries to complete before your application's `build` script runs. To do this, you'd use the following `turbo.json`:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"] // [!code highlight]
+    }
+  }
+}
+```
+
+You now have the build order you would expect, building _dependencies_ before _dependents_.
+
+**But be careful.** At this point, you haven't marked the build outputs for caching. To do so, jump to the [Specifying outputs](#specifying-outputs) section.
+
+#### Depending on tasks in dependencies with `^`
+
+The `^` microsyntax tells Turborepo to run the task in direct dependencies before the target package. If your application depends on a library named `ui` and the library has a `build` task, the `build` script in `ui` will run **first**. Once it has successfully completed, the `build` task in your application will run.
+
+This is an important pattern as it ensures that your application's `build` task will have all of the necessary dependencies that it needs to compile. This concept also applies as your dependency graph grows to a more complex structure with many levels of task dependencies.
+
+#### Depending on tasks in the same package
+
+Sometimes, you may need to ensure that two tasks in the same package run in a specific order. For example, you may need to run a `build` task in your library before running a `test` task in the same library. To do this, specify the script in the `dependsOn` key as a plain string (without the `^`).
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "test": {
+      "dependsOn": ["build"] // [!code highlight]
+    }
+  }
+}
+```
+
+#### Depending on a specific task in a specific package
+
+You can also specify an individual task in a specific package to depend on. In the example below, the `build` task in `utils` must be run before any `lint` tasks.
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "lint": {
+      "dependsOn": ["utils#build"] // [!code highlight]
+    }
+  }
+}
+```
+
+You can also be more specific about the dependent task, limiting it to a certain package:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "web#lint": {
+      "dependsOn": ["utils#build"] // [!code highlight]
+    }
+  }
+}
+```
+
+With this configuration, the `lint` task in your `web` package can only be run after the `build` task in the `utils` package is complete.
+
+#### No dependencies
+
+Some tasks may not have any dependencies. For example, a task for finding typos in Markdown files likely doesn't need to care about the status of your other tasks. In this case, you can omit the `dependsOn` key or provide an empty array.
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "spell-check": {
+      "dependsOn": [] // [!code highlight]
+    }
+  }
+}
+```
+
+### Specifying `outputs`
+
+<Callout type="info">
+  Turborepo caches the outputs of your tasks so that you never do the same work
+  twice. We'll discuss this in depth in [the Caching
+  guide](/docs/crafting-your-repository/caching), but let's make sure your tasks
+  are properly configured first.
+</Callout>
+
+The `outputs` key tells Turborepo **files and directories** it should cache when the task has successfully completed. **Without this key defined, Turborepo will not cache any files. Hitting cache on subsequent runs will not restore any file outputs.**
+
+Below are a few examples of outputs for common tools:
+
+<Tabs items={["Next.js", "Vite", "tsc"]} storageKey="outputs-tools">
+<Tab value="Next.js">
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "outputs": [".next/**", "!.next/cache/**"] // [!code highlight]
+    }
+  }
+}
+```
+</Tab>
+
+<Tab value="Vite">
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**"] // [!code highlight]
+    }
+  }
+}
+```
+</Tab>
+<Tab value="tsc">
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**"] // [!code highlight]
+    }
+  }
+}
+```
+</Tab>
+</Tabs>
+
+Globs are relative to the package, so `dist/**` will handle the `dist` that is outputted for each package, respectively. For more on building globbing patterns for the `outputs` key, see [the globbing specification](/docs/reference/globs).
+
+### Specifying `inputs`
+
+The `inputs` key is used to specify the files that you want to include in the task's hash for [caching](/docs/crafting-your-repository/caching). By default, Turborepo will include all files in the package that are tracked by Git. However, you can be more specific about which files are included in the hash using the `inputs` key.
+
+As an example, a task for finding typos in Markdown files could be defined like this:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "spell-check": {
+      "inputs": ["**/*.md", "**/*.mdx"] // [!code highlight]
+    }
+  }
+}
+```
+
+Now, **only** changes in Markdown files will cause the `spell-check` task to miss cache.
+
+<Callout type="error">
+This feature opts out of all of Turborepo's default `inputs` behavior, including following along with changes tracked by source control. This means that your `.gitignore` file will no longer be respected, and you will need to ensure that you do not capture those files with your globs.
+
+To restore the default behavior, use [the `$TURBO_DEFAULT$` microsyntax](#restoring-defaults-with-turbo_default).
+
+</Callout>
+
+#### Restoring defaults with `$TURBO_DEFAULT$`
+
+[The default `inputs` behavior](/docs/reference/configuration#inputs) is often what you will want for your tasks. However, you can increase your cache hit ratios for certain tasks by fine-tuning your `inputs` to ignore changes to files that are known to not affect the task's output.
+
+For this reason, you can use the `$TURBO_DEFAULT$` microsyntax to fine-tune the default `inputs` behavior:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", "!README.md"] // [!code highlight]
+    }
+  }
+}
+```
+
+In this task definition, Turborepo will use the default `inputs` behavior for the `build` task, but will ignore changes to the `README.md` file. If the `README.md` file is changed, the task will still hit cache.
+
+### Registering Root Tasks
+
+You can also run scripts in the `package.json` in the Workspace root using `turbo`. For example, you may want to run a `lint:root` task for the files in your Workspace's root directory in addition to the `lint` task in each package:
+
+<Tabs items={["turbo.json", "package.json"]}>
+<Tab value="turbo.json">
+```json title="./turbo.json"
+{
+  "tasks": {
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "//#lint:root": {} // [!code highlight]
+  }
+}
+```
+
+</Tab>
+<Tab value="package.json">
+```json title="./package.json"
+{
+  "scripts": {
+    "lint": "turbo run lint lint:root",
+    "lint:root": "eslint ." // [!code highlight]
+  }
+}
+```
+</Tab>
+</Tabs>
+
+With the Root Task now registered, `turbo run lint:root` will now run the task. You can also run `turbo run lint lint:root` to run all your linting tasks.
+
+#### When to use Root Tasks
+
+- **Linting and formatting of the Workspace root**: You might have code in your Workspace root that you want to lint and format. For example, you might want to run ESLint or Prettier in your root directory.
+- **Incremental migration**: While you're migrating to Turborepo, you might have an in-between step where you have some scripts that you haven't moved to packages yet. In this case, you can create a Root Task to start migrating and fan the tasks out to packages later.
+- **Scripts without a package scope**: You may have some scripts that don't make sense in the context of specific packages. Those scripts can be registered as Root Tasks so you can still run them with `turbo` for caching, parallelization, and workflow purposes.
+
+## Advanced use cases
+
+### Using Package Configurations
+
+[Package Configurations](/docs/reference/package-configurations) are `turbo.json` files that are placed directly into a package. This allows a package to define specific behavior for its own tasks without affecting the rest of the repository.
+
+In large monorepos with many teams, this allows teams greater control over their own tasks. To learn more, visit [the Package Configurations documentation](/docs/reference/package-configurations)
+
+### Long-running tasks with runtime dependencies
+
+You might have a long-running task that requires another task to always be running at the same time. For this, use [the `with` key](/docs/reference/configuration#with).
+
+```json title="./apps/web/turbo.json"
+{
+  "tasks": {
+    "dev": {
+      "with": ["api#dev"],
+      "persistent": true,
+      "cache": false
+    }
+  }
+}
+```
+
+A long-running task never exits, meaning you can't depend on it. Instead, the `with` keyword will run the `api#dev` task whenever the `web#dev` task runs.
+
+### Performing side-effects
+
+Some tasks should always be run no matter what, like a deployment script after a cached build. For these tasks, add `"cache": false` to your task definition.
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "deploy": {
+      "dependsOn": ["^build"],
+      "cache": false // [!code highlight]
+    },
+    "build": {
+      "outputs": ["dist/**"]
+    }
+  }
+}
+```
+
+### Dependent tasks that can be run in parallel
+
+Some tasks can be run in parallel despite being dependent on other packages. An example of tasks that fit this description are type checkers, since a type checker doesn't need to wait for outputs in dependencies to run successfully.
+
+Because of this, you may be tempted to define your `check-types` task like this:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "check-types": {} // Incorrect! // [!code highlight]
+  }
+}
+```
+
+This runs your tasks in parallel - but doesn't account for source code changes in dependencies. This means you can:
+
+1. Make a breaking change to the interface of your `ui` package.
+2. Run `turbo check-types`, hitting cache in an application package that depends on `ui`.
+
+This is incorrect, since the application package will show a successful cache hit, despite not being updated to use the new interface. Checking for TypeScript errors in your application package manually in your editor is likely to reveal errors.
+
+Because of this, you make a small change to your `check-types` task definition:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "check-types": {
+      "dependsOn": ["^check-types"] // This works...but could be faster! // [!code highlight]
+    }
+  }
+}
+```
+
+If you test out making breaking changes in your `ui` package again, you'll notice that the caching behavior is now correct. However, tasks are no longer running in parallel.
+
+To meet both requirements (correctness and parallelism), you can introduce [Transit Nodes](/docs/core-concepts/package-and-task-graph#transit-nodes) to your Task Graph:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "check-types": {
+      "dependsOn": ["transit"]
+    }
+  }
+}
+```
+
+These Transit Nodes create a relationship between your package dependencies using a task that doesn't do anything because it doesn't match a script in any `package.json`s. Because of this, your tasks can run in parallel **and** be aware of changes to their internal dependencies.
+
+<Callout type="info">
+  In this example, we used the name `transit` - but you can name the task
+  anything that isn't already a script in your Workspace.
+</Callout>
+
+## Next steps
+
+There are more options available in [the Configuring `turbo.json` documentation](/docs/reference/configuration) that you will explore in the coming guides. For now, you can start running a few tasks to see how the basics work.
+
+
+
+
+import { Callout } from '#components/callout';
+import { PackageManagerTabs, Tab } from '#components/tabs';
+import { LinkToDocumentation } from '#components/link-to-documentation';
+import { InVersion } from '#components/in-version';
+
+Turborepo optimizes the developer workflows in your repository by automatically parallelizing and caching tasks. Once a task is [registered in `turbo.json`](/docs/crafting-your-repository/configuring-tasks), you have a powerful new toolset for running the scripts in your repository:
+
+- [Use `scripts` in `package.json` for tasks you need to run often](#using-scripts-in-packagejson)
+- [Use global `turbo` to quickly run custom tasks on-demand](#using-global-turbo)
+- [Filter tasks by directories, package names, source control changes, and more](#using-filters)
+
+Running tasks through `turbo` is powerful because you get one model for executing workflows throughout your repository in development and in your CI pipelines.
+
+## Using `scripts` in `package.json`
+
+For tasks that you run frequently, you can write your `turbo` commands directly into your root `package.json`.
+
+```jsonc title="./package.json"
+{
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint"
+  }
+}
+```
+
+<Callout type="good-to-know">
+  `turbo` is an alias for `turbo run` - but we recommend using `turbo run` in
+  `package.json` and CI workflows to avoid potential collisions with possible
+  `turbo` subcommands that could be added in the future.
+</Callout>
+
+These scripts can then be run using your package manager.
+
+<PackageManagerTabs>
+
+  <Tab value="npm">
+
+```bash title="Terminal"
+npm run dev
+```
+
+  </Tab>
+
+
+</PackageManagerTabs>
+
+<Callout type="warn">
+You only want to write `turbo` commands in your root `package.json`. Writing `turbo` commands into the `package.json` of packages can lead to recursively
+calling `turbo`.
+
+</Callout>
+
+## Using global `turbo`
+
+[Installing `turbo` globally](/docs/getting-started/installation#global-installation) lets you run commands directly from your terminal. This improves your local development experience since it makes it easier to run exactly what you need, when you need it.
+
+Additionally, global `turbo` is useful in your CI pipelines, giving you maximum control of exactly which tasks to run at each point in your pipeline.
+
+### Automatic Package Scoping
+
+When you're in a package's directory, `turbo` will automatically scope commands to the [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph) for that package. This means you can quickly write commands without having to [write filters](/docs/reference/run#--filter-string) for the package.
+
+```bash title="Terminal"
+cd apps/docs
+turbo build
+```
+
+In the example above, the `turbo build` command will run the `build` task for the `docs` package using the `build` task registered in `turbo.json`.
+
+<Callout type="good-to-know">
+  [Using a filter](#using-filters) will override Automatic Package Scoping.
+</Callout>
+
+### Customizing behavior
+
+In [the documentation for the `run` subcommand](/docs/reference/run), you'll find many useful flags to tailor the behavior of `turbo run` for what you need. When running global `turbo`, you can go faster using workflows like:
+
+- **Variations of your most common commands**: The `build` script in `package.json` has the most utility when it is `turbo build` - but you might only be interested in a specific package at the moment. You can quickly filter for the specific package you're interested in using `turbo build --filter=@repo/ui`.
+- **One-off commands**: Commands like `turbo build --dry` aren't needed often so you likely won't create a script in your `package.json` for it. Instead, you can run it directly in your terminal whenever you need it.
+- **Overriding `turbo.json` configuration**: Some CLI flags have an equivalent in `turbo.json` that you can override. For instance, you may have a `turbo build` command configured to use [`"outputLogs": "full"` in `turbo.json`](/docs/reference/configuration#outputlogs) - but you're only interested in seeing errors at the moment. Using global `turbo`, you can use `turbo lint --output-logs=errors-only` to only show errors.
+
+## Running multiple tasks
+
+`turbo` is able to run multiple tasks, parallelizing whenever possible.
+
+```bash title="Terminal"
+turbo run build test lint check-types
+```
+
+This command will run all of the tasks, automatically detecting where it can run a script as early as possible, according to your task definitions.
+
+<Callout type="info" title="Ordering of tasks">
+`turbo test lint` will run tasks exactly the same as `turbo lint test`.
+
+If you want to ensure that one task blocks the execution of another, express that relationship in your [task configurations](/docs/crafting-your-repository/configuring-tasks#defining-tasks).
+
+</Callout>
+
+## Using filters
+
+While [caching](/docs/crafting-your-repository/running-tasks) ensures you stay fast by never doing the same work twice, you can also filter tasks to run only a subset of [the Task Graph](/docs/core-concepts/package-and-task-graph#task-graph).
+
+There are many advanced use cases for filtering in [the `--filter` API reference](/docs/reference/run#--filter-string) but the most common use cases are discussed below.
+
+### Filtering by package
+
+Filtering by package is a simple way to only run tasks for the packages you're currently working on.
+
+```bash title="Terminal"
+turbo build --filter=@acme/web
+```
+
+<InVersion version="2.2.4">
+
+You can also filter to a specific task for the package directly in your CLI command without needing to use `--filter`:
+
+```bash title="Terminal"
+# Run the `build` task for the `web` package
+turbo run web#build
+
+# Run the `build` task for the `web` package, and the `lint` task for the `docs` package
+turbo run web#build docs#lint
+```
+
+</InVersion>
+
+### Filtering by directory
+
+Your repository might have a directory structure where related packages are grouped together. In this case, you can capture the glob for that directory to focus `turbo` on those packages.
+
+```bash title="Terminal"
+turbo lint --filter="./packages/utilities/*"
+```
+
+### Filtering to include dependents
+
+When you're working on a specific package, you might want to run tasks for the package and its dependents. The `...` microsyntax is useful when you're making changes to a package and want to ensure that the changes don't break any of its dependents.
+
+```bash title="Terminal"
+turbo build --filter=...ui
+```
+
+### Filtering to include dependencies
+
+To limit the scope to a package and its dependencies, append `...` to the package name. This runs the task for the specified package and all packages it depends on.
+
+```bash title="Terminal"
+turbo dev --filter=web...
+```
+
+### Filtering by source control changes
+
+Using filters to run tasks based on changes in source control is a great way to run tasks only for the packages that are affected by your changes. **Source control filters must be wrapped in `[]`**.
+
+- **Comparing to the previous commit**: `turbo build --filter=[HEAD^1]`
+- **Comparing to the main branch**: `turbo build --filter=[main...my-feature]`
+- **Comparing specific commits using SHAs**: `turbo build --filter=[a1b2c3d...e4f5g6h]`
+- **Comparing specific commits using branch names**: `turbo build --filter=[your-feature...my-feature]`
+
+<Callout type="info">
+  In general, you can rely on caching to keep your repository fast. When you're
+  using [Remote Caching](/docs/core-concepts/remote-caching), you can count on
+  hitting cache for unchanged packages.
+</Callout>
+
+### Combining filters
+
+For even more specificity, you can combine filters to further refine the entrypoints into your [Task Graph](/docs/core-concepts/package-and-task-graph#task-graph).
+
+```bash title="Terminal"
+turbo build --filter=...ui --filter={./packages/*} --filter=[HEAD^1]
+```
+
+Multiple filters are combined as a **union**, meaning that the [Task Graph](/docs/core-concepts/package-and-task-graph#task-graph) will include tasks that match any of the filters. For more information on advanced usage of filters, see [the `--filter` API reference](/docs/reference/run#--filter-string).
+
+## Next steps
+
+When you start running tasks in your repository, you might start noticing that your tasks get faster. Next, you'll explore [caching](/docs/crafting-your-repository/caching) and how `turbo` makes it so you never do the same work twice.
+
+
+
+
+
+import { Callout } from '#components/callout';
+import { PackageManagerTabs, Tab } from '#components/tabs';
+import { LinkToDocumentation } from '#components/link-to-documentation';
+import { InVersion } from '#components/in-version';
+
+Turborepo optimizes the developer workflows in your repository by automatically parallelizing and caching tasks. Once a task is [registered in `turbo.json`](/docs/crafting-your-repository/configuring-tasks), you have a powerful new toolset for running the scripts in your repository:
+
+- [Use `scripts` in `package.json` for tasks you need to run often](#using-scripts-in-packagejson)
+- [Use global `turbo` to quickly run custom tasks on-demand](#using-global-turbo)
+- [Filter tasks by directories, package names, source control changes, and more](#using-filters)
+
+Running tasks through `turbo` is powerful because you get one model for executing workflows throughout your repository in development and in your CI pipelines.
+
+## Using `scripts` in `package.json`
+
+For tasks that you run frequently, you can write your `turbo` commands directly into your root `package.json`.
+
+```jsonc title="./package.json"
+{
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint"
+  }
+}
+```
+
+<Callout type="good-to-know">
+  `turbo` is an alias for `turbo run` - but we recommend using `turbo run` in
+  `package.json` and CI workflows to avoid potential collisions with possible
+  `turbo` subcommands that could be added in the future.
+</Callout>
+
+These scripts can then be run using your package manager.
+
+<PackageManagerTabs>
+
+  <Tab value="npm">
+
+```bash title="Terminal"
+npm run dev
+```
+
+  </Tab>
+</PackageManagerTabs>
+
+<Callout type="warn">
+You only want to write `turbo` commands in your root `package.json`. Writing `turbo` commands into the `package.json` of packages can lead to recursively
+calling `turbo`.
+
+</Callout>
+
+## Using global `turbo`
+
+[Installing `turbo` globally](/docs/getting-started/installation#global-installation) lets you run commands directly from your terminal. This improves your local development experience since it makes it easier to run exactly what you need, when you need it.
+
+Additionally, global `turbo` is useful in your CI pipelines, giving you maximum control of exactly which tasks to run at each point in your pipeline.
+
+### Automatic Package Scoping
+
+When you're in a package's directory, `turbo` will automatically scope commands to the [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph) for that package. This means you can quickly write commands without having to [write filters](/docs/reference/run#--filter-string) for the package.
+
+```bash title="Terminal"
+cd apps/docs
+turbo build
+```
+
+In the example above, the `turbo build` command will run the `build` task for the `docs` package using the `build` task registered in `turbo.json`.
+
+<Callout type="good-to-know">
+  [Using a filter](#using-filters) will override Automatic Package Scoping.
+</Callout>
+
+### Customizing behavior
+
+In [the documentation for the `run` subcommand](/docs/reference/run), you'll find many useful flags to tailor the behavior of `turbo run` for what you need. When running global `turbo`, you can go faster using workflows like:
+
+- **Variations of your most common commands**: The `build` script in `package.json` has the most utility when it is `turbo build` - but you might only be interested in a specific package at the moment. You can quickly filter for the specific package you're interested in using `turbo build --filter=@repo/ui`.
+- **One-off commands**: Commands like `turbo build --dry` aren't needed often so you likely won't create a script in your `package.json` for it. Instead, you can run it directly in your terminal whenever you need it.
+- **Overriding `turbo.json` configuration**: Some CLI flags have an equivalent in `turbo.json` that you can override. For instance, you may have a `turbo build` command configured to use [`"outputLogs": "full"` in `turbo.json`](/docs/reference/configuration#outputlogs) - but you're only interested in seeing errors at the moment. Using global `turbo`, you can use `turbo lint --output-logs=errors-only` to only show errors.
+
+## Running multiple tasks
+
+`turbo` is able to run multiple tasks, parallelizing whenever possible.
+
+```bash title="Terminal"
+turbo run build test lint check-types
+```
+
+This command will run all of the tasks, automatically detecting where it can run a script as early as possible, according to your task definitions.
+
+<Callout type="info" title="Ordering of tasks">
+`turbo test lint` will run tasks exactly the same as `turbo lint test`.
+
+If you want to ensure that one task blocks the execution of another, express that relationship in your [task configurations](/docs/crafting-your-repository/configuring-tasks#defining-tasks).
+
+</Callout>
+
+## Using filters
+
+While [caching](/docs/crafting-your-repository/running-tasks) ensures you stay fast by never doing the same work twice, you can also filter tasks to run only a subset of [the Task Graph](/docs/core-concepts/package-and-task-graph#task-graph).
+
+There are many advanced use cases for filtering in [the `--filter` API reference](/docs/reference/run#--filter-string) but the most common use cases are discussed below.
+
+### Filtering by package
+
+Filtering by package is a simple way to only run tasks for the packages you're currently working on.
+
+```bash title="Terminal"
+turbo build --filter=@acme/web
+```
+
+<InVersion version="2.2.4">
+
+You can also filter to a specific task for the package directly in your CLI command without needing to use `--filter`:
+
+```bash title="Terminal"
+# Run the `build` task for the `web` package
+turbo run web#build
+
+# Run the `build` task for the `web` package, and the `lint` task for the `docs` package
+turbo run web#build docs#lint
+```
+
+</InVersion>
+
+### Filtering by directory
+
+Your repository might have a directory structure where related packages are grouped together. In this case, you can capture the glob for that directory to focus `turbo` on those packages.
+
+```bash title="Terminal"
+turbo lint --filter="./packages/utilities/*"
+```
+
+### Filtering to include dependents
+
+When you're working on a specific package, you might want to run tasks for the package and its dependents. The `...` microsyntax is useful when you're making changes to a package and want to ensure that the changes don't break any of its dependents.
+
+```bash title="Terminal"
+turbo build --filter=...ui
+```
+
+### Filtering to include dependencies
+
+To limit the scope to a package and its dependencies, append `...` to the package name. This runs the task for the specified package and all packages it depends on.
+
+```bash title="Terminal"
+turbo dev --filter=web...
+```
+
+### Filtering by source control changes
+
+Using filters to run tasks based on changes in source control is a great way to run tasks only for the packages that are affected by your changes. **Source control filters must be wrapped in `[]`**.
+
+- **Comparing to the previous commit**: `turbo build --filter=[HEAD^1]`
+- **Comparing to the main branch**: `turbo build --filter=[main...my-feature]`
+- **Comparing specific commits using SHAs**: `turbo build --filter=[a1b2c3d...e4f5g6h]`
+- **Comparing specific commits using branch names**: `turbo build --filter=[your-feature...my-feature]`
+
+<Callout type="info">
+  In general, you can rely on caching to keep your repository fast. When you're
+  using [Remote Caching](/docs/core-concepts/remote-caching), you can count on
+  hitting cache for unchanged packages.
+</Callout>
+
+### Combining filters
+
+For even more specificity, you can combine filters to further refine the entrypoints into your [Task Graph](/docs/core-concepts/package-and-task-graph#task-graph).
+
+```bash title="Terminal"
+turbo build --filter=...ui --filter={./packages/*} --filter=[HEAD^1]
+```
+
+Multiple filters are combined as a **union**, meaning that the [Task Graph](/docs/core-concepts/package-and-task-graph#task-graph) will include tasks that match any of the filters. For more information on advanced usage of filters, see [the `--filter` API reference](/docs/reference/run#--filter-string).
+
+## Next steps
+
+When you start running tasks in your repository, you might start noticing that your tasks get faster. Next, you'll explore [caching](/docs/crafting-your-repository/caching) and how `turbo` makes it so you never do the same work twice.
+
+
+
+
+
+import { Tabs, Tab } from '#components/tabs';
+import { LinkToDocumentation } from '#components/link-to-documentation';
+
+Developing applications in a monorepo unlocks powerful workflows, enabling you to make atomic commits to source control with easy access to code.
+
+Most development tasks are long-running tasks that watch for changes to your code. Turborepo enhances this experience with a powerful terminal UI and other capabilities like:
+
+- [Configuration for `dev` tasks](#configuring-development-tasks)
+- [Interacting with tasks](#interacting-with-tasks)
+- [Watch Mode](#watch-mode)
+- [Running setup scripts](#running-setup-tasks-before-dev)
+- [Filtering tasks to run a subset of your packages](#running-a-specific-application)
+
+## Configuring development tasks
+
+Defining a development task in `turbo.json` tells Turborepo that you'll be running a long-lived task. This is useful for things like running a development server, running tests, or building your application.
+
+To register a `dev` task, add it to your `turbo.json` with two properties:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+```
+
+- **"cache": false**: Tells Turborepo to not attempt to cache the results of the task. Since this is a development task, you're likely to be making frequent changes to your code, so caching the results is not useful.
+- **"persistent": true**: Tells Turborepo to keep the task running until you stop it. This key serves as a signal for your terminal UI to treat the task as long-running and interactive. Additionally, it prevents you from accidentally depending on a task that will not exit.
+
+You can now run your `dev` task to start your development scripts in parallel:
+
+```bash title="Terminal"
+turbo dev
+```
+
+### Running setup tasks before `dev`
+
+You may also want to run scripts that set up your development environment or pre-build packages. You can make sure those tasks run before the `dev` task with `dependsOn`:
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["//#dev:setup"]
+    },
+    "//#dev:setup": {
+      "outputs": [".codegen/**"]
+    }
+  }
+}
+```
+
+In this example, we're using a [Root Task](/docs/crafting-your-repository/configuring-tasks#registering-root-tasks) but you can use the same idea for [arbitrary tasks in packages](/docs/crafting-your-repository/configuring-tasks#depending-on-a-specific-task-in-a-specific-package).
+
+### Running a specific application
+
+The `--filter` flag allows you to pick a subset of your [Package Graph](/docs/core-concepts/package-and-task-graph#package-graph) so you can run your `dev` task for a specific application and its dependencies:
+
+```bash title="Terminal"
+turbo dev --filter=web
+```
+
+## Using the terminal UI
+
+Turborepo's terminal UI enables a number of features that create a highly interactive experience around your tasks.
+
+### Customizing your view
+
+You can quickly adjust the UI to your needs using keybinds.
+
+| Keybind | Action                                                            |
+| ------- | ----------------------------------------------------------------- |
+| `m`     | Toggle popup listing keybinds                                     |
+| `↑`/`↓` | Select the next/previous task in the task list                    |
+| `j`/`k` | Select the next/previous task in the task list                    |
+| `p`     | Toggle selection pinning for selected task                        |
+| `h`     | Toggle visibility of the task list                                |
+| `c`     | When logs are highlighted, copy selection to the system clipboard |
+| `u`/`d` | Scroll logs `u`p and `d`own                                       |
+
+### Interacting with tasks
+
+Some of your tools may allow you to type input into them. Examples of this include Drizzle ORM's interactive migrations or Jest's filtering and re-running of test suites.
+
+You can interact with tasks that are [marked as interactive](/docs/reference/configuration#interactive) to give them input.
+
+| Keybind  | Action            |
+| -------- | ----------------- |
+| `i`      | Begin interacting |
+| `Ctrl+z` | Stop interacting  |
+
+## Watch Mode
+
+Many tools have a built-in watcher, like [`tsc --watch`](https://www.typescriptlang.org/docs/handbook/compiler-options.html#compiler-options),
+that will respond to changes in your source code. However, some don't.
+
+`turbo watch` adds a dependency-aware watcher to any tool. Changes to source code will follow [the Task Graph](/docs/core-concepts/package-and-task-graph#task-graph) that you've described in `turbo.json`, just like all your other tasks.
+
+For example, using a package structure like [`create-turbo`](/docs/reference/create-turbo) with the following tasks and scripts:
+
+<Tabs items={["turbo.json", "packages/ui", "apps/web"]}>
+<Tab value="turbo.json">
+
+```json title="turbo.json"
+{
+  "tasks": {
+    "dev": {
+      "persistent": true,
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab value="packages/ui">
+
+```json title="package.json"
+{
+  "name": "@repo/ui"
+  "scripts": {
+    "dev": "tsc --watch",
+    "lint": "eslint ."
+  }
+}
+```
+
+</Tab>
+
+<Tab value="apps/web">
+
+```json title="package.json"
+{
+  "name": "web"
+  "scripts": {
+    "dev": "next dev",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+      "@repo/ui": "workspace:*"
+    }
+}
+```
+
+</Tab>
+</Tabs>
+
+When you run `turbo watch dev lint`, you'll see the `lint` scripts are re-run whenever you make source code changes, despite ESLint not having a built-in watcher. `turbo watch` is also aware of internal dependencies, so a code change in `@repo/ui` will re-run the task in both `@repo/ui` and `web`.
+
+The Next.js development server in `web` and the TypeScript Compiler's built-in watcher in `@repo/ui` will continue to work as usual, since they are marked with `persistent`.
+
+For more information, [visit the `turbo watch` reference](/docs/reference/watch).
+
+## Limitations
+
+### Teardown tasks
+
+In some cases, you may want to run a script when the `dev` task is stopped. Turborepo is unable to run those teardown scripts when exiting because `turbo` exits when your `dev` tasks exit.
+
+Instead, create a `turbo dev:teardown` script that you run separately after you've exited your primary `turbo dev` task.
+
+## Next steps
+
+Once you have a version of your application that you'd like to deploy, it's time to learn how to configure environment variables in Turborepo.
+
+
+
+
+
+import { Fragment } from 'react';
+import { Callout } from '#components/callout';
+import { Tabs, Tab } from '#components/tabs';
+import { Accordion, Accordions } from '#components/accordion';
+import frameworks from '@turbo/types/src/json/frameworks.json';
+
+Environment variable inputs are a vital part of your applications that you'll need to account for in your Turborepo configuration.
+
+There are three important questions when working with environment variables in Turborepo:
+
+- [Are my environment variables accounted for in the task hash?](#adding-environment-variables-to-task-hashes)
+- [Which Environment Mode will `turbo` use?](#environment-modes)
+- [Have I handled my `.env` files?](#handling-env-files)
+
+<Callout type="error">
+  Failing to account for environment variables in your configuration can result
+  in shipping your application with the wrong configuration. This can cause
+  serious issues like shipping your preview deployments to production.
+</Callout>
+
+<Callout type="good-to-know">
+  Turborepo also uses [System Environment
+  Variables](/docs/reference/system-environment-variables) to configure its own
+  behavior. Below, you'll find information about environment variables for your
+  task's runtime and how they affect task hashing.
+</Callout>
+
+## Adding environment variables to task hashes
+
+Turborepo needs to be aware of your environment variables to account for changes in application behavior. To do this, use the `env` and `globalEnv` keys in your `turbo.json` file.
+
+```json title="./turbo.json"
+{
+  "globalEnv": ["IMPORTANT_GLOBAL_VARIABLE"],
+  "tasks": {
+    "build": {
+      "env": ["MY_API_URL", "MY_API_KEY"]
+    }
+  }
+}
+```
+
+- **globalEnv**: Changes to the values of any environment variables in this list will change the hash for all tasks.
+- **env**: Includes changes to the values of environment variables that affect the task, allowing for better granularity. For example, a `lint` task probably doesn't need to miss cache when the value of `API_KEY` changes, but a `build` task likely should.
+
+<Callout type="good-to-know">
+  Turborepo supports wildcards for environment variables so you can easily
+  account for all environment variables with a given prefix. Visit [the API
+  reference for `env`](/docs/reference/configuration#wildcards) for more.
+</Callout>
+
+### Framework Inference
+
+Turborepo automatically adds prefix wildcards to your [`env`](/docs/reference/configuration#env) key for common frameworks. If you're using one of the frameworks below in a package, you don't need to specify environment variables with these prefixes:
+
+<table>
+  <thead>
+    <tr>
+      <th>Framework</th>
+      <th>
+        <span>
+          <code>env</code> wildcards
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {frameworks.map(({ name, envWildcards }) => (
+      <tr key={name}>
+        <td>{name}</td>
+        <td>
+          {envWildcards.map((envWildcard, index) => (
+            <Fragment key={envWildcard}>
+              {index !== 0 ? <span>, </span> : null}
+              <code>{envWildcard}</code>
+            </Fragment>
+          ))}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<Callout type="good-to-know">Framework inference is per-package.</Callout>
+
+If you'd like to opt out of Framework Inference, you can do so by:
+
+- Running your tasks with `--framework-inference=false`
+- Adding a negative wildcard to the `env` key (for example, `"env": ["!NEXT_PUBLIC_*"]`)
+
+## Environment Modes
+
+Turborepo's Environment Modes allow you to control which environment variables are available to a task at runtime:
+
+- [Strict Mode](#strict-mode) (Default): Filter environment variables to **only** those that are specified in the `env` and `globalEnv` keys in `turbo.json`.
+- [Loose Mode](#loose-mode): Allow all environment variables for the process to be available.
+
+### Strict Mode
+
+Strict Mode filters the environment variables available to a task's runtime to **only** those that are specified in the `globalEnv` and `env` keys in `turbo.json`.
+
+This means that tasks that do not account for all of the environment variables that they need are likely to fail. This is a good thing, since you don't want to cache a task that can potentially have different behavior in a different environment.
+
+<Callout type="warn" title="Cache safety with Strict Mode">
+  While Strict Mode makes it much more likely for your task to fail when you
+  haven't accounted for all of your environment variables, it doesn't guarantee
+  task failure. If your application is able to gracefully handle a missing
+  environment variable, you could still successfully complete tasks and get
+  unintended cache hits.
+</Callout>
+
+#### Passthrough variables
+
+In advanced use cases, you may want to make some environment variables
+available to a task without including them in the hash. Changes to these variables don't affect task outputs but still need to be available for the task to run successfully.
+
+For these cases, add those environment variables to [`globalPassThroughEnv`](/docs/reference/configuration#globalpassthroughenv) and [`passThroughEnv`](/docs/reference/configuration#passthroughenv).
+
+#### CI vendor compatibility
+
+Strict Mode will filter out environment variables that come from your CI vendors until you've accounted for them using [`env`](/docs/reference/configuration#env), [`globalEnv`](/docs/reference/configuration#globalenv), [`passThroughEnv`](/docs/reference/configuration#passthroughenv), or [`globalPassThroughEnv`](/docs/reference/configuration#globalpassthroughenv).
+
+If any of these variables are important to your tasks and aren't included by [Framework Inference](#framework-inference), make sure they are in your `turbo.json` configuration.
+
+### Loose Mode
+
+Loose Mode does not filter your environment variables according to your `globalEnv` and `env` keys. This makes it easier to get started with incrementally migrating to Strict Mode.
+
+Use [the `--env-mode` flag](/docs/reference/run#--env-mode-option) to enable Loose Mode on any invocation where you're seeing environment variables cannot be found by your scripts:
+
+```bash title="Terminal"
+turbo run build --env-mode=loose
+```
+
+As long as the environment variable is available when `turbo` is ran, your script will be able to use it. However, this also **lets you accidentally forget to account for an environment variable in your configuration much more easily**, allowing the task to hit cache when it shouldn't.
+
+For example, you may have some code in your application that fetches data from an API, using an environment variable for the base URL:
+
+```ts title="./apps/web/data-fetcher.ts"
+const data = fetch(`${process.env.MY_API_URL}/resource/1`);
+```
+
+You then build your application using a value for `MY_API_URL` that targets your preview environment. When you're ready to ship your application, you build for production and see a cache hit - even though the value of the `MY_API_URL` variable has changed! `MY_API_URL` changed - but Turborepo restored a version of your application from cache that uses the preview environment's `MY_API_URL` rather than production's.
+
+When you're using Loose Mode, `MY_API_URL` is available in the task runtime **even though it isn't accounted for in the task hash**. To make this task more likely to fail and protect you from this misconfiguration, we encourage you to opt for [Strict Mode](#strict-mode).
+
+### Platform Environment Variables
+
+When deploying your application to [Vercel](https://vercel.com/new?ref=turborepo), you likely already have [environment variables](https://vercel.com/docs/projects/environment-variables) configured on your project. Turborepo will automatically check these variables against your `turbo.json` configuration to ensure that you've [accounted for them](/docs/crafting-your-repository/using-environment-variables#adding-environment-variables-to-task-hashes),
+and will warn you about any missing variables.
+
+This functionality can be disabled by setting `TURBO_PLATFORM_ENV_DISABLED=false`
+
+## Handling `.env` files
+
+`.env` files are great for working on an application locally. **Turborepo does not load .env files into your task's runtime**, leaving them to be handled by your framework, or tools like [`dotenv`](https://www.npmjs.com/package/dotenv).
+
+However, it's important that `turbo` knows about changes to values in your `.env` files so that it can use them for hashing. If you change a variable in your `.env` files between builds, the `build` task should miss cache.
+
+To do this, add the files to the [`inputs`](/docs/reference/configuration#inputs) key:
+
+```json title="./turbo.json"
+{
+  "globalDependencies": [".env"], // All task hashes
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env"] // Only the `build` task hash
+    }
+  }
+}
+```
+
+### Multiple `.env` files
+
+You can capture multiple `.env` files at once using a `*`.
+
+```json title="./turbo.json"
+{
+  "globalDependencies": [".env"], // All task hashes
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*"] // Only the `build` task hash
+    }
+  }
+}
+```
+
+<Callout type="info">
+  `.env` files can load variables into the task runtime even when the
+  environment variables have not been added to [the `env`
+  key](/docs/reference/configuration#env). Ensure that you add your environment
+  variables for your builds the `env` key for CI and production builds.
+</Callout>
+
+## Best practices
+
+### Use `.env` files in packages
+
+Using a `.env` file at the root of the repository is not recommended. Instead, we recommend placing your `.env` files into the packages where they're used.
+
+This practice more closely models the runtime behavior of your applications since environment variables exist in each application's runtime individually. Additionally, as your monorepo scales, this practice makes it easier to manage each application's environment, preventing environment variable leakage across applications.
+
+<Callout type="good-to-know">
+  You may find it easier to use a root `.env` file when incrementally migrating
+  to a monorepo. Tools like [dotenv](https://www.npmjs.com/package/dotenv) can
+  load `.env` files from different locations.
+</Callout>
+
+### Use `eslint-config-turbo`
+
+[The `eslint-config-turbo` package](/docs/reference/eslint-config-turbo) helps you find environment variables that are used in your code that aren't listed in your `turbo.json`. This helps ensure that all your environment variables are accounted for in your configuration.
+
+### Avoid creating or mutating environment variables at runtime
+
+Turborepo hashes the environment variables for your task at the beginning of the task. If you create or mutate environment variables during the task, Turborepo will not know about these changes and will not account for them in the task hash.
+
+For instance, Turborepo will not be able to detect the inline variable in the example below:
+
+```json title="./apps/web/package.json"
+{
+  "scripts": {
+    "dev": "export MY_VARIABLE=123 && next dev"
+  }
+}
+```
+
+`MY_VARIABLE` is being added to the environment _after_ the `dev` task has started, so `turbo` will not be able to use it for hashing.
+
+## Examples
+
+Below are examples of proper environment variable configuration for a few popular frameworks:
+
+<Accordions>
+<Accordion title="Next.js">
+
+The `turbo.json` below expresses:
+
+- The `build` and `dev` tasks will have different hashes for changes to `MY_API_URL` and `MY_API_KEY`.
+- The `build` and `dev` tasks include the supported .env files for Next.js.
+- The `test` task does not use environment variables, so the `env` key is omitted. (Depending on your testing structure, your `test` task may need an `env` key.)
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "env": ["MY_API_URL", "MY_API_KEY"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ]
+    },
+    "dev": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
+    },
+    "test": {}
+  }
+}
+```
+
+</Accordion>
+<Accordion title="Vite">
+The `turbo.json` below expresses:
+- The `build` and `dev` tasks will have different hashes for changes to `MY_API_URL` and `MY_API_KEY`.
+- The `build` and `dev` tasks include the supported .env files for Vite.
+- The `test` task does not use environment variables, so the `env` key is omitted. (Depending on your testing structure, your `test` task may need an `env` key.)
+
+```json title="./turbo.json"
+{
+  "tasks": {
+    "build": {
+      "env": ["MY_API_URL", "MY_API_KEY"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ]
+    },
+    "dev": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
+    },
+    "test": {}
+  }
+}
+```
+
+</Accordion>
+</Accordions>
+
+## Troubleshooting
+
+### Use `--summarize`
+
+[The `--summarize` flag](/docs/reference/run#--summarize) can be added to your `turbo run` command to produce a JSON file summarizing data about your task. Checking the diff for the `globalEnv` and `env` key can help you identify any environment variables that may be missing from your configuration.
+
+## Next steps
+
+Once you've accounted for your environment variables, you're ready to start building the CI pipelines that build, check, and deploy your applications, at the speed of `turbo`.
+
+
+
+
+
+Turborepo includes tools for understanding your repository structure, that can help you use and optimize your codebase.
+
+## `turbo ls`
+
+To list your packages, you can run `turbo ls`. This will show the packages in your repository and where they're located.
+
+```bash title="Terminal"
+> turbo ls
+
+  @repo/eslint-config packages/eslint-config
+  @repo/typescript-config packages/typescript-config
+  @repo/ui packages/ui
+  docs apps/docs
+  web apps/web
+```
+
+You can [apply filters](/docs/crafting-your-repository/running-tasks#using-filters) to `ls`, just like `run`:
+
+```bash title="Terminal"
+> turbo ls --filter ...ui
+3 packages (pnpm9)
+
+  @repo/ui packages/ui
+  docs apps/docs
+  web apps/web
+```
+
+## `turbo run`
+
+To determine which tasks can be run in your monorepo, simply call `turbo run` without any tasks. You will get a list of
+tasks and the packages in which they are defined:
+
+```bash title="Terminal"
+> turbo run
+No tasks provided, here are some potential ones
+
+  lint
+    @repo/ui, docs, web
+  build
+    docs, web
+  dev
+    docs, web
+  start
+    docs, web
+  generate:component
+    @repo/ui
+```
+
+## `turbo query`
+
+If you wish to dig into your repository structure, since `2.2.0`, Turborepo provides a GraphQL interface into your repository
+via `turbo query`. You can execute queries such as finding all packages that have a `test` task:
+
+```bash title="Terminal"
+> turbo query "query { packages(filter: { has: { field: TASK_NAME, value: \"build\"}}) { items { name } } }"
+{
+  "data": {
+    "packages": {
+      "items": [
+        {
+          "name": "//"
+        },
+        {
+          "name": "docs"
+        },
+        {
+          "name": "web"
+        }
+      ]
+    }
+  }
+}
+```
+
+This can be helpful for diagnosing potential problems in your package or task dependency graph. For instance, let's say
+you're getting a lot of cache misses in your builds. This could be because there's a package that keeps getting changed
+and is imported throughout your codebase.
+
+To do this, we can run a query to find packages that are directly imported more than 10 times in your monorepo:
+
+```bash title="Terminal"
+> turbo query "query { packages(filter: { greaterThan: { field: DIRECT_DEPENDENT_COUNT, value: 10 } }) { items { name } } }"
+{
+  "data": {
+    "packages": {
+      "items": [
+        {
+          "name": "utils"
+        }
+      ]
+    }
+  }
+}
+```
+
+Now that we've found this package, we can try to split it up into smaller packages so that a small change won't
+invalidate the whole dependency graph.
+
+Or let's say you're using our new `--affected` flag, but you're still running more tasks than you'd like.
+With `turbo query`, you can find all the packages and the reason why they were invalidated:
+
+```bash title="Terminal"
+> turbo query "query { affectedPackages(base: \"HEAD^\", head: \"HEAD\") { items { reason {  __typename } } } }"
+{
+  "data": {
+    "affectedPackages": {
+      "items": [
+        {
+          "name": "utils",
+          "reason": {
+            "__typename": "FileChanged"
+          }
+        },
+        {
+          "name": "web",
+          "reason": {
+            "__typename": "DependencyChanged"
+          }
+        },
+        {
+          "name": "docs",
+          "reason": {
+            "__typename": "DependencyChanged"
+          }
+        },
+        {
+          "name": "cli",
+          "reason": {
+            "__typename": "DependencyChanged"
+          }
+        },
+      ]
+    }
+  }
+}
+```
+
+
+

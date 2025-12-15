@@ -1,0 +1,9 @@
+{
+    "Store": {
+        "title": "Boutique",
+        "description": "Découvrez nos derniers produits",
+        "hero": "Les meilleurs produits pour vous",
+        "cart": "Panier",
+        "buy": "Acheter maintenant"
+    }
+}

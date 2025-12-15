@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter);
+}
+@import '@repo/ui/styles.css';
+@source "../../../packages/ui/src";

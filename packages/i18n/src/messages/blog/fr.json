@@ -1,0 +1,9 @@
+{
+    "Blog": {
+        "title": "Le Blog",
+        "description": "Lisez nos dernières histoires",
+        "hero": "Lisez nos dernières histoires",
+        "readMore": "Lire la suite",
+        "author": "Écrit par"
+    }
+}
