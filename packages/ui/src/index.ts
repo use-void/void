@@ -1,4 +1,3 @@
-
 export * from "./components/ui/button";
 export * from "./components/ui/breadcrumb";
 export * from "./components/ui/card";
@@ -7,7 +6,7 @@ export * from "./components/ui/badge";
 export * from "./components/ui/separator";
 export * from "./components/ui/input";
 export * from "./components/ui/textarea";
-export * from "./components/ui/language-switcher";
+export * from "./components/language-switcher";
 export * from "./components/theme-provider";
 export * from "./components/ui/form";
 export * from "./components/ui/label";
