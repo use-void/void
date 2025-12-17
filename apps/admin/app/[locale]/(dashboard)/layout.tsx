@@ -6,7 +6,13 @@ import { setRequestLocale } from "next-intl/server";
 import { UserNav, UserNavSkeleton } from "@/components/layout/user-nav";
 import { SiteHeader } from "@/components/layout/site-header";
 import { RenderWithUser, RequireAuth } from "@/components/providers/session-provider";
+import { routing } from "@repo/i18n/routing"; // تأكد من استيراد إعدادات الراوتينج
 
+// 1. إضافة هذه الدالة في الـ Layout الرئيسي داخل [locale]
+// هذا سيغنينا عن تكرارها في كل صفحة فرعية عادية (مثل صفحة Orders)
+export function generateStaticParams() {
+    return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function DashboardLayout({
     children,
@@ -16,17 +22,16 @@ export default async function DashboardLayout({
     params: Promise<{ locale: string }>;
 }) {
     const { locale } = await params;
+    
+    // ضروري لتفعيل الـ Static Rendering لهذا الملف
     setRequestLocale(locale);
 
-    // تحديد اتجاه اللغة وجهة السايدبار
     const { dir } = localeConfig[locale as keyof typeof localeConfig] || { dir: 'ltr' };
     const side = dir === 'rtl' ? 'right' : 'left';
 
     return (
         <SidebarProvider>
-            {/* تمرير خاصية side للسايدبار ليعرف مكانه (يمين/يسار) */}
             <AppSidebar side={side} />
-
             <SidebarInset className="bg-background min-h-screen flex flex-col transition-all duration-300">
                 <SiteHeader
                     userSlot={
