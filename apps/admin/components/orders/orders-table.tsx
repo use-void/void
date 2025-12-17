@@ -2,7 +2,6 @@
 
 import { Button } from "@repo/ui";
 import { MoreHorizontal, Eye } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Link } from "@repo/i18n/navigation";
 import {
   DropdownMenu,
@@ -11,23 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  cn // Assuming cn is exported from ui, or import from utility
 } from "@repo/ui";
-import { cn } from "@repo/ui";
-
-interface Order {
-  id: string;
-  customer: string;
-  email: string;
-  total: number;
-  status: "pending" | "processing" | "completed" | "cancelled";
-  paymentStatus: "paid" | "unpaid" | "refunded";
-  date: string;
-}
+import type { Order } from "@/lib/mock-data";
 
 export function OrdersTable({ data }: { data: Order[] }) {
-  const t = useTranslations("Admin.orders");
 
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-64 text-muted-foreground border border-border rounded-xl bg-card">
         <p>No orders found</p>
@@ -62,11 +51,12 @@ export function OrdersTable({ data }: { data: Order[] }) {
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-col">
+                  {/* هنا التعديل المهم: الوصول للكائن المتداخل بدلاً من النص المباشر */}
                   <span className="font-medium text-foreground">
-                    {order.customer}
+                    {order.customer?.name || "Unknown"}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {order.email}
+                    {order.customer?.email}
                   </span>
                 </div>
               </td>
@@ -84,6 +74,7 @@ export function OrdersTable({ data }: { data: Order[] }) {
               </td>
               <td className="px-6 py-4 text-right">
                 <DropdownMenu>
+                  {/* رجعنا للكود الصحيح الخاص بك الذي يستخدم render prop */}
                   <DropdownMenuTrigger
                     render={
                       <Button
@@ -94,6 +85,7 @@ export function OrdersTable({ data }: { data: Order[] }) {
                       </Button>
                     }
                   ></DropdownMenuTrigger>
+                  
                   <DropdownMenuContent
                     align="end"
                     className="bg-popover border-border text-muted-foreground"
