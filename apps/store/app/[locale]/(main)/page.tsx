@@ -7,7 +7,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-      <h1 className="text-4xl font-bold">{t('title')}</h1>
+      <h1 className="text-4xl font-bold text-red-300">{t('title')}</h1>
     </div>
   );
 }

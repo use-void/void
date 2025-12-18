@@ -1,4 +1,8 @@
 {
+    "LocaleLayout": {
+        "title": "لوحة التحكم",
+        "description": "لوحة التحكم"
+    },
     "Admin": {
         "auth": {
             "alreadyHaveAccount": "لديك حساب بالفعل؟",

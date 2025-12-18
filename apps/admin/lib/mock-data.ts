@@ -1,121 +1,20 @@
-// lib/mock-data.ts
+// apps\admin\lib\mock-data.ts
 
+// ==========================================
+// 1. Enums & Shared Types
+// ==========================================
+
+export type OrderStatus = "completed" | "processing" | "pending" | "cancelled";
+export type PaymentStatus = "paid" | "unpaid" | "refunded";
 export type CustomerStatus = "active" | "inactive" | "blocked";
-
-export interface Order {
-    id: string;
-    date: string;
-    status: OrderStatus; // Use OrderStatus type
-    paymentStatus: PaymentStatus; // Add paymentStatus
-    total: number;
-}
-
-export interface Customer {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-    joinDate: string;
-    status: CustomerStatus;
-    ordersCount: number;
-    totalSpent: number;
-    stats: {
-        totalOrders: number;
-        totalSpent: number;
-        avgOrderValue: number;
-    };
-    recentOrders: Order[];
-}
-
-export const mockCustomersData: Customer[] = [
-    {
-        id: "CUST-001",
-        name: "Alice Johnson",
-        email: "alice@example.com",
-        phone: "+1 (555) 123-4567",
-        address: "123 Main St\nSan Francisco, CA 94105",
-        joinDate: "2024-01-15T10:00:00Z",
-        status: "active",
-        ordersCount: 12,
-        totalSpent: 1250.00,
-        stats: {
-            totalOrders: 12,
-            totalSpent: 1250.00,
-            avgOrderValue: 104.16
-        },
-        recentOrders: [
-            { id: "ORD-1001", date: "2024-12-01", status: "completed", paymentStatus: "paid", total: 154.00 },
-            { id: "ORD-0985", date: "2024-11-15", status: "completed", paymentStatus: "paid", total: 45.50 },
-            { id: "ORD-0920", date: "2024-10-30", status: "completed", paymentStatus: "paid", total: 29.99 },
-        ]
-    },
-    {
-        id: "CUST-002",
-        name: "Bob Smith",
-        email: "bob@example.com",
-        phone: "+1 (555) 987-6543",
-        address: "456 Oak Ave\nSeattle, WA 98101",
-        joinDate: "2024-03-20T14:30:00Z",
-        status: "active",
-        ordersCount: 3,
-        totalSpent: 150.00,
-        stats: {
-            totalOrders: 3,
-            totalSpent: 150.00,
-            avgOrderValue: 50.00
-        },
-        recentOrders: [
-            { id: "ORD-1002", date: "2024-12-05", status: "pending", paymentStatus: "unpaid", total: 75.00 },
-            { id: "ORD-0990", date: "2024-11-20", status: "completed", paymentStatus: "paid", total: 75.00 },
-        ]
-    },
-    {
-        id: "CUST-003",
-        name: "Charlie Brown",
-        email: "charlie@example.com",
-        phone: "",
-        address: "No address provided",
-        joinDate: "2024-05-10T09:15:00Z",
-        status: "inactive",
-        ordersCount: 0,
-        totalSpent: 0.00,
-        stats: {
-            totalOrders: 0,
-            totalSpent: 0.00,
-            avgOrderValue: 0.00
-        },
-        recentOrders: []
-    },
-    {
-        id: "demo-customer",
-        name: "Demo User",
-        email: "demo@example.com",
-        phone: "+1 (555) 000-0000",
-        address: "Demo Street\nDemo City, DC 00000",
-        joinDate: "2024-01-01T00:00:00Z",
-        status: "active",
-        ordersCount: 5,
-        totalSpent: 500.00,
-        stats: {
-            totalOrders: 5,
-            totalSpent: 500.00,
-            avgOrderValue: 100.00
-        },
-        recentOrders: [
-            { id: "ORD-DEMO-1", date: "2024-12-10", status: "completed", paymentStatus: "paid", total: 100.00 },
-            { id: "ORD-DEMO-2", date: "2024-12-11", status: "completed", paymentStatus: "paid", total: 200.00 },
-        ]
-    }
-];
-
-export function getCustomerById(id: string): Customer | undefined {
-    return mockCustomersData.find(customer => customer.id === id);
-}
-
 export type ProductStatus = "active" | "draft" | "archived";
 export type ProductType = "physical" | "digital";
 
+// ==========================================
+// 2. Interfaces
+// ==========================================
+
+// --- Product Interfaces ---
 export interface Product {
     id: string;
     name: string;
@@ -132,6 +31,62 @@ export interface Product {
     updatedAt: string;
 }
 
+// --- Customer Interfaces ---
+export interface CustomerStats {
+    totalOrders: number;
+    totalSpent: number;
+    avgOrderValue: number;
+}
+
+// Full Customer Profile
+export interface Customer {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+    joinDate: string;
+    status: CustomerStatus;
+    ordersCount: number;
+    totalSpent: number;
+    stats: CustomerStats;
+    recentOrders: Partial<Order>[];
+}
+
+// --- Order Interfaces ---
+export interface OrderItem {
+    name: string;
+    variant?: string;
+    quantity: number;
+    price: number;
+}
+
+// Minimal customer info embedded in an order
+export interface OrderCustomerInfo {
+    id: string;
+    name: string;
+    email: string;
+}
+
+export interface Order {
+    id: string;
+    date: string;
+    status: OrderStatus;
+    paymentStatus: PaymentStatus;
+    total: number;
+    subtotal: number;
+    shipping: number;
+    shippingAddress: string;
+    // Updated structure to prevent "undefined" access errors
+    customer: OrderCustomerInfo; 
+    items: OrderItem[];
+}
+
+// ==========================================
+// 3. Mock Data
+// ==========================================
+
+// --- Products Data ---
 export const mockProductsData: Product[] = [
     {
         id: "1",
@@ -181,42 +136,22 @@ export const mockProductsData: Product[] = [
     }
 ];
 
-export function getProductById(id: string): Product | undefined {
-    return mockProductsData.find(product => product.id === id);
-}
-
-export type OrderStatus = "completed" | "processing" | "pending" | "cancelled";
-export type PaymentStatus = "paid" | "unpaid" | "refunded";
-
-export interface OrderItem {
-    name: string;
-    variant?: string;
-    quantity: number;
-    price: number;
-}
-
-export interface OrderDetail extends Order {
-    shippingAddress?: string;
-    items?: OrderItem[];
-    subtotal?: number;
-    shipping?: number;
-    customerName: string; // denormalized for list view
-    customerEmail: string; // denormalized for list view
-    customerId?: string;
-}
-
-// Update Order interface to match usage roughly or extend it
-export const mockOrdersData: OrderDetail[] = [
+// --- Orders Data ---
+export const mockOrdersData: Order[] = [
     {
         id: "ORD-001",
         date: new Date().toISOString(),
         status: "completed",
         paymentStatus: "paid",
         total: 120.50,
-        customerName: "John Doe",
-        customerEmail: "john@example.com",
-        customerId: "CUST-001",
-        shippingAddress: "123 Main St, New York, NY",
+        subtotal: 95.00,
+        shipping: 25.50,
+        shippingAddress: "123 Main St, New York, NY, 10001",
+        customer: {
+            id: "CUST-001",
+            name: "John Doe",
+            email: "john@example.com"
+        },
         items: [
             { name: "Premium T-Shirt", variant: "L / Black", quantity: 2, price: 25.00 },
             { name: "Denim Jeans", variant: "32 / Blue", quantity: 1, price: 70.00 }
@@ -226,32 +161,52 @@ export const mockOrdersData: OrderDetail[] = [
         id: "ORD-002",
         date: new Date(Date.now() - 86400000).toISOString(),
         status: "processing",
+        paymentStatus: "paid",
         total: 450.00,
-        customerName: "Jane Smith",
-        customerEmail: "jane@company.com",
-        paymentStatus: "paid"
+        subtotal: 450.00,
+        shipping: 0.00,
+        shippingAddress: "456 Oak Ave, Seattle, WA, 98101",
+        customer: {
+            id: "CUST-002",
+            name: "Jane Smith",
+            email: "jane@company.com"
+        },
+        items: [
+            { name: "Digital Artwork License", variant: "Commercial", quantity: 1, price: 450.00 }
+        ]
     },
     {
         id: "ORD-003",
         date: new Date(Date.now() - 172800000).toISOString(),
         status: "pending",
+        paymentStatus: "unpaid",
         total: 35.00,
-        customerName: "Bob Wilson",
-        customerEmail: "bob@test.com",
-        paymentStatus: "unpaid"
+        subtotal: 30.00,
+        shipping: 5.00,
+        shippingAddress: "789 Pine Rd, Miami, FL, 33101",
+        customer: {
+            id: "CUST-003",
+            name: "Bob Wilson",
+            email: "bob@test.com"
+        },
+        items: [
+            { name: "Summer Hat", variant: "One Size", quantity: 2, price: 15.00 }
+        ]
     },
     {
         id: "demo-order",
-        date: "2024-12-12",
+        date: "2024-12-12T10:00:00Z",
         status: "completed",
-        total: 130.00,
         paymentStatus: "paid",
-        customerName: "John Doe",
-        customerEmail: "john@example.com",
-        customerId: "CUST-001",
+        total: 130.00,
         subtotal: 120.00,
         shipping: 10.00,
         shippingAddress: "123 Main St\nApt 4B\nNew York, NY 10001\nUnited States",
+        customer: {
+            id: "CUST-001",
+            name: "Demo User",
+            email: "demo@example.com"
+        },
         items: [
             { name: "Premium T-Shirt", variant: "L / Black", quantity: 2, price: 25.00 },
             { name: "Denim Jeans", variant: "32 / Blue", quantity: 1, price: 70.00 }
@@ -259,6 +214,79 @@ export const mockOrdersData: OrderDetail[] = [
     }
 ];
 
-export function getOrderById(id: string): OrderDetail | undefined {
+// --- Customers Data ---
+export const mockCustomersData: Customer[] = [
+    {
+        id: "CUST-001",
+        name: "Alice Johnson",
+        email: "alice@example.com",
+        phone: "+1 (555) 123-4567",
+        address: "123 Main St\nSan Francisco, CA 94105",
+        joinDate: "2024-01-15T10:00:00Z",
+        status: "active",
+        ordersCount: 12,
+        totalSpent: 1250.00,
+        stats: {
+            totalOrders: 12,
+            totalSpent: 1250.00,
+            avgOrderValue: 104.16
+        },
+        recentOrders: [
+            // The (!) operator tells TypeScript: "I trust this index exists"
+            mockOrdersData[0]!, 
+            mockOrdersData[3]!
+        ]
+    },
+    {
+        id: "CUST-002",
+        name: "Bob Smith",
+        email: "bob@example.com",
+        phone: "+1 (555) 987-6543",
+        address: "456 Oak Ave\nSeattle, WA 98101",
+        joinDate: "2024-03-20T14:30:00Z",
+        status: "active",
+        ordersCount: 3,
+        totalSpent: 150.00,
+        stats: {
+            totalOrders: 3,
+            totalSpent: 150.00,
+            avgOrderValue: 50.00
+        },
+        recentOrders: [
+            mockOrdersData[1]!
+        ]
+    },
+    {
+        id: "CUST-003",
+        name: "Charlie Brown",
+        email: "charlie@example.com",
+        phone: "",
+        address: "No address provided",
+        joinDate: "2024-05-10T09:15:00Z",
+        status: "inactive",
+        ordersCount: 0,
+        totalSpent: 0.00,
+        stats: {
+            totalOrders: 0,
+            totalSpent: 0.00,
+            avgOrderValue: 0.00
+        },
+        recentOrders: []
+    }
+];
+
+// ==========================================
+// 4. Helper Functions
+// ==========================================
+
+export function getProductById(id: string): Product | undefined {
+    return mockProductsData.find(product => product.id === id);
+}
+
+export function getOrderById(id: string): Order | undefined {
     return mockOrdersData.find(order => order.id === id);
+}
+
+export function getCustomerById(id: string): Customer | undefined {
+    return mockCustomersData.find(customer => customer.id === id);
 }

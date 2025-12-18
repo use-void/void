@@ -1,4 +1,8 @@
 {
+    "LocaleLayout": {
+        "title": "Tableau de bord Admin",
+        "description": "Tableau de bord Admin"
+    },
     "Admin": {
         "title": "Tableau de bord Admin",
         "hero": "Gérez votre application en toute confiance",
