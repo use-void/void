@@ -10,6 +10,7 @@ import { locales, getLocaleLabel, getLocaleFlag } from "@repo/i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -65,21 +66,23 @@ export function LanguageSwitcher({
         }
       ></DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={locale}
-          onValueChange={handleLocaleChange}
-        >
-          {locales.map((l) => (
-            <DropdownMenuRadioItem key={l} value={l}>
-              <span className="flex items-center gap-2">
-                <span>{getLocaleFlag(l)}</span>
-                <span>{getLocaleLabel(l)}</span>
-              </span>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Select Language</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={locale}
+            onValueChange={handleLocaleChange}
+          >
+            {locales.map((l) => (
+              <DropdownMenuRadioItem key={l} value={l}>
+                <span className="flex items-center gap-2">
+                  <span>{getLocaleFlag(l)}</span>
+                  <span>{getLocaleLabel(l)}</span>
+                </span>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
