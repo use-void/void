@@ -1,4 +1,8 @@
 {
+    "LocaleLayout": {
+        "title": "Admin Dashboard",
+        "description": "Admin control panel"
+    },
     "Admin": {
         "auth": {
             "alreadyHaveAccount": "Already have an account?",

@@ -1,11 +1,16 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "../globals.css";
-import { NextIntlClientProvider, localeConfig } from '@repo/i18n';
+import {
+  hasLocale,
+  setRequestLocale,
+  getLocaleDir,
+  getMessages,
+  NextIntlClientProvider,
+} from "@repo/i18n";
 import { routing } from "@repo/i18n/routing";
-import { notFound } from 'next/navigation';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { notFound } from "next/navigation";
 import { ThemeProvider } from "@repo/ui";
+import { cn } from "@repo/ui";
+import "../globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,42 +18,42 @@ const inter = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Admin Dashboard",
-  description: "Admin control panel",
-};
-
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children,
-  params
-}: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
+  params,
+}: LayoutProps<"/[locale]">) {
+  // Ensure that the incoming `locale` is valid
   const { locale } = await params;
-  setRequestLocale(locale);
-  const messages = await getMessages();
-
-  if (!routing.locales.includes(locale as any)) {
+  if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
-  const dir = localeConfig[locale as keyof typeof localeConfig]?.dir || 'ltr';
+  // Enable static rendering
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
+  const dir = getLocaleDir(locale);
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+    <html
+      lang={locale}
+      dir={dir}
+      className={cn(inter.variable, "scroll-smooth antialiased")}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages} locale={locale}>
+          <NextIntlClientProvider messages={messages}>
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>

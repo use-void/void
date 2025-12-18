@@ -13,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@repo/ui";
 import { cn } from "@repo/ui";
+import { formatDateTime } from "@/utilities/formatDateTime";
+import { useLocale } from "next-intl";
 
 interface Customer {
   id: string;
@@ -26,6 +28,7 @@ interface Customer {
 
 export function CustomersTable({ data }: { data: Customer[] }) {
   const t = useTranslations("Admin.customers");
+  const locale = useLocale();
 
   if (data.length === 0) {
     return (
@@ -90,7 +93,11 @@ export function CustomersTable({ data }: { data: Customer[] }) {
                 </span>
               </td>
               <td className="px-6 py-4 text-muted-foreground text-xs">
-                {new Date(customer.joinDate).toLocaleDateString()}
+                {formatDateTime(customer.joinDate, {
+                  locale: locale as "ar" | "en",
+                  monthStyle: "long",
+                  arabicNumbers: locale === "ar",
+                })}
               </td>
               <td className="px-6 py-4 text-center font-mono">
                 {customer.ordersCount}

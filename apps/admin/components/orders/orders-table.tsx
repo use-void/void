@@ -10,11 +10,14 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-  cn // Assuming cn is exported from ui, or import from utility
+  cn, // Assuming cn is exported from ui, or import from utility
 } from "@repo/ui";
 import type { Order } from "@/lib/mock-data";
+import { formatDateTime } from "@/utilities/formatDateTime";
+import { useLocale } from "@repo/i18n";
 
 export function OrdersTable({ data }: { data: Order[] }) {
+  const locale = useLocale();
 
   if (!data || data.length === 0) {
     return (
@@ -67,7 +70,11 @@ export function OrdersTable({ data }: { data: Order[] }) {
                 <StatusBadge status={order.paymentStatus} />
               </td>
               <td className="px-6 py-4 text-muted-foreground text-xs">
-                {new Date(order.date).toLocaleDateString()}
+                {formatDateTime(order.date, {
+                  locale: locale as "ar" | "en",
+                  monthStyle: "long",
+                  arabicNumbers: locale === "ar",
+                })}
               </td>
               <td className="px-6 py-4 font-medium text-foreground">
                 ${order.total.toFixed(2)}
@@ -85,7 +92,7 @@ export function OrdersTable({ data }: { data: Order[] }) {
                       </Button>
                     }
                   ></DropdownMenuTrigger>
-                  
+
                   <DropdownMenuContent
                     align="end"
                     className="bg-popover border-border text-muted-foreground"
