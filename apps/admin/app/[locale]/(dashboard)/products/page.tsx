@@ -1,13 +1,11 @@
 import { Button } from "@repo/ui";
 import { Plus } from "lucide-react";
 import { Link } from "@repo/i18n/navigation";
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { ProductsTable } from "@/components/products/products-table";
 import { getProducts } from "@/lib/actions/product.actions";
 
-export default async function ProductsPage({ params }: { params: Promise<{ locale: string }> }) {
-    const { locale } = await params;
-    setRequestLocale(locale);
+export default async function ProductsPage() {
     const t = await getTranslations('Admin.products');
 
     const products = await getProducts();
