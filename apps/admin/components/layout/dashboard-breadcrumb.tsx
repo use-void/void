@@ -54,9 +54,9 @@ export function DashboardBreadcrumb() {
   }
 
   return (
-    <Breadcrumb className="hidden md:flex">
+    <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
+        <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink
             render={<Link href="/">{t("sidebar.dashboard")}</Link>}
           ></BreadcrumbLink>
@@ -72,7 +72,7 @@ export function DashboardBreadcrumb() {
 
           return (
             <React.Fragment key={href}>
-              <BreadcrumbSeparator />
+              <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage>{title}</BreadcrumbPage>

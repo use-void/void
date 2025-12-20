@@ -22,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from "@repo/ui";
 
 const items = [
@@ -38,10 +39,11 @@ const bottomItems = [{ title: "settings", url: "/settings", icon: Settings }];
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const t = useTranslations("Admin.sidebar");
+  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
-    <Sidebar className="border-r border-sidebar-border bg-sidebar" {...props}>
-      <SidebarHeader className="h-32 flex items-center justify-center bg-sidebar">
+    <Sidebar {...props}>
+      <SidebarHeader className="items-center justify-center h-32">
         <div className="w-10 h-10 bg-sidebar-foreground rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
           <span className="font-bold text-sidebar text-sm tracking-tighter">
             NR
@@ -72,24 +74,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                     : "text-muted-foreground hover:bg-secondary hover:text-sidebar-foreground border border-transparent hover:border-sidebar-border"
                                                 }
                                             `}
-                    >
-                      <Link
-                        href={item.url}
-                        className="flex items-center gap-3 w-full"
-                      >
-                        {isActive && (
-                          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
-                        )}
-                        <item.icon
-                          size={20}
-                          strokeWidth={1.5}
-                          className={`${isActive ? "text-sidebar-accent-foreground" : "text-muted-foreground group-hover:text-sidebar-foreground"}`}
-                        />
-                        <span className="text-sm font-medium tracking-wide">
-                          {localizedTitle}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
+                      render={
+                        <Link
+                          href={item.url}
+                          className="flex items-center gap-3 w-full"
+                          onClick={() => isMobile && setOpenMobile(false)}
+                        >
+                          {isActive && (
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
+                          )}
+                          <item.icon
+                            size={20}
+                            strokeWidth={1.5}
+                            className={`${isActive ? "text-sidebar-accent-foreground" : "text-muted-foreground group-hover:text-sidebar-foreground"}`}
+                          />
+                          <span className="text-sm font-medium tracking-wide">
+                            {localizedTitle}
+                          </span>
+                        </Link>
+                      }
+                    ></SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}
@@ -115,24 +119,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                 : "text-muted-foreground hover:bg-secondary hover:text-sidebar-foreground border border-transparent hover:border-sidebar-border"
                             }
                         `}
-                      >
-                        <Link
-                          href={item.url}
-                          className="flex items-center gap-3 w-full"
-                        >
-                          {isActive && (
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
-                          )}
-                          <item.icon
-                            size={20}
-                            strokeWidth={1.5}
-                            className={`${isActive ? "text-sidebar-accent-foreground" : "text-muted-foreground group-hover:text-sidebar-foreground"}`}
-                          />
-                          <span className="text-sm font-medium tracking-wide">
-                            {localizedTitle}
-                          </span>
-                        </Link>
-                      </SidebarMenuButton>
+                        render={
+                          <Link
+                            href={item.url}
+                            className="flex items-center gap-3 w-full"
+                            onClick={() => isMobile && setOpenMobile(false)}
+                          >
+                            {isActive && (
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
+                            )}
+                            <item.icon
+                              size={20}
+                              strokeWidth={1.5}
+                              className={`${isActive ? "text-sidebar-accent-foreground" : "text-muted-foreground group-hover:text-sidebar-foreground"}`}
+                            />
+                            <span className="text-sm font-medium tracking-wide">
+                              {localizedTitle}
+                            </span>
+                          </Link>
+                        }
+                      ></SidebarMenuButton>
                     </SidebarMenuItem>
                   );
                 })}

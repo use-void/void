@@ -42,11 +42,11 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      className={cn(inter.variable, "scroll-smooth antialiased")}
+      className={cn(inter.variable, "scroll-smooth antialiased h-full")}
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
-      <body>
+      <body className="h-full">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

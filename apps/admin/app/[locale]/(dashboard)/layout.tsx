@@ -22,9 +22,9 @@ export default async function DashboardLayout({
   const side = dir === "rtl" ? "right" : "left";
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-screen overflow-hidden">
       <AppSidebar side={side} />
-      <SidebarInset className="bg-background min-h-screen flex flex-col transition-all duration-300">
+      <SidebarInset className="flex flex-col h-screen">
         <SiteHeader
           userSlot={
             <Suspense fallback={<UserNavSkeleton />}>
@@ -32,12 +32,11 @@ export default async function DashboardLayout({
             </Suspense>
           }
         />
-
-        <Suspense fallback={null}>
-          <RequireAuth>
-            <main className="flex-1 overflow-x-hidden p-6">{children}</main>
-          </RequireAuth>
-        </Suspense>
+        <main className="flex-1 overflow-y-auto">
+          <Suspense fallback={null}>
+            <RequireAuth>{children}</RequireAuth>
+          </Suspense>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
