@@ -1,4 +1,4 @@
-"use client"; // إلزامي من Next.js لملفات error.tsx
+"use client";
 
 import { Button } from "@repo/ui";
 import { ShieldAlert, RotateCcw } from "lucide-react";
@@ -10,7 +10,6 @@ export default function ErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  // تحديد ما إذا كان الخطأ هو خطأ صلاحيات
   const isAuthError = error.message === "AUTH_UNAUTHORIZED";
 
   return (
