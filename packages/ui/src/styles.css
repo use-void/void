@@ -184,4 +184,41 @@
       "rlig" 1,
       "calt" 1; */
   }
+
+  /* تخصيص السكرول بار للموقع بالكامل */
+  * {
+    /* لدعم متصفح Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground) transparent;
+  }
+
+  /* لدعم متصفحات Chrome, Safari, Edge */
+  ::-webkit-scrollbar {
+    width: 0.25rem; /* عرض السكرول الرأسي */
+    height: 0.25rem; /* ارتفاع السكرول الأفقي */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent; /* خلفية المسار شفافة */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--muted-foreground);
+    border-radius: var(--radius);
+    /* الخدعة هنا لجعل السكرول يبدو نحيفاً وبعيداً عن الحواف */
+    border: 0.125rem solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    /* عند مرور الماوس نجعل اللون يميل للون النص الأساسي ليعطي استجابة تفاعلية */
+    background: var(--foreground);
+    border: 0.125rem solid transparent;
+    background-clip: content-box;
+  }
+
+  /* اختيارياً: تحسين شكل السكرول بار في الزوايا */
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
