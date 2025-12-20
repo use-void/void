@@ -1,4 +1,13 @@
 // packages/auth/src/server.ts
-import "server-only"; // هذا يضمن عدم استخدامه في الكلاينت بالخطأ
-export { auth } from "./auth";
-export * from "./auth"; // تصدير الأنواع أيضاً للسيرفر إذا لزم
+
+import { auth } from "./auth";
+import { headers } from "next/headers";
+import { cache } from "react";
+
+export const getSession = cache(async () => {
+  return await auth.api.getSession({
+    headers: await headers(),
+  });
+});
+
+export { auth };

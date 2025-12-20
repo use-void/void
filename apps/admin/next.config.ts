@@ -4,7 +4,10 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    cacheComponents: true,
+    cacheComponents: true, // الحفاظ على خاصية الكاش
+    experimental: {
+        authInterrupts: true, // تفعيل ميزة الصلاحيات
+    },
     transpilePackages: ['@repo/i18n', '@repo/ui'],
     images: {
         remotePatterns: [

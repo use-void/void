@@ -9,7 +9,7 @@ import { createAccessControl } from "better-auth/plugins/access";
 export const statement = {
     // الموارد الأساسية
     products: ["create", "read", "update", "delete"],
-    orders: ["create", "read", "update", "delete", "manage_status"], // manage_status لتغيير حالة الطلب
+    orders: ["create", "read", "update", "delete", "manage_status"],
     categories: ["create", "read", "update", "delete"],
 
     // موارد النظام والإعدادات
@@ -38,7 +38,7 @@ export const superadmin = ac.newRole({
 
 // 2. Admin: مدير متجر (قد لا نسمح له بحذف المستخدمين أو تغيير إعدادات الدفع الحساسة)
 export const admin = ac.newRole({
-    products: ["create", "read", "update", "delete"],
+    products: ["create", "read", "delete"],
     orders: ["read", "update", "manage_status"], // لا يحذف الطلبات للحفاظ على السجلات
     categories: ["create", "read", "update", "delete"],
     settings: ["read", "update"],

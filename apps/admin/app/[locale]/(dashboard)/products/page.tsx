@@ -3,12 +3,14 @@ import { Plus } from "lucide-react";
 import { Link } from "@repo/i18n/navigation";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { ProductsTable } from "@/components/products/products-table";
-import { mockProductsData } from "@/lib/mock-data";
+import { getProducts } from "@/lib/actions/product.actions";
 
 export default async function ProductsPage({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
     setRequestLocale(locale);
     const t = await getTranslations('Admin.products');
+
+    const products = await getProducts();
 
     return (
         <div className="flex flex-col h-full w-full">
@@ -30,7 +32,7 @@ export default async function ProductsPage({ params }: { params: Promise<{ local
                     </Link>
                 </div>
 
-                <ProductsTable data={mockProductsData} />
+                <ProductsTable data={products} />
             </div>
         </div>
     );
