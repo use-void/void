@@ -2,6 +2,14 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { PhysicalProductForm, DigitalProductForm } from "@/components/products";
 
+// 1. إضافة هذه الدالة لتحويل الصفحة إلى Static
+export function generateStaticParams() {
+    return [
+        { type: 'physical' },
+        { type: 'digital' }
+    ];
+}
+
 export default async function CreateProductTypePage({ 
     params 
 }: { 

@@ -13,9 +13,8 @@ export function SiteHeader() {
         <SidebarTrigger className="-ms-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         
-                <Suspense fallback={<div className="h-5 w-32 bg-zinc-100/10 rounded animate-pulse" />}>
-            <DashboardBreadcrumb />
-        </Suspense>
+        {/* تم إزالة Suspense: الـ Breadcrumb يعمل في العميل ولا يحتاج انتظار */}
+        <DashboardBreadcrumb />
       </div>
 
       <div className="flex items-center gap-4">
@@ -29,10 +28,10 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Suspense fallback={<div className="h-8 w-8 bg-zinc-100/10 rounded animate-pulse" />}>
-            <LanguageSwitcher />
-          </Suspense>
+          {/* تم إزالة Suspense: الآن سيعمل بدون خطأ لأن الصفحة أصبحت Static */}
+          <LanguageSwitcher />
           
+          {/* نبقي Suspense هنا فقط لأن جلب الجلسة عملية Async */}
           <Suspense fallback={<UserNavSkeleton />}>
             <UserNavFetcher />
           </Suspense>
