@@ -47,7 +47,7 @@ export function PhysicalProductForm({ defaultValues, isEditing }: PhysicalProduc
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-4xl space-y-8">
+        <form onSubmit={handleSubmit} key={defaultValues?._id ?? "new"} className="max-w-4xl space-y-8">
             <div className="grid gap-8 md:grid-cols-[2fr,1fr]">
                 <div className="space-y-8">
                     {/* General Info */}
@@ -60,7 +60,7 @@ export function PhysicalProductForm({ defaultValues, isEditing }: PhysicalProduc
                                 <Input 
                                     id="name" 
                                     name="name" 
-                                    defaultValue={defaultValues?.name ?? undefined} 
+                                    defaultValue={defaultValues?.name ?? ""}
                                     placeholder="e.g. Cotton T-Shirt" 
                                     required 
                                 />

@@ -1,7 +1,7 @@
 "use server";
 
 import { getDbSync } from "@void/db"; // Root export
-import { auth } from "@void/auth/server";
+import { auth } from "@void/auth";
 import { headers, cookies } from "next/headers";
 import { mark_initialized } from "@void/db";
 import { seedDatabase } from "../lib/seed";

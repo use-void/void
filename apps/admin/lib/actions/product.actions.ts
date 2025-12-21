@@ -4,7 +4,7 @@ import { connectDB, Product, type ProductType } from "@void/db";
 import { revalidatePath } from "next/cache";
 import { redirect, forbidden } from "next/navigation";
 import { Types } from "mongoose";
-import { getSession } from "@void/auth/server";
+import { getSession } from "@void/auth";
 import { can, type entity, type action } from "@void/auth";
 
 // ✅ التصحيح هنا: أضفنا export لكي تستطيع الملفات الأخرى استيرادها

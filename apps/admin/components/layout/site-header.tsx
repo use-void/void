@@ -1,41 +1,49 @@
-import { Search, Bell } from "lucide-react";
+import { Suspense } from "react";
+import { Search } from "lucide-react";
+import { SidebarTrigger, Separator } from "@repo/ui";
 import { LanguageSwitcher } from "./language-switcher";
 import { DashboardBreadcrumb } from "./dashboard-breadcrumb";
-import { SidebarTrigger, Separator } from "@repo/ui";
+import { UserNav, UserNavSkeleton } from "./user-nav";
+import { getSession } from "@void/auth";
 
-interface SiteHeaderProps {
-  userSlot: React.ReactNode;
-}
-
-export function SiteHeader({ userSlot }: SiteHeaderProps) {
+export function SiteHeader() {
   return (
     <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex items-center gap-2">
         <SidebarTrigger className="-ms-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <DashboardBreadcrumb />
+        
+                <Suspense fallback={<div className="h-5 w-32 bg-zinc-100/10 rounded animate-pulse" />}>
+            <DashboardBreadcrumb />
+        </Suspense>
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="hidden md:flex items-center gap-2 text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border/50 w-64 focus-within:border-border-hover focus-within:text-foreground transition-colors">
-          <Search size={16} strokeWidth={1.5} />
-          <input
-            type="text"
-            placeholder="Search..." // TODO: Localization
-            className="bg-transparent border-none outline-none text-sm w-full text-foreground placeholder:text-muted-foreground font-light"
+        <div className="hidden md:flex items-center gap-2 text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border/50 w-64">
+          <Search size={16} />
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            className="bg-transparent border-none outline-none text-sm w-full" 
           />
         </div>
 
-        <div className="flex items-center gap-4">
-          <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-secondary">
-            <Bell size={18} strokeWidth={2} />
-            <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-destructive rounded-full ring-2 ring-background"></span>
-          </button>
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <LanguageSwitcher />
-          {userSlot}
+        <div className="flex items-center gap-3">
+          <Suspense fallback={<div className="h-8 w-8 bg-zinc-100/10 rounded animate-pulse" />}>
+            <LanguageSwitcher />
+          </Suspense>
+          
+          <Suspense fallback={<UserNavSkeleton />}>
+            <UserNavFetcher />
+          </Suspense>
         </div>
       </div>
     </header>
   );
+}
+
+async function UserNavFetcher() {
+  const session = await getSession();
+  if (!session?.user) return <UserNavSkeleton />;
+  return <UserNav user={session.user} />;
 }

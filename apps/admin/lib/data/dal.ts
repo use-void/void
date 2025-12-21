@@ -1,9 +1,9 @@
 // apps/admin/lib/dal.ts
 import 'server-only';
-import { getSession } from "@void/auth/server";
+import { getSession } from "@void/auth";
 import { can, type entity, type action } from "@void/auth";
 import { redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale } from "@repo/i18n";
 
 export const verifySession = async (ent: entity, act: action) => {
     const session = await getSession();

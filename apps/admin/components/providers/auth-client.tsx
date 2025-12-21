@@ -1,15 +1,11 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import type { Session, User } from "@void/auth";
+import type { Session } from "@void/auth";
 
-interface AuthContextType {
-  user: User;
-  session: Session;
-}
+const AuthContext = createContext<{ session: Session; user: Session["user"] } | null>(null);
 
-const AuthContext = createContext<AuthContextType | null>(null);
-
+// تأكد من وجود كلمة export هنا
 export function AuthContextClient({ 
   children, 
   initialSession 
@@ -18,7 +14,7 @@ export function AuthContextClient({
   initialSession: Session; 
 }) {
   return (
-    <AuthContext.Provider value={{ user: initialSession.user, session: initialSession }}>
+    <AuthContext.Provider value={{ session: initialSession, user: initialSession.user }}>
       {children}
     </AuthContext.Provider>
   );
@@ -26,8 +22,6 @@ export function AuthContextClient({
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within AuthGuard");
   return context;
 };

@@ -1,20 +1,15 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@repo/i18n/navigation"; // استخدام الراوتر الخاص بـ i18n
+import { useTranslations } from "@repo/i18n";
+import { useRouter } from "@repo/i18n/navigation";
 import {
     Button,
     Card,
     CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
     CardFooter,
     Input,
-    Label,
-    Separator
-} from "@repo/ui";
+    Label} from "@repo/ui";
 import {
     Loader2,
     Store,
