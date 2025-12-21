@@ -13,8 +13,10 @@ export function SiteHeader() {
         <SidebarTrigger className="-ms-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         
-        {/* تم إزالة Suspense: الـ Breadcrumb يعمل في العميل ولا يحتاج انتظار */}
-        <DashboardBreadcrumb />
+        {/* تم الإصلاح: إضافة Suspense مع سكيلتون خاص للـ Breadcrumb */}
+        <Suspense fallback={<BreadcrumbSkeleton />}>
+          <DashboardBreadcrumb />
+        </Suspense>
       </div>
 
       <div className="flex items-center gap-4">
@@ -28,10 +30,11 @@ export function SiteHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* تم إزالة Suspense: الآن سيعمل بدون خطأ لأن الصفحة أصبحت Static */}
-          <LanguageSwitcher />
+          {/* تم الإصلاح: إضافة Suspense مع سكيلتون خاص لمبدل اللغة */}
+          <Suspense fallback={<LanguageSwitcherSkeleton />}>
+            <LanguageSwitcher />
+          </Suspense>
           
-          {/* نبقي Suspense هنا فقط لأن جلب الجلسة عملية Async */}
           <Suspense fallback={<UserNavSkeleton />}>
             <UserNavFetcher />
           </Suspense>
@@ -45,4 +48,22 @@ async function UserNavFetcher() {
   const session = await getSession();
   if (!session?.user) return <UserNavSkeleton />;
   return <UserNav user={session.user} />;
+}
+
+// --- Skeletons ---
+
+function BreadcrumbSkeleton() {
+  return (
+    <div className="hidden md:flex items-center gap-2">
+      <div className="h-4 w-16 bg-zinc-800/50 rounded animate-pulse" />
+      <span className="text-zinc-800">/</span>
+      <div className="h-4 w-24 bg-zinc-800/50 rounded animate-pulse" />
+    </div>
+  );
+}
+
+function LanguageSwitcherSkeleton() {
+  return (
+    <div className="h-9 w-9 bg-zinc-800/50 rounded-lg animate-pulse" />
+  );
 }

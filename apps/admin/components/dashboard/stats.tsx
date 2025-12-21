@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, Skeleton } from "@repo/ui";
 import { DollarSign, Users, Package, Activity } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations } from "@repo/i18n";
 
 // محاكاة تأخير الشبكة لإظهار الـ Skeleton (إثبات الـ Streaming)
 async function getData() {

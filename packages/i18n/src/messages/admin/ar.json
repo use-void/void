@@ -64,24 +64,7 @@
             "users": "المستخدمين",
             "welcomeMessage": "مرحباً بعودتك! السمة الخاصة بك هي {theme}."
         },
-        "products": {
-            "add": "إضافة منتج",
-            "delete": "حذف",
-            "description": "إدارة مخزون متجرك",
-            "edit": "تعديل",
-            "empty": "لا توجد منتجات",
-            "table": {
-                "actions": "إجراءات",
-                "name": "الاسم",
-                "price": "السعر",
-                "product": "المنتج",
-                "status": "الحالة",
-                "stock": "المخزون",
-                "type": "النوع",
-                "viewDetails": "عرض التفاصيل"
-            },
-            "title": "المنتجات"
-        },
+
         "setup": {
             "buttons": {
                 "back": "رجوع",
@@ -133,20 +116,85 @@
         },
         "title": "لوحة تحكم المشرف",
         "orders": {
-            "title": "الطلبات"
+            "title": "الطلبات",
+            "details": {
+                "title": "تفاصيل الطلب",
+                "customerInfo": "معلومات العميل",
+                "orderInfo": "معلومات الطلب",
+                "status": "الحالة",
+                "payment": "طريقة الدفع",
+                "items": "العناصر",
+                "total": "المبلغ الإجمالي"
+            }
         },
         "customers": {
             "title": "العملاء",
             "table": {
                 "actions": "إجراءات",
                 "viewDetails": "عرض التفاصيل"
+            },
+            "details": {
+                "title": "تفاصيل العميل",
+                "email": "البريد الإلكتروني",
+                "phone": "رقم الهاتف",
+                "status": "الحالة",
+                "joinDate": "تاريخ الانضمام",
+                "address": "العنوان"
             }
         },
         "finance": {
-            "title": "المالية"
+            "title": "المالية",
+            "totalRevenue": "إجمالي الإيرادات",
+            "fromLastMonth": "من الشهر الماضي",
+            "monthlyRevenue": "الإيرادات الشهرية",
+            "expenses": "المصروفات",
+            "netProfit": "صافي الربح",
+            "recentTransactions": "المعاملات الأخيرة"
+        },
+        "products": {
+            "add": "إضافة منتج",
+            "delete": "حذف",
+            "description": "إدارة مخزون متجرك",
+            "edit": "تعديل",
+            "empty": "لا توجد منتجات",
+            "table": {
+                "actions": "إجراءات",
+                "name": "الاسم",
+                "price": "السعر",
+                "product": "المنتج",
+                "status": "الحالة",
+                "stock": "المخزون",
+                "type": "النوع",
+                "viewDetails": "عرض التفاصيل"
+            },
+            "title": "المنتجات",
+            "details": {
+                 "title": "تفاصيل المنتج",
+                 "basicInfo": "المعلومات الأساسية",
+                 "status": "الحالة",
+                 "stock": "المخزون",
+                 "currentStatus": "الحالة الحالية",
+                 "price": "السعر",
+                 "organization": "التنظيم",
+                 "category": "الفئة",
+                 "sku": "رمز التخزين التعريفي (SKU)"
+            }
         },
         "settings": {
-            "title": "الإعدادات"
+            "title": "الإعدادات",
+            "generalSettings": "الإعدادات العامة",
+            "storeName": "اسم المتجر",
+            "storeNamePlaceholder": "أدخل اسم المتجر",
+            "supportEmail": "بريد الدعم",
+            "supportEmailPlaceholder": "أدخل بريد الدعم",
+            "currency": "العملة",
+            "saveChanges": "حفظ التغييرات"
+        },
+        "forbidden": {
+            "title": "تم رفض الوصول",
+            "message": "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
+            "description": "يرجى الاتصال بالمسؤول إذا كنت تعتقد أن هذا خطأ.",
+            "backToHome": "العودة للرئيسية"
         }
     }
 }
