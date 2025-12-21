@@ -21,23 +21,23 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider className="h-screen overflow-hidden">
-      <Suspense fallback={<div className="flex h-screen w-full bg-background" />}>
-        <AuthProvider>
-          <AppSidebar side={side} />
-          <SidebarInset className="flex flex-col h-screen">
-            <SiteHeader
-              userSlot={
-                <Suspense fallback={<UserNavSkeleton />}>
-                  <UserNavContainer />
-                </Suspense>
-              }
-            />
-            <main className="flex-1 overflow-y-auto">
-              {children}
-            </main>
-          </SidebarInset>
-        </AuthProvider>
-      </Suspense>
+      {/* <Suspense
+        fallback={<div className="flex h-screen w-full bg-background" />}
+      > */}
+      <AuthProvider>
+        <AppSidebar side={side} />
+        <SidebarInset className="flex flex-col h-screen">
+          <SiteHeader
+            userSlot={
+              <Suspense fallback={<UserNavSkeleton />}>
+                <UserNavContainer />
+              </Suspense>
+            }
+          />
+          <main className="flex-1 overflow-y-auto">{children}</main>
+        </SidebarInset>
+      </AuthProvider>
+      {/* </Suspense> */}
     </SidebarProvider>
   );
 }
