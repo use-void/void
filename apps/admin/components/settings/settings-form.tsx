@@ -1,7 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Label } from "@repo/ui";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@repo/i18n";
 
 export function SettingsForm() {
     const t = useTranslations("Admin.settings");

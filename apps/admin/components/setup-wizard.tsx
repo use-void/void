@@ -24,7 +24,7 @@ import {
     ArrowLeft,
     Sparkles
 } from "lucide-react";
-import { initializeStore } from "../actions/setup";
+import { initializeStore } from "../lib/actions/setup";
 
 // --- Types & Constants ---
 const TOTAL_STEPS = 4;

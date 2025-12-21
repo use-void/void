@@ -19,8 +19,8 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider className="h-screen overflow-hidden">
-      {/* ⚠️ التغيير هنا: قمنا بإزالة Suspense من حول السايدبار */}
-      <AppSidebar side={side} />
+      {/* 👇 قمنا بتمرير locale هنا */}
+      <AppSidebar side={side} locale={locale} />
 
       <SidebarInset className="flex flex-col h-screen">
         <SiteHeader />

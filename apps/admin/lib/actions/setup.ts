@@ -4,7 +4,7 @@ import { getDbSync } from "@void/db"; // Root export
 import { auth } from "@void/auth";
 import { headers, cookies } from "next/headers";
 import { mark_initialized } from "@void/db";
-import { seedDatabase } from "../lib/seed";
+import { seedDatabase } from "../seed";
 
 export async function initializeStore(formData: FormData) {
   // 1. Extract Data
