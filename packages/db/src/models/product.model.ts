@@ -1,4 +1,4 @@
-import mongoose, { Schema, type InferSchemaType } from "mongoose";
+import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 const ProductSchema = new Schema(
     {
@@ -37,5 +37,6 @@ const ProductSchema = new Schema(
     { timestamps: true }
 );
 
-export type ProductType = InferSchemaType<typeof ProductSchema> & { _id: mongoose.Types.ObjectId };
-export const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
+export type ProductType = InferSchemaType<typeof ProductSchema> & { _id: mongoose.Types.ObjectId; createdAt: Date; updatedAt: Date };
+export const Product = (mongoose.models.Product as Model<ProductType>) || 
+                      mongoose.model<ProductType>("Product", ProductSchema);

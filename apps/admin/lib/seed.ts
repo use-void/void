@@ -1,8 +1,6 @@
+// apps/admin/lib/seed.ts
 
-
-import { getDbSync } from "@void/db";
-// Mongoose models are unused, using raw collection for seeding to avoid connection state issues
-
+import { connectDB, Category, Product, Integration } from "@void/db";
 
 const DEMO_CATEGORIES = [
     { name: "Software", slug: "software", description: "Digital tools and apps" },
@@ -53,51 +51,76 @@ const DEMO_PRODUCTS = [
         slug: "consultation",
         description: "1 hour consultation call",
         price: 150.00,
-        type: "service", // Note: Schema enum only has digital/physical allowed?
-        // Prompt said "Products... type: 'digital'". I'll stick to 'digital' for Services if 'service' not in enum.
-        // Product Model enum: ["digital", "physical"]. So I use 'digital' for now.
+        type: "digital",
         status: "active",
         digitalDetails: { isExternalLink: true, fileUrl: "https://calendly.com/..." }
     }
 ];
 
 export async function seedDatabase() {
-    console.log("Seeding database...");
-    const db = getDbSync();
+    console.log("🌱 Seeding database...");
+    
+    await connectDB();
+    const now = new Date(); // نوحد التوقيت لجميع الإدخالات
 
-    // 1. Seed Categories (using Native or Mongoose? Use Native for consistency with Setup)
-    // Actually, models are exported from @void/db. Assuming we can use them if Mongoose is connected?
-    // But we are not sure if Mongoose is connected.
-    // So I will use `db.collection` to be safe and avoid connection errors.
-
-    // Categories
-    const categoriesCol = db.collection("categories");
-    if (await categoriesCol.countDocuments() === 0) {
-        await categoriesCol.insertMany(DEMO_CATEGORIES.map(c => ({
+    // 1. Seed Categories
+    const categoriesCount = await Category.estimatedDocumentCount();
+    if (categoriesCount === 0) {
+        console.log("Inserting Categories...");
+        // الحل: نضيف createdAt و updatedAt يدوياً لإرضاء TypeScript
+        await Category.insertMany(DEMO_CATEGORIES.map(c => ({
             ...c,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: now,
+            updatedAt: now
         })));
     }
 
-    // Products
-    const productsCol = db.collection("products");
-    if (await productsCol.countDocuments() === 0) {
-        await productsCol.insertMany(DEMO_PRODUCTS.map(p => ({
+    // 2. Seed Products
+    const productsCount = await Product.estimatedDocumentCount();
+    if (productsCount === 0) {
+        console.log("Inserting Products...");
+        await Product.insertMany(DEMO_PRODUCTS.map(p => ({
             ...p,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: now,
+            updatedAt: now
         })));
     }
 
-    // Integrations
-    const integrationsCol = db.collection("integrations");
-    if (await integrationsCol.countDocuments() === 0) {
-        await integrationsCol.insertMany([
-            { key: "stripe", name: "Stripe", isEnabled: false, config: {}, createdAt: new Date() },
-            { key: "paypal", name: "PayPal", isEnabled: false, config: {}, createdAt: new Date() }
+    // 3. Seed Integrations
+    const integrationsCount = await Integration.estimatedDocumentCount();
+    if (integrationsCount === 0) {
+        console.log("Inserting Integrations...");
+        // الحل: نضيف createdAt و updatedAt للكائنات المضمنة أيضاً
+        await Integration.insertMany([
+            { 
+                providerId: "stripe", 
+                type: "payment", 
+                isEnabled: false, 
+                config: {},
+                credentials: {},
+                createdAt: now,
+                updatedAt: now
+            },
+            { 
+                providerId: "paypal", 
+                type: "payment", 
+                isEnabled: false, 
+                config: {},
+                credentials: {},
+                createdAt: now,
+                updatedAt: now
+            },
+            {
+                providerId: "resend",
+                type: "email",
+                isEnabled: false,
+                config: {},
+                credentials: {},
+                createdAt: now,
+                updatedAt: now
+            }
         ]);
     }
 
-    console.log("Database seeded successfully.");
+    console.log("✅ Database seeded successfully.");
 }

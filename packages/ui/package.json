@@ -46,6 +46,6 @@
     "typescript": "5.9.2"
   },
   "peerDependencies": {
-    "next-intl": "^4.5.5"
+    "next-intl": "^4.6.1"
   }
 }

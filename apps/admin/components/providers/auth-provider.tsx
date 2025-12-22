@@ -1,53 +1,25 @@
-"use client";
+import { ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { getLocale } from "@repo/i18n";
+import { getSession } from "@void/auth";
+import { AuthContextClient } from "./auth-client";
 
-import React, { createContext, useContext } from "react";
-import { type Session, type User, can as checkPermission, type role, type entity, type action } from "@void/auth";
+export async function AuthGuard({ children }: { children: ReactNode }) {
+  const session = await getSession();
+  const locale = await getLocale();
 
-// تعريف شكل الـ Context
-interface AuthContextType {
-    session: Session | null;
-    user: User | null;
-    isAuthenticated: boolean;
-    // دالة مساعدة للتحقق من الصلاحيات داخل الكومبوننت
-    can: (resource: entity, action: action) => boolean;
-}
+  if (!session) redirect(`/${locale}/login`);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+  const isAdmin = ["admin", "superadmin"].includes(session.user.role || "");
+  if (!isAdmin) redirect(`/${locale}/forbidden`);
 
-interface AuthProviderProps {
-    children: React.ReactNode;
-    initialSession: Session | null;
-}
+  // 🔥 الحل الذكي: تحويل الكائن المعقد (الذي يحتوي على Buffers/Dates)
+  // إلى كائن JSON بسيط يمكن لـ Client Component فهمه.
+  const serializedSession = JSON.parse(JSON.stringify(session));
 
-export function AuthProvider({ children, initialSession }: AuthProviderProps) {
-
-    // دالة التحقق من الصلاحيات بناءً على دور المستخدم الحالي
-    const can = (resource: entity, action: action) => {
-        if (!initialSession?.user) return false;
-        // نفترض أن الدور مخزن في الـ user (يأتي من admin plugin)
-        const userRole = (initialSession.user as any).role as role;
-        return checkPermission(userRole || "user", resource, action);
-    };
-
-    return (
-        <AuthContext.Provider
-            value={{
-                session: initialSession,
-                user: initialSession?.user || null,
-                isAuthenticated: !!initialSession,
-                can,
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
-}
-
-// Hook مخصص لسهولة الاستخدام
-export function useAuth() {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
+  return (
+    <AuthContextClient initialSession={serializedSession}>
+      {children}
+    </AuthContextClient>
+  );
 }

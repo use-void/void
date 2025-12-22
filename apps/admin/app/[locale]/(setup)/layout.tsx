@@ -1,5 +1,5 @@
 import { checkSetupStatus } from "../../../lib/setup-status";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "@repo/i18n";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Suspense } from "react";

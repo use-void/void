@@ -1,8 +1,18 @@
-// packages/auth/src/index.ts
+import "server-only";
+import { headers } from "next/headers";
+import { cache } from "react";
+import { auth } from "./auth";
 
-// 1. تصدير الأنواع فقط (import type مهم جداً هنا)
-// لاحظ استخدام "export type" لضمان عدم تحميل ملف auth.ts في الرن تايم
-export type { Session, User } from "./auth";
+export { auth } from "./auth";
+export * from "./permissions";
+export { toNextJsHandler } from "better-auth/next-js";
+export { getSessionCookie } from "better-auth/cookies";
 
-// 2. تصدير الصلاحيات (آمنة للكلاينت والسيرفر)
-export { can, type role, type entity, type action } from "./permissions";
+export const getSession = cache(async () => {
+    return await auth.api.getSession({
+        headers: await headers(),
+    });
+});
+
+export type Session = typeof auth.$Infer.Session;
+export type User = Session["user"];

@@ -1,37 +1,77 @@
 import mongoose from "mongoose";
-import { getMongoUri, getDbName } from "./client";
+import type { Db, MongoClient } from "mongodb";
 
-// Cache the mongoose connection to avoid multiple connections in Dev mode (Hot Reload)
-const globalAny = globalThis as unknown as { mongoose: { conn: any; promise: any } };
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.MONGODB_DB || "void";
 
-let cached = globalAny.mongoose;
-
-if (!cached) {
-    cached = globalAny.mongoose = { conn: null, promise: null };
+if (!uri) {
+    throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
 
-export async function connectDB() {
-    if (cached.conn) {
-        return cached.conn;
+// 1. تعريف واجهة الكاش في الـ Global لضمان استمرارية الاتصال في الـ Dev Mode
+interface GlobalMongoose {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+}
+
+const globalWithMongoose = global as typeof globalThis & {
+    mongoose?: GlobalMongoose;
+};
+
+if (!globalWithMongoose.mongoose) {
+    globalWithMongoose.mongoose = { conn: null, promise: null };
+}
+
+/**
+ * الدالة الرئيسية للاتصال بـ Mongoose
+ */
+export async function connectDB(): Promise<typeof mongoose> {
+    if (globalWithMongoose.mongoose!.conn) {
+        return globalWithMongoose.mongoose!.conn;
     }
 
-    if (!cached.promise) {
+    if (!globalWithMongoose.mongoose!.promise) {
         const opts = {
             bufferCommands: false,
-            dbName: getDbName(),
+            dbName: dbName,
+            autoIndex: true,
         };
 
-        cached.promise = mongoose.connect(getMongoUri(), opts).then((mongoose) => {
-            return mongoose;
+        console.log("⏳ [DB] Connecting to MongoDB via Mongoose...");
+
+        globalWithMongoose.mongoose!.promise = mongoose.connect(uri!, opts).then((m) => {
+            console.log("✅ [DB] Connection established successfully.");
+            return m;
         });
     }
 
     try {
-        cached.conn = await cached.promise;
+        globalWithMongoose.mongoose!.conn = await globalWithMongoose.mongoose!.promise;
     } catch (e) {
-        cached.promise = null;
+        globalWithMongoose.mongoose!.promise = null;
         throw e;
     }
 
-    return cached.conn;
+    return globalWithMongoose.mongoose!.conn;
+}
+
+/**
+ * دالة مساعدة للحصول على Native DB Instance
+ * (مهمة جداً لـ Better Auth)
+ */
+export async function getMongoDb(): Promise<Db> {
+    await connectDB();
+    const db = mongoose.connection.db;
+    if (!db) {
+        throw new Error("Database instance not found after connection.");
+    }
+    return db;
+}
+
+/**
+ * دالة مساعدة للحصول على MongoClient الأصلي
+ */
+export async function getMongoClient(): Promise<MongoClient> {
+    await connectDB();
+    return mongoose.connection.getClient() as unknown as MongoClient;
 }

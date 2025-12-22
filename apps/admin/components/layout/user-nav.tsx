@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Avatar,
   AvatarFallback,
@@ -9,8 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Skeleton,
-} from "@repo/ui";
-import { LogOut, CreditCard, Settings, UserIcon } from "lucide-react";
+} from "@repo/ui"; // تأكد أن هذا المسار يشير إلى ملف dropdown-menu.tsx الجديد لديك
+import { LogOut, CreditCard, Settings, User as UserIcon } from "lucide-react";
 
 interface UserNavProps {
   user: {
@@ -21,55 +23,76 @@ interface UserNavProps {
 }
 
 export function UserNav({ user }: UserNavProps) {
+  const getUserInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const handleLogout = () => {
+    console.log("Logging out...");
+  };
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <div className="flex items-center gap-3 rounded-xl p-2 hover:bg-secondary transition-all duration-200 cursor-pointer w-full group outline-none">
-          <Avatar className="h-9 w-9 rounded-lg border border-border/50 shadow-none">
+      {/* 
+        التصحيح الحديث:
+        DropdownMenuTrigger هو "الزر" الحقيقي (Button).
+        نقوم بإزالة الستايلات الافتراضية ونعطيه شكل الدائرة.
+      */}
+      <DropdownMenuTrigger className="flex items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all hover:opacity-80">
+        <Avatar className="h-9 w-9 border border-border/50 cursor-pointer">
+          <AvatarImage src={user.image || ""} alt={user.name} />
+          <AvatarFallback className="text-xs font-medium bg-muted">
+            {getUserInitials(user.name)}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent className="w-56" align="end">
+        <div className="flex items-center gap-2 p-2">
+          <Avatar className="h-8 w-8 border border-border/50">
             <AvatarImage src={user.image || ""} alt={user.name} />
-            <AvatarFallback className="rounded-lg bg-muted text-muted-foreground font-medium text-xs">
-              {user.name.slice(0, 2).toUpperCase()}
+            <AvatarFallback className="text-[10px]">
+              {getUserInitials(user.name)}
             </AvatarFallback>
           </Avatar>
-          <div className="grid flex-1 text-left">
-            <span className="truncate text-sm font-medium text-foreground group-hover:text-foreground transition-colors">
+          <div className="flex flex-col space-y-0.5 overflow-hidden">
+            <p className="text-sm font-medium leading-none truncate text-foreground">
               {user.name}
-            </span>
-            <span className="truncate text-xs text-muted-foreground group-hover:text-muted-foreground transition-colors">
+            </p>
+            <p className="text-xs text-muted-foreground leading-none truncate">
               {user.email}
-            </span>
+            </p>
           </div>
         </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-56 bg-popover border-border text-muted-foreground"
-        align="end"
-      >
-        <div className="flex flex-col space-y-1 text-muted-foreground px-1.5 py-1 text-xs font-medium data-inset:pl-8">
-          <p className="text-sm font-medium leading-none text-foreground">
-            {user.name}
-          </p>
-          <p className="text-xs leading-none text-muted-foreground">
-            {user.email}
-          </p>
-        </div>
-        <DropdownMenuSeparator className="bg-border" />
+
+        <DropdownMenuSeparator />
+        
         <DropdownMenuGroup>
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer">
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer">
             <CreditCard className="mr-2 h-4 w-4" />
             <span>Billing</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+          <DropdownMenuItem className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator className="bg-border" />
-        <DropdownMenuItem className="focus:bg-destructive/10 focus:text-destructive cursor-pointer text-destructive">
+        
+        <DropdownMenuSeparator />
+        
+        <DropdownMenuItem 
+          onClick={handleLogout}
+          className="text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
@@ -80,12 +103,6 @@ export function UserNav({ user }: UserNavProps) {
 
 export function UserNavSkeleton() {
   return (
-    <div className="flex items-center gap-3 p-2 w-full group-data-[collapsible=icon]:justify-center">
-      <Skeleton className="h-9 w-9 rounded-lg bg-muted shrink-0" />
-      <div className="space-y-1 group-data-[collapsible=icon]:hidden flex-1 overflow-hidden">
-        <Skeleton className="h-3 w-24 bg-muted" />
-        <Skeleton className="h-2 w-32 bg-muted/60" />
-      </div>
-    </div>
+    <Skeleton className="h-9 w-9 rounded-full bg-muted" />
   );
 }

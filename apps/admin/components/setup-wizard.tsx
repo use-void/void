@@ -1,19 +1,17 @@
+// apps/admin/components/setup-wizard.tsx
+
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@repo/i18n/navigation"; // استخدام الراوتر الخاص بـ i18n
+import { useTranslations } from "@repo/i18n";
+import { useRouter } from "@repo/i18n/navigation";
 import {
     Button,
     Card,
     CardContent,
-    CardHeader,
-    CardTitle,
-    CardDescription,
     CardFooter,
     Input,
-    Label,
-    Separator
+    Label
 } from "@repo/ui";
 import {
     Loader2,
@@ -29,10 +27,18 @@ import {
     ArrowLeft,
     Sparkles
 } from "lucide-react";
-import { initializeStore } from "../actions/setup";
 
-// --- Types & Constants ---
+// استيراد Server Action (يجب أن يحتوي الملف المصدر على "use server" في بدايته)
+import { initializeStore } from "../lib/actions/setup";
+
+// --- Types ---
 const TOTAL_STEPS = 4;
+
+type ActionResponse = {
+    error?: string;
+    success?: boolean;
+    redirectUrl?: string;
+};
 
 export function SetupWizard() {
     const t = useTranslations("Admin.setup");
@@ -97,14 +103,16 @@ export function SetupWizard() {
             });
 
             try {
-                // @ts-ignore
-                const res = await initializeStore(data);
+                // استدعاء السيرفر أكشن (الآن أصبح آمناً ونعرف نوع البيانات العائدة)
+                const res = await initializeStore(data) as ActionResponse;
+                
                 if (res?.error) {
                     setError(res.error);
-                } else if (res?.success) {
+                } else if (res?.success && res.redirectUrl) {
                     setSuccessData({ url: res.redirectUrl });
                 }
             } catch (e) {
+                console.error(e);
                 setError(t('errors.generic') || "An unexpected error occurred");
             }
         });
@@ -210,7 +218,7 @@ export function SetupWizard() {
 
                 {/* Dynamic Content */}
                 <CardContent className="p-8 min-h-[420px] relative overflow-hidden">
-                    <div className="animate-in fade-in slide-in-from-right-4 duration-500 key={step}">
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500" key={step}>
                         {step === 1 && (
                             <div className="space-y-5">
                                 <InputField
@@ -437,7 +445,7 @@ function SelectField({
 function getStepKey(step: number) {
     switch (step) {
         case 1: return "store";
-        case 2: return "store"; // Reusing store or add 'location' key in JSON if needed
+        case 2: return "store";
         case 3: return "admin";
         case 4: return "finish";
         default: return "store";

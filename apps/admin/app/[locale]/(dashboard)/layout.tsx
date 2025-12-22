@@ -1,13 +1,10 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { SidebarProvider, SidebarInset } from "@repo/ui";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { getLocaleDir } from "@repo/i18n";
-import { UserNav, UserNavSkeleton } from "@/components/layout/user-nav";
+import { getLocaleDir, setRequestLocale } from "@repo/i18n";
 import { SiteHeader } from "@/components/layout/site-header";
-import {
-  RenderWithUser,
-  RequireAuth,
-} from "@/components/providers/session-provider";
+import { AuthGuard } from "@/components/providers/auth-provider";
+import { Loader2 } from "lucide-react";
 
 export default async function DashboardLayout({
   children,
@@ -17,27 +14,25 @@ export default async function DashboardLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-
-  const dir = getLocaleDir(locale);
-  const side = dir === "rtl" ? "right" : "left";
+  setRequestLocale(locale);
+  const side = getLocaleDir(locale) === "rtl" ? "right" : "left";
 
   return (
-    <SidebarProvider>
-      <AppSidebar side={side} />
-      <SidebarInset className="bg-background min-h-screen flex flex-col transition-all duration-300">
-        <SiteHeader
-          userSlot={
-            <Suspense fallback={<UserNavSkeleton />}>
-              <RenderWithUser Component={UserNav} />
-            </Suspense>
-          }
-        />
+    <SidebarProvider className="h-screen overflow-hidden">
+      {/* 👇 قمنا بتمرير locale هنا */}
+      <AppSidebar side={side} locale={locale} />
 
-        <Suspense fallback={null}>
-          <RequireAuth>
-            <main className="flex-1 overflow-x-hidden p-6">{children}</main>
-          </RequireAuth>
-        </Suspense>
+      <SidebarInset className="flex flex-col h-screen">
+        <SiteHeader />
+        <main className="flex-1 overflow-y-auto p-6">
+          <Suspense fallback={
+             <div className="flex h-full w-full items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+             </div>
+          }>
+            <AuthGuard>{children}</AuthGuard>
+          </Suspense>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

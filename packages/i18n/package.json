@@ -28,10 +28,10 @@
         "typescript": "^5.8.3"
     },
     "dependencies": {
-        "next-intl": "^4.5.6"
+        "next-intl": "^4.6.1"
     },
     "peerDependencies": {
-        "next": "^15.3.5",
+        "next": "^16.0.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0"
     }
