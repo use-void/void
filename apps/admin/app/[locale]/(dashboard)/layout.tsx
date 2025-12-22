@@ -14,20 +14,16 @@ export default async function DashboardLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  
   setRequestLocale(locale);
-  
   const side = getLocaleDir(locale) === "rtl" ? "right" : "left";
 
   return (
     <SidebarProvider className="h-screen overflow-hidden">
-      <Suspense fallback={<div className="w-[250px] h-full bg-zinc-900 border-r border-zinc-800" />}>
-        <AppSidebar side={side} />
-      </Suspense>
+      {/* 👇 قمنا بتمرير locale هنا */}
+      <AppSidebar side={side} locale={locale} />
 
       <SidebarInset className="flex flex-col h-screen">
         <SiteHeader />
-        
         <main className="flex-1 overflow-y-auto p-6">
           <Suspense fallback={
              <div className="flex h-full w-full items-center justify-center">

@@ -8,7 +8,7 @@ const nextConfig = {
     experimental: {
         authInterrupts: true,
     },
-    transpilePackages: ['@repo/i18n', '@repo/ui'],
+    transpilePackages: ['@repo/i18n', '@repo/ui', '@void/db'],
     images: {
         remotePatterns: [
             {

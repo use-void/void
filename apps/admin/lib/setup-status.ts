@@ -1,18 +1,19 @@
-import { getDbSync } from "@void/db";
-import { cacheLife, cacheTag } from "next/cache";
+// apps/admin/lib/setup-status.ts
+
+import { is_initialized } from "@void/db";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function checkSetupStatus(): Promise<boolean> {
-    "use cache";
-    cacheLife("minutes");
-    cacheTag("setup-status");
+    // 1. هذا السطر يحل مشكلة "used Date.now()"
+    // يخبر Next.js أن هذه الدالة ديناميكية ولا يجب تجميدها وقت البناء
+    noStore();
 
     try {
-        const db = getDbSync();
-        const col = db.collection("settings");
-        const doc = await col.findOne({ _id: "store" as any });
-        return !!doc?.initialized;
+        // ننتظر الاتصال ونتيجة الاستعلام
+        return await is_initialized();
     } catch (error) {
-        console.error("Failed to check setup status:", error);
+        // في حال فشل الاتصال (Timeout)، نعتبر النظام غير مثبت لنعرض المعالج بدلاً من تحطيم التطبيق
+        console.error("⚠️ Failed to check setup status:", error);
         return false;
     }
 }

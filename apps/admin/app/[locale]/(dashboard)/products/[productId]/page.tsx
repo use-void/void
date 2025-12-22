@@ -1,40 +1,31 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
-import { PhysicalProductForm, DigitalProductForm } from "@/components/products";
-import { getProductById } from "@/lib/actions/product.actions";
+import { ProductDetails, ProductDetailsSkeleton } from "@/components/products/product-details";
+import { getTranslations, setRequestLocale } from "@repo/i18n";
 
-async function EditProductContent({ productId }: { productId: string }) {
-    const product = await getProductById(productId);
-
-    if (!product) notFound();
-
-    return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-2xl font-light">Edit {product.name}</h2>
-                <p className="text-muted-foreground">Update your product details.</p>
-            </div>
-
-            {product.type === "physical" ? (
-                <PhysicalProductForm defaultValues={product} isEditing />
-            ) : (
-                <DigitalProductForm defaultValues={product} isEditing />
-            )}
-        </div>
-    );
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; productId: string }> }) {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: "Admin.products.details" });
+    return {
+        title: t("title"),
+    };
 }
 
 export default async function ProductDetailsPage({
     params,
 }: {
-    params: Promise<{ productId: string }>;
+    params: Promise<{ locale: string; productId: string }>;
 }) {
-    const { productId } = await params;
+    const { locale, productId } = await params;
+    setRequestLocale(locale);
+    const t = await getTranslations("Admin.products.details");
 
     return (
-        <div className="p-6">
-            <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading product details...</div>}>
-                <EditProductContent productId={productId} />
+        <div className="flex flex-col h-full w-full space-y-6">
+             <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+            </div>
+            <Suspense fallback={<ProductDetailsSkeleton />}>
+                <ProductDetails productId={productId} />
             </Suspense>
         </div>
     );

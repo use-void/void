@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Search } from "lucide-react";
-import { SidebarTrigger, Separator } from "@repo/ui";
+import { SidebarTrigger } from "@repo/ui";
 import { LanguageSwitcher } from "./language-switcher";
 import { DashboardBreadcrumb } from "./dashboard-breadcrumb";
 import { UserNav, UserNavSkeleton } from "./user-nav";
@@ -11,13 +11,13 @@ export function SiteHeader() {
     <header className="bg-background sticky top-0 flex h-16 shrink-0 items-center justify-between gap-2 border-b px-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ms-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        
-        {/* تم إزالة Suspense: الـ Breadcrumb يعمل في العميل ولا يحتاج انتظار */}
-        <DashboardBreadcrumb />
+        <div className="h-4 w-px bg-border mx-2 self-center" />
+        <Suspense fallback={<BreadcrumbSkeleton />}>
+          <DashboardBreadcrumb />
+        </Suspense>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
         <div className="hidden md:flex items-center gap-2 text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border/50 w-64">
           <Search size={16} />
           <input 
@@ -27,11 +27,15 @@ export function SiteHeader() {
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* تم إزالة Suspense: الآن سيعمل بدون خطأ لأن الصفحة أصبحت Static */}
-          <LanguageSwitcher />
+        <div className="hidden md:block h-4 w-px bg-border mx-2 self-center" />
+
+        <div className="flex items-center gap-1">
+          <Suspense fallback={<LanguageSwitcherSkeleton />}>
+            <LanguageSwitcher />
+          </Suspense>
+
+          <div className="h-4 w-px bg-border mx-2 self-center" />
           
-          {/* نبقي Suspense هنا فقط لأن جلب الجلسة عملية Async */}
           <Suspense fallback={<UserNavSkeleton />}>
             <UserNavFetcher />
           </Suspense>
@@ -44,5 +48,28 @@ export function SiteHeader() {
 async function UserNavFetcher() {
   const session = await getSession();
   if (!session?.user) return <UserNavSkeleton />;
-  return <UserNav user={session.user} />;
+
+  // 🔥 الحل الذكي: تنظيف الكائن قبل إرساله للمتصفح
+  // هذا يحول الـ Buffer IDs والـ Dates إلى Strings مقبولة
+  const plainUser = JSON.parse(JSON.stringify(session.user));
+
+  return <UserNav user={plainUser} />;
+}
+
+// --- Skeletons ---
+
+function BreadcrumbSkeleton() {
+  return (
+    <div className="hidden md:flex items-center gap-2">
+      <div className="h-4 w-16 bg-zinc-800/50 rounded animate-pulse" />
+      <span className="text-zinc-800">/</span>
+      <div className="h-4 w-24 bg-zinc-800/50 rounded animate-pulse" />
+    </div>
+  );
+}
+
+function LanguageSwitcherSkeleton() {
+  return (
+    <div className="h-9 w-9 bg-zinc-800/50 rounded-lg animate-pulse" />
+  );
 }

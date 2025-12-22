@@ -1,18 +1,17 @@
-import mongoose, { Schema, type InferSchemaType } from "mongoose";
+import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 const UserSchema = new Schema(
     {
-        // --- Better Auth Core Fields (Do Not Touch Logic) ---
+        // --- Better Auth Core Fields ---
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         emailVerified: { type: Boolean, default: false },
         image: { type: String },
         phone: { type: String }, // Admin/User Phone
-        role: { type: String, default: "customer" }, // better-auth-role plugin usually handles this
+        role: { type: String, default: "customer" }, 
         banned: { type: Boolean, default: false },
 
         // --- Custom Extensions (Store Specific) ---
-        // ملف العميل المنفصل لتجنب التداخل مع بيانات المصادقة الأساسية
         customerProfile: {
             phone: String,
             addresses: [
@@ -33,12 +32,12 @@ const UserSchema = new Schema(
         },
     },
     {
-        timestamps: true, // Auto manage createdAt, updatedAt
+        timestamps: true,
     }
 );
 
-// تصدير النوع ليستخدم في الفرونت إند
+// تصدير النوع
 export type UserType = InferSchemaType<typeof UserSchema> & { _id: mongoose.Types.ObjectId };
 
-// التأكد من عدم إعادة تعريف الموديل في Next.js Hot Reload
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
+// الحل هنا: إجبار TypeScript على معرفة أن هذا هو موديل من نوع UserType
+export const User = (mongoose.models.User as Model<UserType>) || mongoose.model<UserType>("User", UserSchema);

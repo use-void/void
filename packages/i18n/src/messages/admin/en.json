@@ -64,24 +64,7 @@
             "users": "Users",
             "welcomeMessage": "Welcome back! Your theme is {theme}."
         },
-        "products": {
-            "add": "Add Product",
-            "delete": "Delete",
-            "description": "Manage your store inventory",
-            "edit": "Edit",
-            "empty": "No products found",
-            "table": {
-                "actions": "Actions",
-                "name": "Name",
-                "price": "Price",
-                "product": "Product",
-                "status": "Status",
-                "stock": "Stock",
-                "type": "Type",
-                "viewDetails": "View Details"
-            },
-            "title": "Products"
-        },
+
         "setup": {
             "buttons": {
                 "back": "Back",
@@ -133,20 +116,85 @@
         },
         "title": "Admin Dashboard",
         "orders": {
-            "title": "Orders"
+            "title": "Orders",
+            "details": {
+                "title": "Order Details",
+                "customerInfo": "Customer Info",
+                "orderInfo": "Order Info",
+                "status": "Status",
+                "payment": "Payment Method",
+                "items": "Items",
+                "total": "Total Amount"
+            }
         },
         "customers": {
             "title": "Customers",
             "table": {
                 "actions": "Actions",
                 "viewDetails": "View Details"
+            },
+            "details": {
+                "title": "Customer Details",
+                "email": "Email",
+                "phone": "Phone",
+                "status": "Status",
+                "joinDate": "Join Date",
+                "address": "Address"
             }
         },
         "finance": {
-            "title": "Finance"
+            "title": "Finance",
+            "totalRevenue": "Total Revenue",
+            "fromLastMonth": "from last month",
+            "monthlyRevenue": "Monthly Revenue",
+            "expenses": "Expenses",
+            "netProfit": "Net Profit",
+            "recentTransactions": "Recent Transactions"
+        },
+        "products": {
+            "add": "Add Product",
+            "delete": "Delete",
+            "description": "Manage your store inventory",
+            "edit": "Edit",
+            "empty": "No products found",
+            "table": {
+                "actions": "Actions",
+                "name": "Name",
+                "price": "Price",
+                "product": "Product",
+                "status": "Status",
+                "stock": "Stock",
+                "type": "Type",
+                "viewDetails": "View Details"
+            },
+            "title": "Products",
+            "details": {
+                 "title": "Product Details",
+                 "basicInfo": "Basic Information",
+                 "status": "Status",
+                 "stock": "Stock",
+                 "currentStatus": "Current Status",
+                 "price": "Price",
+                 "organization": "Organization",
+                 "category": "Category",
+                 "sku": "SKU"
+            }
         },
         "settings": {
-            "title": "Settings"
+            "title": "Settings",
+            "generalSettings": "General Settings",
+            "storeName": "Store Name",
+            "storeNamePlaceholder": "Enter store name",
+            "supportEmail": "Support Email",
+            "supportEmailPlaceholder": "Enter support email",
+            "currency": "Currency",
+            "saveChanges": "Save Changes"
+        },
+        "forbidden": {
+            "title": "Access Denied",
+            "message": "You do not have permission to access this page.",
+            "description": "Please contact your administrator if you believe this is a mistake.",
+            "backToHome": "Back to Home"
         }
     }
 }

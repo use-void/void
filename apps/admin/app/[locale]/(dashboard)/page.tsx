@@ -13,13 +13,11 @@ export default async function DashboardPage({
   setRequestLocale(locale);
 
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className="px-6 pt-6">
+    <div className="flex flex-col h-full w-full space-y-6">
         <HeroSection />
         <Suspense fallback={<StatsSkeleton />}>
           <DashboardStats />
         </Suspense>
-      </div>
     </div>
   );
 }
