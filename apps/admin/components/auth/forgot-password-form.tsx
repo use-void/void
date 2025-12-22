@@ -2,7 +2,7 @@
 
 import { Link } from "@repo/i18n/navigation";
 import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Input } from "@repo/ui";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@repo/i18n";
 import { ArrowLeft, Mail } from "lucide-react";
 
 export function ForgotPasswordForm() {

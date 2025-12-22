@@ -1,4 +1,4 @@
-import mongoose, { Schema, type InferSchemaType } from "mongoose";
+import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 const StoreConfigSchema = new Schema(
     {
@@ -32,4 +32,6 @@ const StoreConfigSchema = new Schema(
 );
 
 export type StoreConfigType = InferSchemaType<typeof StoreConfigSchema>;
-export const StoreConfig = mongoose.models.StoreConfig || mongoose.model("StoreConfig", StoreConfigSchema);
+
+// الحل هنا: إجبار TypeScript على معرفة أن هذا هو موديل من نوع StoreConfigType
+export const StoreConfig = (mongoose.models.StoreConfig as Model<StoreConfigType>) || mongoose.model<StoreConfigType>("StoreConfig", StoreConfigSchema);

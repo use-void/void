@@ -13,8 +13,12 @@ export async function AuthGuard({ children }: { children: ReactNode }) {
   const isAdmin = ["admin", "superadmin"].includes(session.user.role || "");
   if (!isAdmin) redirect(`/${locale}/forbidden`);
 
+  // 🔥 الحل الذكي: تحويل الكائن المعقد (الذي يحتوي على Buffers/Dates)
+  // إلى كائن JSON بسيط يمكن لـ Client Component فهمه.
+  const serializedSession = JSON.parse(JSON.stringify(session));
+
   return (
-    <AuthContextClient initialSession={session}>
+    <AuthContextClient initialSession={serializedSession}>
       {children}
     </AuthContextClient>
   );

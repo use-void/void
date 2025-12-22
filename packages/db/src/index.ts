@@ -1,16 +1,17 @@
-// 1. Export Raw Client & Sync methods (هذا السطر هو الحل للمشكلة الأولى)
-export * from "./client";
+// packages/db/src/index.ts
 
-// 2. Export Mongoose Connection
+// 1. Export Connection & Helper methods
 export * from "./connection";
 
-// 3. Export Models
+// 2. Export Models
 export * from "./models/user.model";
 export * from "./models/store-config.model";
 export * from "./models/product.model";
 export * from "./models/order.model";
 export * from "./models/integration.model";
 export * from "./models/category.model";
+
+// 3. Setup (سنقوم بتحديثه)
 export * from "./setup";
 
 // 4. Utils

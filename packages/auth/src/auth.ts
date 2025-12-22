@@ -2,10 +2,13 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
 import { admin as adminPlugin, phoneNumber } from "better-auth/plugins";
-import { getDbSync } from "@void/db";
+import { getMongoDb } from "@void/db"; 
 import { ac, roles } from "./permissions";
 
-const db = getDbSync();
+// بما أننا نستخدم Top-level await، سنضع الكود داخل try-catch لضمان عدم انهيار التطبيق بالكامل إذا فشل الاتصال
+// لكن في ملفات التكوين (Config files)، الأفضل ترك الخطأ يظهر ليوقف البناء إذا لم تكن قاعدة البيانات موجودة.
+
+const db = await getMongoDb(); // الآن TypeScript سعيد لأنها ترجع Db مؤكدة
 
 export const auth = betterAuth({
     database: mongodbAdapter(db),
