@@ -1,4 +1,4 @@
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "@repo/i18n";
 import { LoginForm } from "@/components/auth/login-form";
 
 export default async function AdminLoginPage({ params }: { params: Promise<{ locale: string }> }) {

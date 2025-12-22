@@ -1,5 +1,6 @@
-import { SettingsForm } from "@/components/settings/settings-form";
 import { getTranslations, setRequestLocale } from "@repo/i18n";
+import { getStoreConfig } from "@/lib/actions/store-config.actions";
+import { SettingsForm } from "./_components/settings-form";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
@@ -17,13 +18,13 @@ export default async function SettingsPage({
     const { locale } = await params;
     setRequestLocale(locale);
     const t = await getTranslations("Admin.settings");
+    
+    const config = await getStoreConfig();
 
     return (
-        <div className="flex flex-col h-full w-full space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-            </div>
-            <SettingsForm />
+        <div className="flex-1 space-y-4 p-8 pt-6">
+            <SettingsForm initialData={config} />
         </div>
     );
 }
+

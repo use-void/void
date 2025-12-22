@@ -182,13 +182,81 @@
         },
         "settings": {
             "title": "Settings",
-            "generalSettings": "General Settings",
-            "storeName": "Store Name",
-            "storeNamePlaceholder": "Enter store name",
-            "supportEmail": "Support Email",
-            "supportEmailPlaceholder": "Enter support email",
-            "currency": "Currency",
-            "saveChanges": "Save Changes"
+            "header": {
+                "title": "Settings Menu",
+                "description": "Manage your store's configuration and preferences."
+            },
+            "sidebar": {
+                "title": "Settings Menu",
+                "general": "General",
+                "localization": "Localization",
+                "payments": "Payments",
+                "notifications": "Notifications",
+                "team": "Team",
+                "help_title": "Need Help?",
+                "help_desc": "Check our documentation for detailed setup guides.",
+                "read_docs": "Read Docs"
+            },
+            "actions": {
+                "save_changes": "Save Changes",
+                "saving": "Saving..."
+            },
+            "success_message": "Settings saved successfully",
+            "error_message": "Failed to save settings",
+            "general": {
+                "title_view": "Store Details",
+                "desc_view": "Manage your store's basic information and branding."
+            },
+            "localization": {
+                "title_view": "Localization & Markets",
+                "desc_view": "Configure languages, currencies and regional settings for your global customers.",
+                "languages": {
+                    "title": "Languages",
+                    "default_language": "Default Language",
+                    "default_language_desc": "Used for fallback",
+                    "active_languages": "Active Languages",
+                    "default_badge": "Default",
+                    "add_language": "Add Language"
+                },
+                "currencies": {
+                    "title": "Currencies",
+                    "base_currency": "Base Currency",
+                    "base_currency_desc": "Reporting currency",
+                    "exchange_rates": "Exchange Rates"
+                },
+                "formats": {
+                    "title": "Regional Formats",
+                    "timezone": "Timezone",
+                    "unit_system": "Unit System",
+                    "date_format": "Date Format"
+                }
+            },
+            "brand": {
+                "title": "Store Brand",
+                "description": "Manage your store's branding assets.",
+                "logo_label": "Store Logo",
+                "logo_placeholder": "Store Logo",
+                "logo_help": "Rec: 512x512px"
+            },
+            "status": {
+                "store_status": "Status",
+                "active": "Active",
+                "maintenance": "Maintenance",
+                "visibility_note": "Your store is currently visible to the public. Changes to critical details may require re-verification."
+            },
+            "basic_info": {
+                "title": "Basic Information",
+                "description": "This information is displayed on your storefront and invoices."
+            },
+            "contact": {
+                "title": "Support Information",
+                "email_label": "Support Email",
+                "phone_label": "Support Phone"
+            },
+            "socials": {
+                "title": "Social Accounts",
+                "description": "Connect your social media to boost SEO."
+            }
         },
         "forbidden": {
             "title": "Access Denied",

@@ -20,15 +20,18 @@ import {
 
 const Combobox = ComboboxPrimitive.Root;
 
-function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
+function ComboboxValue({ ...props }: any) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />;
 }
 
 function ComboboxTrigger({
   className,
   children,
+  showArrow = true,
   ...props
-}: ComboboxPrimitive.Trigger.Props) {
+}: React.ComponentProps<typeof ComboboxPrimitive.Trigger> & {
+  showArrow?: boolean;
+}) {
   return (
     <ComboboxPrimitive.Trigger
       data-slot="combobox-trigger"
@@ -36,10 +39,12 @@ function ComboboxTrigger({
       {...props}
     >
       {children}
-      <HugeiconsIcon
-        icon={ArrowDown01Icon}
-        className="text-muted-foreground size-4 pointer-events-none"
-      />
+      {showArrow && (
+        <HugeiconsIcon
+          icon={ArrowDown01Icon}
+          className="text-muted-foreground size-4 pointer-events-none"
+        />
+      )}
     </ComboboxPrimitive.Trigger>
   );
 }

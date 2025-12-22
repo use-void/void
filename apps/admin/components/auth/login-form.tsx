@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, ShieldCheck, ArrowRight, Mail, Lock } from "lucide-react";
-import { createAuthClient } from "better-auth/react";
+import { authClient } from "@void/auth/client";
 import { Link, useRouter } from "@repo/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations } from "@repo/i18n";
 
 import {
     Button,
@@ -25,8 +25,6 @@ import {
     CardDescription,
     CardFooter,
 } from "@repo/ui";
-
-const authClient = createAuthClient();
 
 const formSchema = z.object({
     email: z.string().email({
