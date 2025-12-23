@@ -15,12 +15,11 @@ export default async function SettingsPage({
 }) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations("Admin.settings");
     
 
 
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex flex-col h-full w-full space-y-4">
         </div>
     );
 }

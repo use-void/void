@@ -1,0 +1,36 @@
+{
+    "title": "Products",
+    "description": "Manage inventory and track sales performance",
+    "add": "Add Product",
+    "filter": "Filter",
+    "empty": "No products found",
+    "table": {
+        "product": "Product",
+        "category": "Category",
+        "price": "Price",
+        "stock": "Stock",
+        "status": "Status",
+        "actions": "Actions"
+    },
+    "status": {
+        "active": "Active",
+        "archived": "Archived",
+        "draft": "Draft"
+    },
+    "bulkActions": {
+        "selected": "{count} products selected",
+        "clear": "Clear selection"
+    },
+    "currency": "SAR",
+    "details": {
+        "title": "Product Details",
+        "basicInfo": "Basic Information",
+        "status": "Status",
+        "stock": "Stock",
+        "currentStatus": "Current Status",
+        "price": "Price",
+        "organization": "Organization",
+        "category": "Category",
+        "sku": "SKU"
+    }
+}

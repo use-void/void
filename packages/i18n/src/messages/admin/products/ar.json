@@ -1,0 +1,36 @@
+{
+    "title": "المنتجات",
+    "description": "إدارة المخزون وتتبع أداء المبيعات",
+    "add": "إضافة منتج",
+    "filter": "تصفية",
+    "empty": "لا توجد منتجات",
+    "table": {
+        "product": "المنتج",
+        "category": "الفئة",
+        "price": "السعر",
+        "stock": "المخزون",
+        "status": "الحالة",
+        "actions": "إجراءات"
+    },
+    "status": {
+        "active": "نشط",
+        "archived": "مؤرشف",
+        "draft": "مسودة"
+    },
+    "bulkActions": {
+        "selected": "{count} منتج محدد",
+        "clear": "إلغاء التحديد"
+    },
+    "currency": "ر.س",
+    "details": {
+        "title": "تفاصيل المنتج",
+        "basicInfo": "المعلومات الأساسية",
+        "status": "الحالة",
+        "stock": "المخزون",
+        "currentStatus": "الحالة الحالية",
+        "price": "السعر",
+        "organization": "التنظيم",
+        "category": "الفئة",
+        "sku": "رمز التخزين التعريفي (SKU)"
+    }
+}

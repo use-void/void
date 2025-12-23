@@ -185,35 +185,6 @@
             "netProfit": "صافي الربح",
             "recentTransactions": "المعاملات الأخيرة"
         },
-        "products": {
-            "add": "إضافة منتج",
-            "delete": "حذف",
-            "description": "إدارة مخزون متجرك",
-            "edit": "تعديل",
-            "empty": "لا توجد منتجات",
-            "table": {
-                "actions": "إجراءات",
-                "name": "الاسم",
-                "price": "السعر",
-                "product": "المنتج",
-                "status": "الحالة",
-                "stock": "المخزون",
-                "type": "النوع",
-                "viewDetails": "عرض التفاصيل"
-            },
-            "title": "المنتجات",
-            "details": {
-                 "title": "تفاصيل المنتج",
-                 "basicInfo": "المعلومات الأساسية",
-                 "status": "الحالة",
-                 "stock": "المخزون",
-                 "currentStatus": "الحالة الحالية",
-                 "price": "السعر",
-                 "organization": "التنظيم",
-                 "category": "الفئة",
-                 "sku": "رمز التخزين التعريفي (SKU)"
-            }
-        },
         "settings": {
             "title": "الإعدادات",
             "header": {

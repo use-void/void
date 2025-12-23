@@ -185,35 +185,6 @@
             "netProfit": "Net Profit",
             "recentTransactions": "Recent Transactions"
         },
-        "products": {
-            "add": "Add Product",
-            "delete": "Delete",
-            "description": "Manage your store inventory",
-            "edit": "Edit",
-            "empty": "No products found",
-            "table": {
-                "actions": "Actions",
-                "name": "Name",
-                "price": "Price",
-                "product": "Product",
-                "status": "Status",
-                "stock": "Stock",
-                "type": "Type",
-                "viewDetails": "View Details"
-            },
-            "title": "Products",
-            "details": {
-                 "title": "Product Details",
-                 "basicInfo": "Basic Information",
-                 "status": "Status",
-                 "stock": "Stock",
-                 "currentStatus": "Current Status",
-                 "price": "Price",
-                 "organization": "Organization",
-                 "category": "Category",
-                 "sku": "SKU"
-            }
-        },
         "settings": {
             "title": "Settings",
             "header": {

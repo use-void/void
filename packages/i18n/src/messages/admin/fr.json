@@ -80,24 +80,6 @@
             "products": "Produits",
             "settings": "Paramètres"
         },
-        "products": {
-            "add": "Ajouter un produit",
-            "delete": "Supprimer",
-            "description": "Gérez l'inventaire de votre magasin",
-            "edit": "Modifier",
-            "empty": "Aucun produit trouvé",
-            "table": {
-                "actions": "Actions",
-                "name": "Nom",
-                "price": "Prix",
-                "product": "Produit",
-                "status": "Statut",
-                "stock": "Stock",
-                "type": "Type",
-                "viewDetails": "Voir les détails"
-            },
-            "title": "Produits"
-        },
         "orders": {
             "title": "Commandes"
         },
