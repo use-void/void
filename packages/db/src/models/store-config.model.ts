@@ -1,6 +1,5 @@
 import mongoose, { Schema, type Model } from "mongoose";
 
-// تعريف الـ Map المتكرر للنصوص المترجمة لتسهيل القراءة
 const LocalizedString = {
     type: Map,
     of: String,
@@ -9,60 +8,51 @@ const LocalizedString = {
 
 const StoreConfigSchema = new Schema(
     {
-        // --- 1. الهوية العالمية (Global Identity) ---
-        name: LocalizedString,        // { "en": "My Store", "ar": "متجري" }
+        isSetupCompleted: { type: Boolean, default: false, index: true },
+
+        name: LocalizedString,
         slogan: { type: Map, of: String },
-        description: LocalizedString, // وصف المتجر لـ SEO وللمتجر نفسه
+        description: LocalizedString,
         
         assets: {
             logoPrimary: String,
             logoSecondary: String,
             favicon: String,
-            ogImageDefault: String, // صورة مشاركة الروابط الافتراضية
+            ogImageDefault: String,
         },
 
-        // --- 2. التحكم في اللغات (Language Management) ---
         localization: {
-            defaultLanguage: { type: String, default: "en" }, // اللغة الأساسية (أنت قررت أنها الإنجليزية)
-            
-            // هنا "المخ": المصفوفة التي تسمح للمسؤول بتفعيل/تعطيل اللغات
+            defaultLanguage: { type: String, default: "en" },
             languages: [
                 {
-                    code: { type: String, required: true }, // en, ar, tr
-                    name: String,                           // اسم اللغة (English, العربية)
+                    code: { type: String, required: true },
+                    name: String,
                     isRTL: { type: Boolean, default: false },
-                    isActive: { type: Boolean, default: true }, // التبديل (Toggle)
-                    flag: String, // أيقونة أو رمز العلم
+                    isActive: { type: Boolean, default: true },
+                    flag: String,
                 }
             ],
             timezone: { type: String, default: "Asia/Riyadh" },
         },
 
-        // --- 3. التحكم في العملات (Currency Management) ---
         financials: {
             defaultCurrency: { type: String, default: "USD" },
-            
-            // مصفوفة العملات المفعلة من قبل المسؤول
             currencies: [
                 {
-                    code: { type: String, required: true },    // USD, SAR, EUR
-                    symbol: { type: Map, of: String },         // { "en": "$", "ar": "ر.س" } مترجمة أيضاً!
-                    exchangeRate: { type: Number, default: 1 },// سعر الصرف مقابل العملة الافتراضية
-                    isActive: { type: Boolean, default: true }, // التبديل (Toggle)
+                    code: { type: String, required: true },
+                    symbol: { type: Map, of: String },
+                    exchangeRate: { type: Number, default: 1 },
+                    isActive: { type: Boolean, default: true },
                     decimalPlaces: { type: Number, default: 2 },
                 }
             ],
-            
-            // الضرائب (التأسيس للمستقبل)
             tax: {
-                taxId: String,               // الرقم الضريبي للمنشأة
+                taxId: String,
                 isTaxEnabled: { type: Boolean, default: false },
-                isTaxInclusive: { type: Boolean, default: false }, // هل السعر المعروض يشمل الضريبة؟
+                isTaxInclusive: { type: Boolean, default: false },
             }
         },
 
-        // --- 4. نصوص السياسات القانونية (Legal Texts - All Localized) ---
-        // هذه خانات طويلة (Long Text / HTML)
         policies: {
             termsAndConditions: { type: Map, of: String },
             privacyPolicy: { type: Map, of: String },
@@ -70,27 +60,19 @@ const StoreConfigSchema = new Schema(
             shippingPolicy: { type: Map, of: String },
         },
 
-        // --- 5. معلومات التواصل (Contact & Social) ---
         contact: {
             supportEmail: String,
             supportPhone: String,
             whatsappNumber: String,
-            address: { type: Map, of: String }, // حتى العنوان قد يكتب بالعربي وبالإنجليزي
-            socialLinks: {
-                type: Map,
-                of: String // { "instagram": "url", "x": "url" }
-            }
+            address: { type: Map, of: String },
+            socialLinks: { type: Map, of: String }
         },
 
-        // --- 6. إعدادات تجربة المستخدم (UX Settings) ---
         shopSettings: {
             isMaintenanceMode: { type: Boolean, default: false },
-            maintenanceMessage: { type: Map, of: String }, // رسالة الصيانة المترجمة
-            
+            maintenanceMessage: { type: Map, of: String }, 
             isGuestCheckoutEnabled: { type: Boolean, default: true },
             isInventoryTrackingEnabled: { type: Boolean, default: true },
-            
-            // رسالة شريط الإعلانات العلوي (مثال: شحن مجاني للطلبات فوق 200)
             announcementBar: {
                 isEnabled: { type: Boolean, default: false },
                 text: { type: Map, of: String },
@@ -98,19 +80,29 @@ const StoreConfigSchema = new Schema(
             }
         },
 
-        // --- 7. إعدادات الـ SEO العامة (Global SEO) ---
         seo: {
-            metaTitleTemplate: { type: Map, of: String }, // مثلا: "%s | MyStore"
+            metaTitleTemplate: { type: Map, of: String },
             metaDescriptionDefault: { type: Map, of: String },
         }
     },
     { 
         timestamps: true,
-        // لضمان وجود وثيقة واحدة فقط (أمان إضافي)
+        // ✅ تأكد أن bufferCommands محذوفة من هنا تماماً
+        autoCreate: false, 
         capsule: { max: 1 } 
     }
 );
 
 export type StoreConfigType = mongoose.InferSchemaType<typeof StoreConfigSchema>;
-export const StoreConfig = (mongoose.models.StoreConfig as Model<StoreConfigType>) || 
-                           mongoose.model<StoreConfigType>("StoreConfig", StoreConfigSchema);
+
+interface StoreConfigModel extends Model<StoreConfigType> {
+    isSystemInitialized(): Promise<boolean>;
+}
+
+StoreConfigSchema.statics.isSystemInitialized = async function () {
+    const config = await this.findOne({}, { isSetupCompleted: 1 }).lean();
+    return !!config?.isSetupCompleted;
+};
+
+export const StoreConfig = (mongoose.models.StoreConfig as StoreConfigModel) || 
+                           mongoose.model<StoreConfigType, StoreConfigModel>("StoreConfig", StoreConfigSchema);

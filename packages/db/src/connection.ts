@@ -8,12 +8,13 @@ if (!uri) {
     throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
 
-// 1. تعريف واجهة الكاش في الـ Global لضمان استمرارية الاتصال في الـ Dev Mode
+// 1. تعريف واجهة الكاش في الـ Global
 interface GlobalMongoose {
     conn: typeof mongoose | null;
     promise: Promise<typeof mongoose> | null;
 }
 
+// @ts-ignore
 const globalWithMongoose = global as typeof globalThis & {
     mongoose?: GlobalMongoose;
 };
@@ -57,15 +58,17 @@ export async function connectDB(): Promise<typeof mongoose> {
 
 /**
  * دالة مساعدة للحصول على Native DB Instance
- * (مهمة جداً لـ Better Auth)
  */
 export async function getMongoDb(): Promise<Db> {
     await connectDB();
     const db = mongoose.connection.db;
+    
     if (!db) {
         throw new Error("Database instance not found after connection.");
     }
-    return db;
+    
+    // ✅ الإضافة الوحيدة: (as Db) لإسكات خطأ التايب سكريبت دون تغيير الكود
+    return db as Db;
 }
 
 /**

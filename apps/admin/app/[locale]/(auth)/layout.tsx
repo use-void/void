@@ -1,20 +1,33 @@
-import { Suspense } from "react";
 import { LanguageSwitcher } from "@repo/ui";
-import { setRequestLocale } from "next-intl/server";
-import { checkSetupStatus } from "../../../lib/setup-status";
+import { setRequestLocale } from "@repo/i18n";
 import { redirect } from "next/navigation";
+import { StoreConfig, connectDB } from "@void/db";
+import { auth } from "@void/auth";
+import { connection } from "next/server";
+import { headers } from "next/headers";
+import { Suspense } from "react";
 
-/**
- * مكون الـ Guard:
- * هذا المكون هو الذي سيقوم بالاتصال بقاعدة البيانات.
- * بوضعه داخل Suspense، لن ينهار الـ Build.
- */
-async function SetupGuard({ locale }: { locale: string }) {
-    const isSetup = await checkSetupStatus();
+// ✅ 1. مكون الحماية المنفصل
+async function AuthGuardComponent({ locale }: { locale: string }) {
+    await connection();
+    await connectDB();
+
+    // فحص التثبيت
+    const isSetup = await StoreConfig.isSystemInitialized();
     if (!isSetup) {
         redirect(`/${locale}/setup`);
     }
-    return null; // لا يحتاج لعرض أي شيء، وظيفته التحقق فقط
+
+    // فحص تسجيل الدخول
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (session) {
+        redirect(`/${locale}`);
+    }
+
+    return null;
 }
 
 export default async function AuthLayout({
@@ -28,21 +41,19 @@ export default async function AuthLayout({
     setRequestLocale(locale);
 
     return (
-        <div className="relative min-h-screen w-full bg-background">
-            {/* 
-                لف الـ Guard بـ Suspense هو "السر" لحل المشكلة.
-                هذا يخبر Next.js: "لا تنتظر قاعدة البيانات لتصيير الـ Layout، 
-                قم بالتصيير وعندما تجهز البيانات، نفذ الـ Guard".
-            */}
+        <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center">
+            {/* ✅ 2. وضع المكون داخل Suspense */}
             <Suspense fallback={null}>
-                <SetupGuard locale={locale} />
+                <AuthGuardComponent locale={locale} />
             </Suspense>
 
             <div className="absolute top-4 end-4 z-50 md:top-8 md:end-8">
                 <LanguageSwitcher variant="admin" />
             </div>
 
-            {children}
+            <div className="w-full max-w-md">
+                {children}
+            </div>
         </div>
     );
 }

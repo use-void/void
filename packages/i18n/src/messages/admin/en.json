@@ -66,44 +66,78 @@
         },
 
         "setup": {
+            "step": "Step",
+            "sidePanel": {
+                "title": "Launch your digital empire today.",
+                "description": "Complete the setup wizard to configure your store, admin account, and initial data.",
+                "footer": "SETUP WIZARD v1.0"
+            },
             "buttons": {
                 "back": "Back",
                 "complete": "Complete Setup",
                 "next": "Next Step"
             },
-            "errors": {
-                "generic": "Something went wrong"
-            },
-            "fields": {
-                "address": "Address",
-                "adminName": "Admin Name",
-                "city": "City",
-                "confirmPassword": "Confirm Password",
-                "country": "Country",
-                "currency": "Currency",
-                "description": "Description",
-                "email": "Email",
-                "firstName": "First Name",
-                "lastName": "Last Name",
-                "logo": "Store Logo (Optional)",
-                "mobile": "Mobile (Optional)",
-                "password": "Password",
-                "passwordsDoNotMatch": "Passwords do not match",
-                "phone": "Phone (Optional)",
-                "seedData": "Seed Demo Data?",
-                "seedDesc": "We can populate your store with example products and categories so you can explore the dashboard immediately.",
-                "storeName": "Store Name",
-                "timezone": "Timezone"
+            "success": {
+                "title": "All Systems Go!",
+                "description": "Your store has been successfully configured. Redirecting to dashboard in {seconds}s.",
+                "button": "Enter Dashboard"
             },
             "steps": {
-                "admin": "Admin Account",
-                "finish": "Finish",
-                "store": "Store Info"
+                "store": {
+                    "title": "Store Info",
+                    "storeName": "Store Name",
+                    "description": "Description",
+                    "placeholders": {
+                        "name": "Ex: Acme Corp",
+                        "description": "Short description..."
+                    }
+                },
+                "location": {
+                    "title": "Location & Currency",
+                    "country": "Country",
+                    "city": "City",
+                    "address": "Address",
+                    "currency": "Currency",
+                    "timezone": "Timezone"
+                },
+                "admin": {
+                    "title": "Admin Account",
+                    "firstName": "First Name",
+                    "lastName": "Last Name",
+                    "email": "Email",
+                    "password": "Password",
+                    "confirmPassword": "Confirm Password"
+                },
+                "seeding": {
+                    "title": "Data Initialization",
+                    "description": "Would you like to populate your store with sample data?",
+                    "seedLabel": "Install Demo Data",
+                    "seedHint": "Add sample products, categories, and customers to test the store.",
+                    "note": "Note:",
+                    "noteDescription": "This data is for testing purposes and can be deleted later via the settings menu."
+                }
             },
-            "successRedirect": "You will be redirected to the dashboard in {seconds} seconds...",
-            "successTitle": "Store Configured Successfully!",
-            "welcomeDesc": "Let's set up your store in a few minutes.",
-            "welcomeTitle": "Welcome to Void"
+            "errors": {
+                "generic": "Something went wrong",
+                "systemInitialized": "System is already initialized.",
+                "validationFailed": "Validation failed"
+            },
+            "validation": {
+                "storeNameMin": "Store name must be at least 3 characters",
+                "descriptionMin": "Description must be at least 10 characters",
+                "countryRequired": "Country is required",
+                "cityRequired": "City is required",
+                "addressRequired": "Address is required",
+                "currencyRequired": "Currency is required",
+                "timezoneRequired": "Timezone is required",
+                "firstNameRequired": "First name is required",
+                "lastNameRequired": "Last name is required",
+                "emailInvalid": "Invalid email address",
+                "passwordMin": "Password must be at least 8 characters",
+                "passwordRequired": "Password is required",
+                "confirmPasswordRequired": "Confirm Password is required",
+                "passwordsDontMatch": "Passwords do not match"
+            }
         },
         "sidebar": {
             "content": "Content",

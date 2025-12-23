@@ -66,44 +66,78 @@
         },
 
         "setup": {
+            "step": "خطوة",
+            "sidePanel": {
+                "title": "أنشئ إمبراطوريتك الرقمية اليوم.",
+                "description": "أكمل معالج الإعداد لتكوين متجرك، وحساب المسؤول، والبيانات الأولية.",
+                "footer": "معالج الإعداد v1.0"
+            },
             "buttons": {
                 "back": "رجوع",
                 "complete": "إكمال الإعداد",
                 "next": "الخطوة التالية"
             },
-            "errors": {
-                "generic": "حدث خطأ ما."
-            },
-            "fields": {
-                "address": "العنوان",
-                "adminName": "اسم المسؤول",
-                "city": "المدينة",
-                "confirmPassword": "تأكيد كلمة المرور",
-                "country": "الدولة",
-                "currency": "العملة",
-                "description": "الوصف",
-                "email": "البريد الإلكتروني",
-                "firstName": "الاسم الأول",
-                "lastName": "الاسم الأخير",
-                "logo": "شعار المتجر (اختياري)",
-                "mobile": "رقم الجوال (اختياري)",
-                "password": "كلمة المرور",
-                "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
-                "phone": "رقم الهاتف (اختياري)",
-                "seedData": "إضافة بيانات تجريبية؟",
-                "seedDesc": "يمكننا إضافة منتجات وتصنيفات تجريبية لتستكشف لوحة التحكم فوراً.",
-                "storeName": "اسم المتجر",
-                "timezone": "المنطقة الزمنية"
+            "success": {
+                "title": "تم الإعداد بنجاح!",
+                "description": "تم تكوين متجرك بنجاح. سيتم تحويلك إلى لوحة التحكم خلال {seconds} ثوانٍ.",
+                "button": "دخول لوحة التحكم"
             },
             "steps": {
-                "admin": "حساب المسؤول",
-                "finish": "إنهاء",
-                "store": "معلومات المتجر"
+                "store": {
+                    "title": "معلومات المتجر",
+                    "storeName": "اسم المتجر",
+                    "description": "الوصف",
+                    "placeholders": {
+                        "name": "مثال: شركة أكمي",
+                        "description": "وصف قصير..."
+                    }
+                },
+                "location": {
+                    "title": "الموقع والعملة",
+                    "country": "الدولة",
+                    "city": "المدينة",
+                    "address": "العنوان",
+                    "currency": "العملة",
+                    "timezone": "المنطقة الزمنية"
+                },
+                "admin": {
+                    "title": "حساب المسؤول",
+                    "firstName": "الاسم الأول",
+                    "lastName": "الاسم الأخير",
+                    "email": "البريد الإلكتروني",
+                    "password": "كلمة المرور",
+                    "confirmPassword": "تأكيد كلمة المرور"
+                },
+                "seeding": {
+                    "title": "تهيئة البيانات",
+                    "description": "هل ترغب في ملء متجرك ببيانات تجريبية؟",
+                    "seedLabel": "تثبيت البيانات التجريبية",
+                    "seedHint": "أضف منتجات وتصنيفات وعملاء تجريبيين لاختبار المتجر.",
+                    "note": "ملاحظة:",
+                    "noteDescription": "هذه البيانات هي لأغراض الاختبار ويمكن حذفها لاحقاً من قائمة الإعدادات."
+                }
             },
-            "successRedirect": "سيتم تحويلك إلى لوحة التحكم خلال {seconds} ثوان...",
-            "successTitle": "تم إعداد المتجر بنجاح!",
-            "welcomeDesc": "دعنا نقم بإعداد متجرك في دقائق قليلة.",
-            "welcomeTitle": "مرحباً بك في فويد"
+            "errors": {
+                "generic": "حدث خطأ ما.",
+                "systemInitialized": "النظام مهيأ بالفعل.",
+                "validationFailed": "فشل التحقق من البيانات"
+            },
+            "validation": {
+                "storeNameMin": "يجب أن يكون اسم المتجر 3 أحرف على الأقل",
+                "descriptionMin": "يجب أن يكون الوصف 10 أحرف على الأقل",
+                "countryRequired": "الدولة مطلوبة",
+                "cityRequired": "المدينة مطلوبة",
+                "addressRequired": "العنوان مطلوب",
+                "currencyRequired": "العملة مطلوبة",
+                "timezoneRequired": "المنطقة الزمنية مطلوبة",
+                "firstNameRequired": "الاسم الأول مطلوب",
+                "lastNameRequired": "الاسم الأخير مطلوب",
+                "emailInvalid": "عنوان البريد الإلكتروني غير صالح",
+                "passwordMin": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+                "passwordRequired": "كلمة المرور مطلوبة",
+                "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+                "passwordsDontMatch": "كلمات المرور غير متطابقة"
+            }
         },
         "sidebar": {
             "content": "المحتوى",

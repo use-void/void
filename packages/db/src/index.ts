@@ -11,9 +11,6 @@ export * from "./models/order.model";
 export * from "./models/integration.model";
 export * from "./models/category.model";
 
-// 3. Setup (سنقوم بتحديثه)
-export * from "./setup";
-
-// 4. Utils
+// 3. Utils & Types
 import { Types } from "mongoose";
 export type ObjectIdType = Types.ObjectId;

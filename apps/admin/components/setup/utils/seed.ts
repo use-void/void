@@ -1,11 +1,10 @@
-// apps/admin/lib/seed.ts
-
 import { connectDB, Category, Product, Integration } from "@void/db";
 
+// بيانات أولية ثابتة
 const DEMO_CATEGORIES = [
-    { name: "Software", slug: "software", description: "Digital tools and apps" },
-    { name: "E-books", slug: "e-books", description: "Educational resources" },
-    { name: "Services", slug: "services", description: "Professional services" }
+    { name: "Software", slug: "software", description: "Digital tools and apps", image: "" },
+    { name: "E-books", slug: "e-books", description: "Educational resources", image: "" },
+    { name: "Services", slug: "services", description: "Professional services", image: "" }
 ];
 
 const DEMO_PRODUCTS = [
@@ -16,7 +15,7 @@ const DEMO_PRODUCTS = [
         price: 49.99,
         type: "digital",
         status: "active",
-        digitalDetails: { fileName: "bundle.zip", fileSize: "120MB" },
+        digitalDetails: { fileName: "bundle.zip", fileSize: "120MB", fileUrl: "https://example.com/bundle.zip", isExternalLink: false },
         images: [{ url: "https://placehold.co/600x400/png", alt: "React Bundle", isThumbnail: true }]
     },
     {
@@ -26,7 +25,7 @@ const DEMO_PRODUCTS = [
         price: 199.00,
         type: "digital",
         status: "active",
-        digitalDetails: { fileName: "saas-kit.zip", fileSize: "45MB" }
+        digitalDetails: { fileName: "saas-kit.zip", fileSize: "45MB", fileUrl: "https://example.com/kit.zip", isExternalLink: false }
     },
     {
         name: "Advanced TypeScript Course",
@@ -35,7 +34,7 @@ const DEMO_PRODUCTS = [
         price: 29.99,
         type: "digital",
         status: "active",
-        digitalDetails: { fileName: "course.pdf", fileSize: "15MB" }
+        digitalDetails: { fileName: "course.pdf", fileSize: "15MB", fileUrl: "https://example.com/course.pdf", isExternalLink: false }
     },
     {
         name: "Design System Figma",
@@ -44,7 +43,7 @@ const DEMO_PRODUCTS = [
         price: 39.00,
         type: "digital",
         status: "active",
-        digitalDetails: { isExternalLink: true, fileUrl: "https://figma.com/..." }
+        digitalDetails: { isExternalLink: true, fileUrl: "https://figma.com/...", fileName: "Figma Link", fileSize: "0MB" }
     },
     {
         name: "1-on-1 Consultation",
@@ -53,7 +52,7 @@ const DEMO_PRODUCTS = [
         price: 150.00,
         type: "digital",
         status: "active",
-        digitalDetails: { isExternalLink: true, fileUrl: "https://calendly.com/..." }
+        digitalDetails: { isExternalLink: true, fileUrl: "https://calendly.com/...", fileName: "Booking Link", fileSize: "0MB" }
     }
 ];
 
@@ -61,13 +60,12 @@ export async function seedDatabase() {
     console.log("🌱 Seeding database...");
     
     await connectDB();
-    const now = new Date(); // نوحد التوقيت لجميع الإدخالات
+    const now = new Date();
 
     // 1. Seed Categories
     const categoriesCount = await Category.estimatedDocumentCount();
     if (categoriesCount === 0) {
         console.log("Inserting Categories...");
-        // الحل: نضيف createdAt و updatedAt يدوياً لإرضاء TypeScript
         await Category.insertMany(DEMO_CATEGORIES.map(c => ({
             ...c,
             createdAt: now,
@@ -90,7 +88,6 @@ export async function seedDatabase() {
     const integrationsCount = await Integration.estimatedDocumentCount();
     if (integrationsCount === 0) {
         console.log("Inserting Integrations...");
-        // الحل: نضيف createdAt و updatedAt للكائنات المضمنة أيضاً
         await Integration.insertMany([
             { 
                 providerId: "stripe", 

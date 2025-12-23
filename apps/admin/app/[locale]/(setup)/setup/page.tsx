@@ -1,5 +1,5 @@
-import { SetupWizard } from "../../../../components/setup-wizard";
+import { SetupContainer } from "@/components/setup/components/setup-container";
 
 export default function SetupPage() {
-    return <SetupWizard />;
+    return <SetupContainer />;
 }
