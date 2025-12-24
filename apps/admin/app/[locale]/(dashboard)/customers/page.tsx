@@ -60,12 +60,13 @@ export default async function CustomersPage({
 }) {
     const { locale } = await params;
     setRequestLocale(locale);
+    const t = await getTranslations("Admin.customers");
     
     return (
-        <div className="flex flex-col w-full pb-20">
+        <div className="flex flex-col w-full p-10 pb-20">
             <CustomerPageHeader 
-                title="العملاء" 
-                description="إدارة قاعدة بيانات العملاء وتتبع نشاطهم" 
+                title={t("title")} 
+                description={t("header.description")} 
             />
             <CustomerTable customers={MOCK_CUSTOMERS} />
         </div>

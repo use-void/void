@@ -158,11 +158,30 @@
                 "status": "الحالة",
                 "payment": "طريقة الدفع",
                 "items": "العناصر",
-                "total": "المبلغ الإجمالي"
+                "total": "المبلغ الإجمالي",
+                "digitalDelivery": {
+                    "title": "التسليم الرقمي",
+                    "status": "حالة التسليم",
+                    "method": "طريقة الاستلام",
+                    "downloadLink": "رابط التحميل",
+                    "licenseKey": "مفتاح الترخيص",
+                    "sentTo": "أرسل إلى",
+                    "delivered": "تم التسليم",
+                    "pending": "قيد الانتظار"
+                },
+                "logistics": {
+                    "partner": "شريك اللوجستيات",
+                    "tracking": "رقم التتبع",
+                    "arrival": "الوصول المتوقع"
+                }
             }
         },
         "customers": {
             "title": "العملاء",
+            "header": {
+                "description": "إدارة قاعدة بيانات العملاء وتتبع نشاطهم",
+                "export": "تصدير"
+            },
             "table": {
                 "actions": "إجراءات",
                 "viewDetails": "عرض التفاصيل"
@@ -173,7 +192,24 @@
                 "phone": "رقم الهاتف",
                 "status": "الحالة",
                 "joinDate": "تاريخ الانضمام",
-                "address": "العنوان"
+                "address": "العنوان",
+                "stats": {
+                    "ltv": "إجمالي القيمة",
+                    "orders": "الطلبات",
+                    "avgOrder": "متوسط الطلب",
+                    "tier": "المستوى"
+                },
+                "recentOrders": "الطلبات الأخيرة",
+                "internalNotes": "الملاحظات الداخلية",
+                "notesPlaceholder": "اكتب ملاحظاتك هنا...",
+                "saveNotes": "حفظ الملاحظات",
+                "primaryAddress": "العنوان الأساسي",
+                "tags": "الوسوم",
+                "actions": {
+                    "sendMessage": "إرسال رسالة",
+                    "addDiscount": "إضافة خصم",
+                    "deleteCustomer": "حذف العميل"
+                }
             }
         },
         "finance": {

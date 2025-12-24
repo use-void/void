@@ -32,5 +32,17 @@
         "organization": "التنظيم",
         "category": "الفئة",
         "sku": "رمز التخزين التعريفي (SKU)"
+    },
+    "settings": {
+        "actions": {
+            "save_changes": "حفظ التغييرات"
+        }
+    },
+    "setup": {
+        "steps": {
+            "store": {
+                "description": "الوصف"
+            }
+        }
     }
 }

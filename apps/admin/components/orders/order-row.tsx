@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@repo/ui"
+import { Link } from "@repo/i18n/navigation"
 
 interface OrderRowProps {
   order: {
@@ -17,7 +17,11 @@ interface OrderRowProps {
   }
 }
 
+import Image from "next/image"
+import { cn } from "@repo/ui"
+
 export function OrderRow({ order }: OrderRowProps) {
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'مكتمل': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
@@ -30,26 +34,26 @@ export function OrderRow({ order }: OrderRowProps) {
 
   return (
     <div 
-      className="group flex items-center justify-between p-4 mb-2 transition-all duration-200 rounded-2xl border border-transparent hover:border-border hover:bg-secondary/30"
+      className="group flex items-center justify-between p-4 mb-2 transition-all duration-200 border border-transparent hover:border-border hover:bg-secondary/30"
     >
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-3 min-w-[3.5rem]">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
+          <div className="w-1.5 h-1.5  bg-muted-foreground/30 shrink-0" />
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-border shadow-sm">
+        <Link href={`/orders/${order.id}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity">
+          <div className="h-12 w-12  bg-secondary flex items-center justify-center overflow-hidden border border-border  relative">
             {order.customer.avatar ? (
-              <img src={order.customer.avatar} alt={order.customer.name} className="h-full w-full object-cover" />
+              <Image src={order.customer.avatar} alt={order.customer.name} fill className="object-cover" />
             ) : (
-              <div className="h-6 w-6 bg-muted-foreground/20 rounded-md" />
+              <div className="h-6 w-6 bg-muted-foreground/20 " />
             )}
           </div>
           <div className="text-right">
             <h3 className="font-semibold text-foreground">{order.customer.name}</h3>
             <p className="text-xs text-muted-foreground font-mono tracking-tighter uppercase">#{order.id}</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       <div className="flex items-center justify-between w-[60%] text-right font-medium">
@@ -67,7 +71,7 @@ export function OrderRow({ order }: OrderRowProps) {
 
         <div className="w-1/4">
           <span className={cn(
-            "px-2.5 py-1 text-[11px] font-bold rounded-lg border",
+            "px-2.5 py-1 text-[11px] font-bold  border",
             order.paymentStatus === 'مدفوع' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" : "bg-orange-500/10 text-orange-500 border-orange-500/20"
           )}>
             {order.paymentStatus}
@@ -76,7 +80,7 @@ export function OrderRow({ order }: OrderRowProps) {
 
         <div className="w-1/4 flex justify-end">
           <span className={cn(
-            "px-2.5 py-1 text-[11px] font-bold rounded-lg border",
+            "px-2.5 py-1 text-[11px] font-bold  border",
             getStatusColor(order.status)
           )}>
             {order.status}

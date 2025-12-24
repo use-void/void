@@ -83,12 +83,12 @@ export default function StoreRegisterPage() {
 
     return (
         <div className="relative flex min-h-screen w-full items-center justify-center bg-background">
-            <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl transition-all duration-300 hover:shadow-primary/5 hover:border-primary/20">
+            <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/50 backdrop-blur-xl  transition-all duration-300 hover:shadow-primary/5 hover:border-primary/20">
                 <CardHeader className="space-y-2 text-center pb-8">
                     <div className="flex justify-center mb-6">
                         <div className="relative group">
-                            <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl group-hover:blur-2xl transition-all duration-300 opacity-50" />
-                            <div className="relative rounded-2xl bg-gradient-to-br from-background to-muted border border-border/50 p-4 shadow-inner">
+                            <div className="absolute inset-0 bg-primary/20 blur-xl group-hover:blur-2xl transition-all duration-300 opacity-50" />
+                            <div className="relative bg-gradient-to-br from-background to-muted border border-border/50 p-4 shadow-inner">
                                 <UserPlus className="h-8 w-8 text-primary" />
                             </div>
                         </div>
@@ -194,7 +194,7 @@ export default function StoreRegisterPage() {
                             )}
                             <Button
                                 type="submit"
-                                className="w-full h-11 text-base font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
+                                className="w-full h-11 text-base font-medium  shadow-primary/20 hover:shadow-primary/30 transition-all duration-300"
                                 disabled={isLoading}
                             >
                                 {isLoading ? (

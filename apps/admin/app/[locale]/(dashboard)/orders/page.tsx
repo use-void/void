@@ -70,7 +70,7 @@ export default async function OrdersPage({
     setRequestLocale(locale);
     
     return (
-        <div className="flex flex-col w-full pb-20">
+        <div className="flex flex-col w-full p-10 pb-20">
             <OrderPageHeader 
                 title="الطلبات" 
                 description="إدارة وإدارة طلبات المتجر الخاصة بك" 

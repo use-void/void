@@ -100,7 +100,7 @@ export function SetupContainer() {
                             </span>
                         </div>
                         {/* Progress Bar */}
-                        <div className="h-1 w-full bg-muted overflow-hidden rounded-full">
+                        <div className="h-1 w-full bg-muted overflow-hidden ">
                             <div 
                                 className="h-full bg-primary transition-all duration-500 ease-out" 
                                 style={{ width: `${(step / STEPS.length) * 100}%` }}
@@ -123,7 +123,7 @@ export function SetupContainer() {
                             </div>
 
                             {serverError && (
-                                <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium flex items-center">
+                                <div className="p-4  bg-destructive/10 border border-destructive/20 text-destructive text-sm font-medium flex items-center">
                                     {serverError}
                                 </div>
                             )}
@@ -156,7 +156,7 @@ export function SetupContainer() {
                                         type="button"
                                         onClick={form.handleSubmit(onCompleteSetup)}
                                         disabled={isPending}
-                                        className="min-w-[160px] shadow-lg shadow-primary/20"
+                                        className="min-w-[160px]  shadow-primary/20"
                                     >
                                         {isPending ? (
                                             <Loader2 className="h-4 w-4 animate-spin" />

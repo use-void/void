@@ -35,7 +35,7 @@ export function StepSeeding() {
         control={control}
         name="shouldSeed"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm bg-card">
+          <FormItem className="flex flex-row items-start space-x-3 space-y-0  border p-4  bg-card">
             <FormControl>
               <Checkbox
                 checked={field.value}
@@ -58,7 +58,7 @@ export function StepSeeding() {
 
       {/* رسالة توضيحية تظهر فقط عند التفعيل لإعلام المستخدم */}
       {control._formValues.shouldSeed && (
-        <div className="rounded-md bg-primary/5 border border-primary/10 p-4 text-sm text-primary animate-in slide-in-from-top-2 fade-in">
+        <div className=" bg-primary/5 border border-primary/10 p-4 text-sm text-primary animate-in slide-in-from-top-2 fade-in">
           <p className="flex items-center gap-2">
             <strong>{t("note")}</strong> 
             {t("noteDescription")}

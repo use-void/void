@@ -19,7 +19,7 @@ export default async function SettingsPage({
 
 
     return (
-        <div className="flex flex-col h-full w-full space-y-4">
+        <div className="flex flex-col h-full w-full p-10 space-y-4">
         </div>
     );
 }

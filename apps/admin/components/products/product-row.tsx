@@ -4,6 +4,7 @@ import { Checkbox } from "@repo/ui"
 import { cn } from "@repo/ui"
 import { useTranslations } from "next-intl"
 import Image from "next/image"
+import { Link } from "@repo/i18n/navigation"
 
 interface ProductRowProps {
   product: {
@@ -22,7 +23,7 @@ interface ProductRowProps {
 }
 
 export function ProductRow({ product, isSelected, isSelectionActive, onToggle }: ProductRowProps) {
-  const t = useTranslations("Products")
+  const t = useTranslations("Admin.products")
 
   const getStatusColor = (status: string) => {
     // We map normalized keys or Arabic keys to colors
@@ -49,13 +50,13 @@ export function ProductRow({ product, isSelected, isSelectionActive, onToggle }:
   return (
     <div 
       className={cn(
-        "group flex items-center justify-between p-4 mb-2 transition-all duration-200 rounded-2xl border border-transparent hover:border-border hover:bg-secondary/30",
-        isSelected && "bg-secondary/50 border-border shadow-sm"
+        "group flex items-center justify-between p-4 mb-2 transition-all duration-200 border border-transparent hover:border-border hover:bg-secondary/30",
+        isSelected && "bg-secondary/50 border-border "
       )}
     >
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-3 min-w-[3.5rem]">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
+          <div className="w-1.5 h-1.5  bg-muted-foreground/30 shrink-0" />
           
           {isSelectionActive && (
             <div className="flex items-center justify-center w-5 h-5 cursor-pointer animate-in fade-in zoom-in duration-200" onClick={() => onToggle(product.id)}>
@@ -69,7 +70,7 @@ export function ProductRow({ product, isSelected, isSelectionActive, onToggle }:
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-secondary flex items-center justify-center overflow-hidden border border-border shadow-sm">
+          <div className="h-12 w-12  bg-secondary flex items-center justify-center overflow-hidden border border-border ">
             {product.image ? (
               <div className="relative h-full w-full">
                 <Image 
@@ -81,19 +82,19 @@ export function ProductRow({ product, isSelected, isSelectionActive, onToggle }:
                 />
               </div>
             ) : (
-              <div className="h-6 w-6 bg-muted-foreground/20 rounded-md" />
+              <div className="h-6 w-6 bg-muted-foreground/20 " />
             )}
           </div>
-          <div className="text-right">
+          <Link href={`/products/${product.id}`} className="flex items-center gap-4 hover:opacity-80 transition-opacity">
             <h3 className="font-semibold text-foreground">{product.name}</h3>
             <p className="text-xs text-muted-foreground font-mono tracking-tighter uppercase">{product.sku}</p>
-          </div>
+          </Link>
         </div>
       </div>
 
       <div className="flex items-center justify-between w-[60%] text-right font-medium">
         <div className="w-1/4">
-          <span className="text-muted-foreground bg-secondary/50 px-3 py-1 rounded-lg border border-border/50 text-sm">
+          <span className="text-muted-foreground bg-secondary/50 px-3 py-1  border border-border/50 text-sm">
             {product.category}
           </span>
         </div>
@@ -115,7 +116,7 @@ export function ProductRow({ product, isSelected, isSelectionActive, onToggle }:
 
         <div className="w-1/4 flex justify-end">
           <span className={cn(
-            "px-2.5 py-1 text-[11px] font-bold rounded-lg border",
+            "px-2.5 py-1 text-[11px] font-bold  border",
             getStatusColor(product.status)
           )}>
             {getTranslatedStatus(product.status)}

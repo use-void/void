@@ -55,7 +55,7 @@ export function ClippedAreaChart() {
   });
 
   return (
-    <Card className="bg-card border-border rounded-2xl overflow-hidden shadow-sm">
+    <Card className="bg-card border-border overflow-hidden ">
       <CardHeader className="text-right">
         <CardTitle className="text-2xl font-bold flex items-center justify-end gap-2 text-foreground">
           {springY.get().toFixed(0)} <span className="text-sm font-normal text-muted-foreground">ر.س</span>

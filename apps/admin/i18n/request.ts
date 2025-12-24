@@ -16,6 +16,13 @@ export default getRequestConfig(async function createRequestConfig({
 
     return {
         locale,
-        messages: { ...sharedMessages, ...localMessages, Products: productMessages },
+        messages: {
+            ...sharedMessages,
+            ...localMessages,
+            Admin: {
+                ...localMessages.Admin,
+                products: productMessages,
+            },
+        },
     };
 });

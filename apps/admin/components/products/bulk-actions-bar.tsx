@@ -11,7 +11,7 @@ interface BulkActionsBarProps {
 }
 
 export function BulkActionsBar({ selectedCount, onClear }: BulkActionsBarProps) {
-  const t = useTranslations("Products")
+  const t = useTranslations("Admin.products")
 
   return (
     <AnimatePresence>
@@ -20,10 +20,10 @@ export function BulkActionsBar({ selectedCount, onClear }: BulkActionsBarProps) 
           initial={{ y: 100, opacity: 0, x: "-50%" }}
           animate={{ y: 0, opacity: 1, x: "-50%" }}
           exit={{ y: 100, opacity: 0, x: "-50%" }}
-          className="fixed bottom-8 left-1/2 z-50 flex items-center gap-4 px-6 py-3 bg-card border border-border rounded-full shadow-2xl ring-1 ring-white/5"
+          className="fixed bottom-8 left-1/2 z-50 flex items-center gap-4 px-6 py-3 bg-card border border-border   ring-1 ring-white/5"
         >
           <div className="flex items-center gap-2 border-e border-border pe-4">
-            <span className="flex items-center justify-center w-6 h-6 bg-primary text-primary-foreground text-xs font-bold rounded-full">
+            <span className="flex items-center justify-center w-6 h-6 bg-primary text-primary-foreground text-xs font-bold ">
               {selectedCount}
             </span>
             <span className="text-sm font-medium text-muted-foreground">
@@ -32,13 +32,13 @@ export function BulkActionsBar({ selectedCount, onClear }: BulkActionsBarProps) 
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" title={t("status.active")} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full">
+            <Button variant="ghost" size="icon" title={t("status.active")} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary ">
               <CheckCircle2 className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" title={t("status.archived")} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-full">
+            <Button variant="ghost" size="icon" title={t("status.archived")} className="h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-secondary ">
               <Archive className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" title={t("table.actions")} className="h-9 w-9 text-destructive hover:text-destructive/80 hover:bg-destructive/10 rounded-full">
+            <Button variant="ghost" size="icon" title={t("table.actions")} className="h-9 w-9 text-destructive hover:text-destructive/80 hover:bg-destructive/10 ">
               <Trash2 className="h-5 w-5" />
             </Button>
           </div>

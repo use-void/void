@@ -16,12 +16,12 @@ export function FinanceStats({ stats }: FinanceStatsProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
       {/* Today Sales */}
-      <Card className="bg-card border-border rounded-2xl shadow-sm overflow-hidden group hover:border-primary/20 transition-all duration-300">
+      <Card className="bg-card border-border  overflow-hidden group hover:border-primary/20 transition-all duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="text-right">
             <CardTitle className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">مبيعات اليوم</CardTitle>
           </div>
-          <div className="p-2.5 bg-primary/10 rounded-xl">
+          <div className="p-2.5 bg-primary/10 ">
             <DollarSign className="h-5 w-5 text-primary" />
           </div>
         </CardHeader>
@@ -40,12 +40,12 @@ export function FinanceStats({ stats }: FinanceStatsProps) {
       </Card>
 
       {/* Monthly Sales */}
-      <Card className="bg-card border-border rounded-2xl shadow-sm overflow-hidden group hover:border-blue-500/20 transition-all duration-300">
+      <Card className="bg-card border-border  overflow-hidden group hover:border-blue-500/20 transition-all duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="text-right">
             <CardTitle className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">مبيعات الشهر</CardTitle>
           </div>
-          <div className="p-2.5 bg-blue-500/10 rounded-xl">
+          <div className="p-2.5 bg-blue-500/10 ">
             <TrendingUp className="h-5 w-5 text-blue-500" />
           </div>
         </CardHeader>
@@ -64,12 +64,12 @@ export function FinanceStats({ stats }: FinanceStatsProps) {
       </Card>
 
       {/* Net Profit */}
-      <Card className="bg-card border-border rounded-2xl shadow-sm overflow-hidden group hover:border-emerald-500/20 transition-all duration-300">
+      <Card className="bg-card border-border  overflow-hidden group hover:border-emerald-500/20 transition-all duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="text-right">
             <CardTitle className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">صافي الأرباح</CardTitle>
           </div>
-          <div className="p-2.5 bg-emerald-500/10 rounded-xl">
+          <div className="p-2.5 bg-emerald-500/10 ">
             <Wallet className="h-5 w-5 text-emerald-500" />
           </div>
         </CardHeader>
@@ -85,12 +85,12 @@ export function FinanceStats({ stats }: FinanceStatsProps) {
       </Card>
 
       {/* Total Sales */}
-      <Card className="bg-card border-border rounded-2xl shadow-sm overflow-hidden group hover:border-orange-500/20 transition-all duration-300">
+      <Card className="bg-card border-border  overflow-hidden group hover:border-orange-500/20 transition-all duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="text-right">
             <CardTitle className="text-sm font-bold text-muted-foreground group-hover:text-foreground transition-colors">إجمالي المبيعات</CardTitle>
           </div>
-          <div className="p-2.5 bg-orange-500/10 rounded-xl">
+          <div className="p-2.5 bg-orange-500/10 ">
             <DollarSign className="h-5 w-5 text-orange-500" />
           </div>
         </CardHeader>

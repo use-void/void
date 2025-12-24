@@ -15,9 +15,9 @@ export function StepsIndicator({ currentStep, totalSteps }: { currentStep: numbe
           <div
             key={stepNum}
             className={`
-              flex items-center justify-center w-8 h-8 rounded-full border text-sm font-medium transition-all duration-300
+              flex items-center justify-center w-8 h-8  border text-sm font-medium transition-all duration-300
               ${isActive
-                ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20"
+                ? "bg-primary border-primary text-primary-foreground  shadow-primary/20"
                 : "bg-background border-muted-foreground/30 text-muted-foreground"
               }
             `}

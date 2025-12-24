@@ -18,9 +18,9 @@ export function NotificationsNav() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button variant="ghost" size="icon" className="rounded-lg h-9 w-9 relative">
+          <Button variant="ghost" size="icon" className=" h-9 w-9 relative">
             <Bell className="h-5 w-5" />
-            <span className="absolute top-2 right-2 flex h-2 w-2 shrink-0 rounded-full bg-red-600" />
+            <span className="absolute top-2 right-2 flex h-2 w-2 shrink-0  bg-red-600" />
             <span className="sr-only">Notifications</span>
           </Button>
         }
@@ -29,7 +29,7 @@ export function NotificationsNav() {
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex items-center justify-between font-bold">
             Notifications
-            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">3 New</span>
+            <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 ">3 New</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           

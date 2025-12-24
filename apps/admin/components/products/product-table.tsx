@@ -54,14 +54,14 @@ export function ProductTable({ products }: ProductTableProps) {
 
   const isAllSelected = products.length > 0 && selectedIds.length === products.length
   const isSomeSelected = selectedIds.length > 0 && selectedIds.length < products.length
-  const t = useTranslations("Products")
+  const t = useTranslations("Admin.products")
 
   return (
     <div className="relative pb-24">
       {/* Table Header */}
       <div className="flex items-center justify-between px-4 py-3 mb-4 text-sm font-bold text-muted-foreground uppercase tracking-wider border-b border-border/50">
         <div className="flex items-center gap-4 flex-1">
-          <div className="flex items-center bg-secondary/50 border border-border rounded-xl overflow-hidden h-9 shadow-sm">
+          <div className="flex items-center bg-secondary/50 border border-border  overflow-hidden h-9 ">
             <div 
               className={cn(
                 "flex items-center justify-center w-10 h-full cursor-pointer transition-all duration-200",

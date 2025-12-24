@@ -26,16 +26,16 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
 
   return (
     <div 
-      className="group flex items-center justify-between p-3 transition-all duration-200 rounded-xl hover:bg-secondary/40 border border-transparent hover:border-border/50"
+      className="group flex items-center justify-between p-3 transition-all duration-200  hover:bg-secondary/40 border border-transparent hover:border-border/50"
     >
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-3 w-8 justify-center">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/20 group-hover:bg-primary/40 transition-colors shrink-0" />
+          <div className="w-1.5 h-1.5  bg-muted-foreground/20 group-hover:bg-primary/40 transition-colors shrink-0" />
         </div>
         
         <div className="flex items-center gap-4">
           <div className={cn(
-            "h-11 w-11 rounded-xl flex items-center justify-center border shadow-sm transition-all group-hover:scale-105",
+            "h-11 w-11  flex items-center justify-center border  transition-all group-hover:scale-105",
             transaction.type === 'income' 
               ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500" 
               : "bg-zinc-500/10 border-border text-muted-foreground"
@@ -74,7 +74,7 @@ export function TransactionRow({ transaction }: TransactionRowProps) {
 
         <div className="w-24 flex justify-end">
           <span className={cn(
-            "px-2 py-0.5 text-[10px] font-bold rounded-lg border tabular-nums transition-all",
+            "px-2 py-0.5 text-[10px] font-bold  border tabular-nums transition-all",
             getStatusColor(transaction.status)
           )}>
             {transaction.status}

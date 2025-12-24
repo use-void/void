@@ -55,15 +55,15 @@ async function UserNavFetcher() {
 function BreadcrumbSkeleton() {
   return (
     <div className="hidden md:flex items-center gap-2">
-      <div className="h-4 w-16 bg-zinc-800/50 rounded animate-pulse" />
+      <div className="h-4 w-16 bg-zinc-800/50 animate-pulse" />
       <span className="text-zinc-800">/</span>
-      <div className="h-4 w-24 bg-zinc-800/50 rounded animate-pulse" />
+      <div className="h-4 w-24 bg-zinc-800/50 animate-pulse" />
     </div>
   );
 }
 
 function LanguageSwitcherSkeleton() {
   return (
-    <div className="h-9 w-9 bg-zinc-800/50 rounded-lg animate-pulse" />
+    <div className="h-9 w-9 bg-zinc-800/50  animate-pulse" />
   );
 }

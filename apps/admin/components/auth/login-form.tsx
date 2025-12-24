@@ -74,10 +74,10 @@ export function LoginForm() {
     }
 
     return (
-        <Card className="w-full max-w-md bg-card border border-border rounded-2xl transition-colors duration-300 hover:border-zinc-700">
+        <Card className="w-full max-w-md bg-card border border-border transition-colors duration-300 hover:border-zinc-700">
             <CardHeader className="space-y-4 text-center pb-8 pt-8">
                 <div className="flex justify-center mb-4">
-                    <div className="rounded-xl bg-zinc-900 border border-border p-3">
+                    <div className=" bg-zinc-900 border border-border p-3">
                         <ShieldCheck className="h-6 w-6 text-white" />
                     </div>
                 </div>
@@ -104,7 +104,7 @@ export function LoginForm() {
                                             <Mail className="absolute left-3 top-3 h-5 w-5 text-zinc-600 transition-colors" />
                                             <Input
                                                 placeholder="admin@void.com"
-                                                className="pl-10 h-11 bg-transparent border-zinc-800 focus:border-white/20 focus:ring-0 rounded-lg text-white placeholder:text-zinc-600 transition-all font-light"
+                                                className="pl-10 h-11 bg-transparent border-zinc-800 focus:border-white/20 focus:ring-0  text-white placeholder:text-zinc-600 transition-all font-light"
                                                 {...field}
                                             />
                                         </div>
@@ -133,7 +133,7 @@ export function LoginForm() {
                                             <Input
                                                 type="password"
                                                 placeholder="••••••••"
-                                                className="pl-10 h-11 bg-transparent border-zinc-800 focus:border-white/20 focus:ring-0 rounded-lg text-white placeholder:text-zinc-600 transition-all font-light"
+                                                className="pl-10 h-11 bg-transparent border-zinc-800 focus:border-white/20 focus:ring-0  text-white placeholder:text-zinc-600 transition-all font-light"
                                                 {...field}
                                             />
                                         </div>
@@ -143,13 +143,13 @@ export function LoginForm() {
                             )}
                         />
                         {error && (
-                            <div className="rounded-lg bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 flex items-center justify-center">
+                            <div className=" bg-red-500/10 border border-red-500/20 p-3 text-sm text-red-400 flex items-center justify-center">
                                 {error}
                             </div>
                         )}
                         <Button
                             type="submit"
-                            className="w-full h-11 text-base font-normal bg-white text-black hover:bg-zinc-200 rounded-lg transition-colors duration-300"
+                            className="w-full h-11 text-base font-normal bg-white text-black hover:bg-zinc-200  transition-colors duration-300"
                             disabled={isLoading}
                         >
                             {isLoading ? (

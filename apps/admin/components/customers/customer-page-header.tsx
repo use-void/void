@@ -1,6 +1,6 @@
 "use client"
 
-import { UserPlus, FileDown } from "lucide-react"
+import { FileDown } from "lucide-react"
 import { Button } from "@repo/ui"
 
 interface CustomerPageHeaderProps {
@@ -17,13 +17,9 @@ export function CustomerPageHeader({ title, description }: CustomerPageHeaderPro
       </div>
       
       <div className="flex items-center gap-3">
-        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 rounded-xl">
+        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
           <FileDown className="h-4 w-4" />
           <span>تصدير</span>
-        </Button>
-        <Button className="h-11 px-5 bg-foreground hover:bg-foreground/90 text-background font-semibold gap-2 rounded-xl">
-          <UserPlus className="h-5 w-5" />
-          <span>إضافة عميل</span>
         </Button>
       </div>
     </div>

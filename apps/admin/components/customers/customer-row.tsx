@@ -1,6 +1,8 @@
 "use client"
 
 import { cn } from "@repo/ui"
+import { Link } from "@repo/i18n/navigation"
+import Image from "next/image"
 
 interface CustomerRowProps {
   customer: {
@@ -26,25 +28,33 @@ export function CustomerRow({ customer }: CustomerRowProps) {
 
   return (
     <div 
-      className="group flex items-center justify-between p-4 mb-2 transition-all duration-200 rounded-2xl border border-transparent hover:border-border hover:bg-secondary/30"
+      className="group flex items-center justify-between p-4 mb-2 transition-all duration-200 border border-transparent hover:border-border hover:bg-secondary/30"
     >
       <div className="flex items-center gap-4 flex-1">
         <div className="flex items-center gap-3 min-w-[3.5rem]">
-          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/30 shrink-0" />
+          <div className="w-1.5 h-1.5  bg-muted-foreground/30 shrink-0" />
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center overflow-hidden border border-border shadow-sm">
+          <div className="h-12 w-12  bg-secondary flex items-center justify-center overflow-hidden border border-border ">
             {customer.avatar ? (
-              <img src={customer.avatar} alt={customer.name} className="h-full w-full object-cover" />
+               <div className="relative h-full w-full">
+                <Image 
+                    src={customer.avatar} 
+                    alt={customer.name} 
+                    fill 
+                    className="object-cover"
+                    unoptimized
+                />
+              </div>
             ) : (
-              <div className="h-6 w-6 bg-muted-foreground/20 rounded-md" />
+              <div className="h-6 w-6 bg-muted-foreground/20 " />
             )}
           </div>
-          <div className="text-right">
+          <Link href={`/customers/${customer.id}`} className="text-right hover:opacity-80 transition-opacity">
             <h3 className="font-semibold text-foreground">{customer.name}</h3>
             <p className="text-xs text-muted-foreground lowercase">{customer.email}</p>
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -69,7 +79,7 @@ export function CustomerRow({ customer }: CustomerRowProps) {
 
         <div className="w-1/4 flex justify-end">
           <span className={cn(
-            "px-2.5 py-1 text-[11px] font-bold rounded-lg border",
+            "px-2.5 py-1 text-[11px] font-bold  border",
             getStatusColor(customer.status)
           )}>
             {customer.status}

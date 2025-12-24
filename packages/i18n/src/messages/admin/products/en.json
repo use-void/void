@@ -32,5 +32,17 @@
         "organization": "Organization",
         "category": "Category",
         "sku": "SKU"
+    },
+    "settings": {
+        "actions": {
+            "save_changes": "Save Changes"
+        }
+    },
+    "setup": {
+        "steps": {
+            "store": {
+                "description": "Description"
+            }
+        }
     }
 }

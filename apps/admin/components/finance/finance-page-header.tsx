@@ -22,18 +22,18 @@ export function FinancePageHeader({ title, description }: FinancePageHeaderProps
       
       <div className="flex items-center gap-3">
         <Link href={`/${locale}/finance/transactions`}>
-          <Button variant="ghost" className="h-11 px-5 text-muted-foreground hover:text-foreground gap-2 rounded-xl">
+          <Button variant="ghost" className="h-11 px-5 text-muted-foreground hover:text-foreground gap-2 ">
             <span>عرض جميع المعاملات</span>
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           </Button>
         </Link>
         
-        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 rounded-xl">
+        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
           <Filter className="h-4 w-4" />
           <span>تصفية</span>
         </Button>
         
-        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 rounded-xl">
+        <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
           <FileDown className="h-4 w-4" />
           <span>تصدير التقارير</span>
         </Button>

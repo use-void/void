@@ -61,10 +61,10 @@ export default async function ProductsPage({
 }) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: "Products" });
+    const t = await getTranslations({ locale, namespace: "Admin.products" });
     
     return (
-        <div className="flex flex-col w-full pb-20">
+        <div className="flex flex-col w-full p-10 pb-20">
             <ProductPageHeader 
                 title={t("title")} 
                 description={t("description")} 

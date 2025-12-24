@@ -158,11 +158,30 @@
                 "status": "Status",
                 "payment": "Payment Method",
                 "items": "Items",
-                "total": "Total Amount"
+                "total": "Total Amount",
+                "digitalDelivery": {
+                    "title": "Digital Delivery",
+                    "status": "Delivery Status",
+                    "method": "Delivery Method",
+                    "downloadLink": "Download Link",
+                    "licenseKey": "License Key",
+                    "sentTo": "Sent To",
+                    "delivered": "Delivered",
+                    "pending": "Pending"
+                },
+                "logistics": {
+                    "partner": "Logistics Partner",
+                    "tracking": "Tracking ID",
+                    "arrival": "Estimated Arrival"
+                }
             }
         },
         "customers": {
             "title": "Customers",
+            "header": {
+                "description": "Manage customer database and track their activity",
+                "export": "Export"
+            },
             "table": {
                 "actions": "Actions",
                 "viewDetails": "View Details"
@@ -173,7 +192,24 @@
                 "phone": "Phone",
                 "status": "Status",
                 "joinDate": "Join Date",
-                "address": "Address"
+                "address": "Address",
+                "stats": {
+                    "ltv": "LTV",
+                    "orders": "Orders",
+                    "avgOrder": "Avg Order",
+                    "tier": "Tier"
+                },
+                "recentOrders": "Recent Orders",
+                "internalNotes": "Internal Notes",
+                "notesPlaceholder": "Type notes here...",
+                "saveNotes": "Save Notes",
+                "primaryAddress": "Primary Address",
+                "tags": "Tags",
+                "actions": {
+                    "sendMessage": "Send Message",
+                    "addDiscount": "Add Discount",
+                    "deleteCustomer": "Delete Customer"
+                }
             }
         },
         "finance": {

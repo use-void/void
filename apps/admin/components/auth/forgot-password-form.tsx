@@ -8,7 +8,7 @@ import { ArrowLeft, Mail } from "lucide-react";
 export function ForgotPasswordForm() {
     const t = useTranslations('Admin.auth');
     return (
-        <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/50 backdrop-blur-xl shadow-2xl">
+        <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/50 backdrop-blur-xl ">
             <CardHeader className="space-y-2 text-center pb-8">
                 <CardTitle className="text-2xl font-bold">{t('forgotPasswordTitle')}</CardTitle>
                 <CardDescription>
