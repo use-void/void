@@ -1,20 +1,22 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "@repo/i18n";
 import { Button, Card, CardContent } from "@repo/ui";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { Link } from "@repo/i18n/navigation";
+import { formatPrice } from "@void/payment";
 
 export function CartItemsList() {
     const t = useTranslations("Store.cart");
+    const locale = useLocale();
     const { items, removeItem, updateQuantity } = useCartStore();
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between border-b pb-6">
                 <h1 className="text-3xl font-extrabold tracking-tight">{t("title")}</h1>
-                <span className="text-muted-foreground font-medium">({items.length}) {t("itemsCount") || "منتجات"}</span>
+                <span className="text-muted-foreground font-medium">({items.length}) {t("itemsCount")}</span>
             </div>
 
             {items.length === 0 ? (
@@ -24,10 +26,10 @@ export function CartItemsList() {
                             <ShoppingBag className="h-10 w-10 text-muted-foreground/60" />
                         </div>
                         <h3 className="text-xl font-bold mb-2">{t("empty")}</h3>
-                        <p className="text-muted-foreground mb-8 max-w-xs">{t("emptyDescription") || "لا توجد منتجات في سلتك حالياً. ابدأ بالتسوق الآن وأضف بعض المنتجات الرائعة!"}</p>
+                        <p className="text-muted-foreground mb-8 max-w-xs">{t("emptyDescription")}</p>
                         <Link href="/products">
                             <Button variant="default" size="lg" className="rounded-xl px-8">
-                                {t("continueShopping") || "Start Shopping"}
+                                {t("continueShopping")}
                             </Button>
                         </Link>
                     </CardContent>
@@ -57,7 +59,7 @@ export function CartItemsList() {
                                                     <h3 className="font-bold text-lg leading-snug line-clamp-1">{item.name}</h3>
                                                 </Link>
                                                 <p className="text-sm text-muted-foreground">
-                                                    {t("unitPrice") || "سعر الوحدة"}: {item.price} {t("currency_SAR")}
+                                                    {t("unitPrice")}: {formatPrice(item.price, 'SAR', locale)}
                                                 </p>
                                             </div>
                                             <Button 
@@ -96,8 +98,7 @@ export function CartItemsList() {
                                             {/* Item Total */}
                                             <div className="text-right">
                                                 <p className="text-xl font-black text-foreground">
-                                                    {(item.price * item.quantity).toLocaleString()} 
-                                                    <span className="text-xs font-semibold text-muted-foreground uppercase mr-1">{t("currency_SAR")}</span>
+                                                    {formatPrice(item.price * item.quantity, 'SAR', locale)}
                                                 </p>
                                             </div>
                                         </div>

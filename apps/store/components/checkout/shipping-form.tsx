@@ -10,19 +10,19 @@ export async function ShippingForm({ locale }: { locale: string }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label htmlFor="firstName">{t("checkout.firstName")}</Label>
-                    <Input id="firstName" placeholder={locale === 'ar' ? 'أحمد' : 'John'} />
+                    <Input id="firstName" placeholder={t("checkout.placeholders.firstName")} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="lastName">{t("checkout.lastName")}</Label>
-                    <Input id="lastName" placeholder={locale === 'ar' ? 'محمد' : 'Doe'} />
+                    <Input id="lastName" placeholder={t("checkout.placeholders.lastName")} />
                 </div>
                 <div className="md:col-span-2 space-y-2">
                     <Label htmlFor="address">{t("checkout.address")}</Label>
-                    <Input id="address" placeholder={locale === 'ar' ? 'اسم الشارع، رقم المنزل' : 'Street name, house number'} />
+                    <Input id="address" placeholder={t("checkout.placeholders.address")} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="city">{t("checkout.city")}</Label>
-                    <Input id="city" placeholder={locale === 'ar' ? 'الرياض' : 'Riyadh'} />
+                    <Input id="city" placeholder={t("checkout.placeholders.city")} />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="zip">{t("checkout.zip")}</Label>

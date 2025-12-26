@@ -33,7 +33,7 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
                     <ProductInfo 
                         locale={locale}
                         name={product.name}
-                        price={product.price.toString()}
+                        price={product.price}
                         description={product.description}
                     />
                     <div className="mt-8">

@@ -5,6 +5,7 @@ import { CheckCircle2, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from '@repo/i18n/navigation';
 import { connectToDatabase, PaymentTransaction, Order } from '@void/db';
 import { ClearCart } from '@/components/cart/clear-cart';
+import { CURRENCIES, formatPrice } from '@void/payment';
 
 async function ThankYouDetails({ 
     searchParamsPromise, 
@@ -19,13 +20,12 @@ async function ThankYouDetails({
     
     await connectToDatabase();
     
-    // Fetch transaction and order info
     const tx = txId ? await (PaymentTransaction as any).findOne({ providerTransactionId: txId }) : null;
     const order = tx?.orderId ? await (Order as any).findById(tx.orderId) : null;
 
     const orderNumber = order?.orderNumber || "ORD-PENDING";
     const total = order?.financials?.total || (tx?.amount ? tx.amount / 100 : 0);
-    const currencyLabel = locale === 'ar' ? 'ر.س' : 'SAR';
+    const currencyCode = order?.financials?.currency || tx?.currency || 'SAR';
 
     return (
         <div className="max-w-md mx-auto space-y-8">
@@ -38,13 +38,9 @@ async function ThankYouDetails({
             <div className="space-y-2">
                 <h1 className="text-4xl font-bold tracking-tight">{t("checkout.success")}</h1>
                 <p className="text-muted-foreground text-lg">
-                    {locale === 'ar' 
-                        ? `رقم طلبك هو ` 
-                        : `Your order number is `}
+                    {t("thankYou.orderNumber")}
                     <span className="font-bold text-foreground">#{orderNumber}</span>. 
-                    {locale === 'ar'
-                        ? ` ستتلقى بريداً إلكترونياً بتفاصيل التأكيد والشحن قريباً.`
-                        : ` You will receive an email confirmation soon.`}
+                    {t("thankYou.confirmationEmail")}
                 </p>
             </div>
 
@@ -52,15 +48,15 @@ async function ThankYouDetails({
                 <h3 className="font-bold border-b pb-2 mb-4">{t("checkout.orderSummary")}</h3>
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t("cart.subtotal")}</span>
-                    <span>{total} {currencyLabel}</span>
+                    <span>{formatPrice(total, currencyCode, locale)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{t("cart.shipping")}</span>
-                    <span className="text-green-600">{t("checkout.freeShipping")}</span>
+                    <span className="text-green-600 font-bold">{t("checkout.freeShipping")}</span>
                 </div>
                 <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
                     <span>{t("cart.total")}</span>
-                    <span className="text-primary">{total} {currencyLabel}</span>
+                    <span className="text-primary">{formatPrice(total, currencyCode, locale)}</span>
                 </div>
             </div>
 
@@ -70,7 +66,7 @@ async function ThankYouDetails({
                     className={buttonVariants({ variant: "outline", size: "lg", className: "h-12 px-8 rounded-xl" })}
                 >
                     <ShoppingBag className="me-2 h-5 w-5" />
-                    {locale === 'ar' ? 'تتبع طلباتي' : 'Track My Orders'}
+                    {t("thankYou.trackOrders")}
                 </Link>
                 <Link 
                     href="/" 
@@ -84,11 +80,12 @@ async function ThankYouDetails({
     );
 }
 
-function ThankYouLoading() {
+async function ThankYouLoading({ locale }: { locale: string }) {
+    const t = await getTranslations({ locale, namespace: "Store" });
     return (
         <div className="flex flex-col items-center justify-center py-12 space-y-4">
             <Loader2 className="h-12 w-12 text-primary animate-spin" />
-            <p className="text-muted-foreground animate-pulse">جاري تأكيد طلبك...</p>
+            <p className="text-muted-foreground animate-pulse">{t("thankYou.confirming")}</p>
         </div>
     );
 }
@@ -105,7 +102,7 @@ export default async function ThankYouPage({
 
     return (
         <div className="container mx-auto px-4 py-16 md:py-24 text-center">
-            <Suspense fallback={<ThankYouLoading />}>
+            <Suspense fallback={<ThankYouLoading locale={locale} />}>
                 <ThankYouDetails searchParamsPromise={searchParamsPromise} locale={locale} />
             </Suspense>
         </div>

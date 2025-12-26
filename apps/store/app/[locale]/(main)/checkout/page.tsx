@@ -6,6 +6,8 @@ import { getSession } from '@void/auth';
 import { CheckoutFlow } from '@/components/checkout/checkout-flow';
 import { getCartById, getCart } from '@/app/actions/cart'; // Adjust import if needed
 import { Product, connectToDatabase } from '@void/db';
+import { getPaymentConfig } from '@/app/actions/config';
+import { resolveActiveGateway } from '@void/payment';
 
 export default async function CheckoutPage({ 
     params,
@@ -65,34 +67,27 @@ async function CheckoutFormWrapper({
     const session = await getSession();
     const userId = session?.user?.id;
 
-    // Server-Side Gateway Logic
-    let activeGateway: 'moyasar' | 'polar' = 'moyasar'; // Default
-    let resolvedCartId = cartId;
-
     await connectToDatabase();
+    
+    // 1. Get Store/Payment Config
+    const config = await getPaymentConfig();
+    
+    // 2. Gateway Logic
+    const activeGateway = resolveActiveGateway({
+        isMoyasarEnabled: config.moyasar.isEnabled,
+        isPolarEnabled: config.polar.isEnabled
+    });
 
-    // 1. Try to find the cart
+    // 3. Try to find the cart
+    let resolvedCartId = cartId;
     let cart: any = null;
     if (cartId) {
         cart = await getCartById(cartId);
     } 
     
     if (!cart && userId) {
-        // Fallback: If no param, try getting user's active cart
         cart = await getCart(userId, undefined);
         resolvedCartId = cart?._id?.toString();
-    }
-
-    // 2. Analyze Product Types
-    if (cart && cart.items && cart.items.length > 0) {
-        const productIds = cart.items.map((item: any) => item.productId);
-        const products = await (Product as any).find({ _id: { $in: productIds } }).select('type').lean();
-        
-        const hasDigital = products.some((p: any) => p.type === 'digital' || p.type === 'subscription');
-        
-        if (hasDigital) {
-            activeGateway = 'polar';
-        }
     }
 
     return (
@@ -102,6 +97,7 @@ async function CheckoutFormWrapper({
             userId={userId}
             initialGateway={activeGateway}
             cartIdProp={resolvedCartId}
+            defaultCurrency={config.defaultCurrency}
         />
     );
 }

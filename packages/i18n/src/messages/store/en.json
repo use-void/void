@@ -45,7 +45,12 @@
             "collections": "Collections",
             "viewAll": "View All",
             "addToCart": "Add to Cart",
-            "currency_SAR": "SAR"
+            "currency_SAR": "SAR",
+            "currency_USD": "$",
+            "currency_EUR": "€",
+            "subscribeNow": "Subscribe Now",
+            "loading": "Loading...",
+            "unexpectedError": "An unexpected error occurred"
         },
         "home": {
             "heroTitle": "Discover the World of Shopping",
@@ -54,30 +59,46 @@
             "featuredCategories": "Featured Categories",
             "featuredProducts": "Selected Products"
         },
+        "products": {
+            "title": "All Products"
+        },
         "product": {
             "description": "Description",
             "specifications": "Specifications",
             "quantity": "Quantity",
             "outOfStock": "Out of Stock",
-            "relatedProducts": "Related Products"
+            "relatedProducts": "Related Products",
+            "freeDeliveryNote": "Free delivery for orders over 500 SAR",
+            "messages": {
+                "dataMissing": "Action failed (data missing)",
+                "subscribeFailed": "Failed to initiate subscription",
+                "addedToCart": "Product added to cart"
+            }
         },
         "cart": {
             "title": "Shopping Cart",
+            "itemsCount": "items",
             "empty": "Your cart is empty",
+            "emptyDescription": "There are no products in your cart currently. Start shopping now and add some great products!",
             "summary": "Order Summary",
             "items": "Items",
             "subtotal": "Subtotal",
             "shipping": "Shipping",
             "total": "Total",
             "checkout": "Checkout",
-            "currency_SAR": "SAR",
-            "continueShopping": "Continue Shopping"
+            "preparing": "Preparing...",
+            "taxIncluded": "Prices include VAT",
+            "unitPrice": "Unit Price",
+            "continueShopping": "Continue Shopping",
+            "freeShipping": "Free Shipping"
         },
         "checkout": {
             "title": "Checkout",
             "shippingAddress": "Shipping Address",
             "paymentMethod": "Payment Method",
             "placeOrder": "Place Order",
+            "processing": "Processing...",
+            "verifying": "Verifying...",
             "success": "Your order has been placed successfully!",
             "firstName": "First Name",
             "lastName": "Last Name",
@@ -88,14 +109,57 @@
             "orderSummary": "Order Summary",
             "freeShipping": "Free Shipping",
             "vatInclude": "Prices include VAT",
+            "placeholders": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "address": "Street name, house number",
+                "city": "Riyadh"
+            },
+            "errors": {
+                "paymentUnavailable": "Sorry, payment is currently unavailable",
+                "noProvider": "No payment methods are enabled in the store. Please contact support.",
+                "prepareFailed": "Failed to prepare checkout",
+                "verificationFailed": "OTP verification failed",
+                "applePayError": "Apple Pay requires further configuration on this device",
+                "genericError": "An error occurred during payment"
+            },
             "payment": {
                 "moyasar": "Mada / Credit Card",
                 "moyasarDesc": "Secure and fast payment via Moyasar",
                 "polar": "Global Subscription (Polar)",
                 "polarDesc": "For global subscriptions and digital products",
                 "cash": "Cash on Delivery",
-                "cashDesc": "Pay cash when your order arrives"
+                "cashDesc": "Pay cash when your order arrives",
+                "card": "Mada / Credit Card",
+                "cardDesc": "Secure and fast payment (for physical products)",
+                "stcpay": "STC Pay",
+                "stcpayDesc": "Direct payment via mobile number",
+                "applepay": "Apple Pay",
+                "applepayDesc": "Secure payment via iPhone / Mac",
+                "saveCard": "Save card details for future purchases",
+                "mobileNumber": "Mobile number linked to STC Pay",
+                "stcOtpDesc": "A verification code (OTP) will be sent to your mobile after clicking \"Place Order\"",
+                "goToPayment": "Go to Payment",
+                "securePayment": "Complete Secure Payment",
+                "redirectDesc": "You will be redirected to the encrypted payment page.",
+                "subscriptionDesc": "Your subscription requires a secure recurring payment.",
+                "verifyMobile": "Verify Mobile Number",
+                "otpSent": "A verification code has been sent to your mobile number",
+                "confirmOtp": "Confirm Code",
+                "changeMobile": "Change Mobile Number",
+                "testModeNote": "Note: In test mode, you can use the code 123456 to complete the process successfully.",
+                "nameOnCard": "Name on Card",
+                "cardNumber": "Card Number",
+                "cvc": "CVC",
+                "month": "Month",
+                "year": "Year"
             }
+        },
+        "thankYou": {
+            "orderNumber": "Your order number is ",
+            "confirmationEmail": " You will receive an email confirmation soon.",
+            "trackOrders": "Track My Orders",
+            "confirming": "Confirming your order..."
         },
         "account": {
             "title": "My Account",

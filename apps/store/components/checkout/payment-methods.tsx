@@ -1,6 +1,6 @@
 import { getTranslations } from "@repo/i18n";
 import { CreditCard, Banknote, Wallet, LucideIcon } from "lucide-react";
-import { PAYMENT_PROVIDERS, PaymentProviderId } from "@void/payment";
+import { PAYMENT_PROVIDERS } from "@void/payment";
 
 const ICON_MAP: Record<string, LucideIcon> = {
     'credit-card': CreditCard,

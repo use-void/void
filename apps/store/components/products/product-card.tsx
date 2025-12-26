@@ -3,7 +3,8 @@
 import { Link } from "@repo/i18n/navigation";
 import { Card, CardContent, CardFooter, cn } from "@repo/ui";
 import { AddToCartButton } from "../cart/add-to-cart-button";
-import { useTranslations } from "next-intl";
+import { formatPrice } from "@void/payment";
+import { useTranslations } from "@repo/i18n";
 
 interface ProductCardProps {
     product: {
@@ -49,7 +50,7 @@ export function ProductCard({ product, className, locale }: ProductCardProps) {
                 </Link>
                 <div className="mt-auto pt-2">
                     <p className="text-lg font-bold text-foreground">
-                        {product.price.toLocaleString()} <span className="text-xs font-medium text-muted-foreground uppercase">{t("common.currency_SAR")}</span>
+                        {formatPrice(product.price, 'SAR', locale)}
                     </p>
                 </div>
             </CardContent>
@@ -58,7 +59,6 @@ export function ProductCard({ product, className, locale }: ProductCardProps) {
                 <AddToCartButton 
                     variant="default"
                     className="w-full"
-                    locale={locale}
                     product={{
                         id: product.id,
                         name: product.name,
@@ -69,7 +69,7 @@ export function ProductCard({ product, className, locale }: ProductCardProps) {
                     }}
                 >
                     {product.type === 'subscription' 
-                        ? (locale === 'ar' ? 'اشترك الآن' : 'Subscribe Now') 
+                        ? t("common.subscribeNow")
                         : t("common.addToCart")}
                 </AddToCartButton>
             </CardFooter>

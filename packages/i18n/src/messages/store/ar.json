@@ -45,7 +45,12 @@
             "collections": "المجموعات",
             "viewAll": "عرض الكل",
             "addToCart": "إضافة إلى السلة",
-            "currency_SAR": "ر.س"
+            "currency_SAR": "ر.س",
+            "currency_USD": "$",
+            "currency_EUR": "€",
+            "subscribeNow": "اشترك الآن",
+            "loading": "جاري التحميل...",
+            "unexpectedError": "حدث خطأ غير متوقع"
         },
         "home": {
             "heroTitle": "اكتشف عالم التسوق بين يديك",
@@ -54,30 +59,46 @@
             "featuredCategories": "التصنيفات المميزة",
             "featuredProducts": "المنتجات المختارة"
         },
+        "products": {
+            "title": "جميع المنتجات"
+        },
         "product": {
             "description": "الوصف",
             "specifications": "المواصفات",
             "quantity": "الكمية",
             "outOfStock": "غير متوفر",
-            "relatedProducts": "منتجات ذات صلة"
+            "relatedProducts": "منتجات ذات صلة",
+            "freeDeliveryNote": "التوصيل المجاني للطلبات فوق 500 ر.س",
+            "messages": {
+                "dataMissing": "فشل العملية (بيانات مفقودة)",
+                "subscribeFailed": "فشل بدء الاشتراك",
+                "addedToCart": "تمت إضافة المنتج إلى السلة"
+            }
         },
         "cart": {
             "title": "سلة المشتريات",
+            "itemsCount": "منتجات",
             "empty": "سلة المشتريات فارغة",
+            "emptyDescription": "لا توجد منتجات في سلتك حالياً. ابدأ بالتسوق الآن وأضف بعض المنتجات الرائعة!",
             "summary": "ملخص الطلب",
             "items": "المنتجات",
             "subtotal": "المجموع الفرعي",
             "shipping": "الشحن",
             "total": "المجموع الكلي",
             "checkout": "إتمام الطلب",
-            "currency_SAR": "ر.س",
-            "continueShopping": "متابعة التسوق"
+            "preparing": "جاري التحضر...",
+            "taxIncluded": "الأسعار تشمل ضريبة القيمة المضافة",
+            "unitPrice": "سعر الوحدة",
+            "continueShopping": "متابعة التسوق",
+            "freeShipping": "توصيل مجاني"
         },
         "checkout": {
             "title": "إتمام الشراء",
             "shippingAddress": "عنوان الشحن",
             "paymentMethod": "طريقة الدفع",
             "placeOrder": "تأكيد الطلب",
+            "processing": "جاري المعالجة...",
+            "verifying": "جاري التحقق...",
             "success": "تم تقديم طلبك بنجاح!",
             "firstName": "الاسم الأول",
             "lastName": "اللقب",
@@ -88,14 +109,57 @@
             "orderSummary": "ملخص الطلب",
             "freeShipping": "توصيل مجاني",
             "vatInclude": "الأسعار تشمل ضريبة القيمة المضافة",
+            "placeholders": {
+                "firstName": "أحمد",
+                "lastName": "محمد",
+                "address": "اسم الشارع، رقم المنزل",
+                "city": "الرياض"
+            },
+            "errors": {
+                "paymentUnavailable": "عذراً، الدفع غير متاح حالياً",
+                "noProvider": "لم يتم تفعيل أي وسيلة دفع في المتجر. يرجى التواصل مع الدعم.",
+                "prepareFailed": "فشل تحضير عملية الدفع",
+                "verificationFailed": "فشل التحقق من الرمز",
+                "applePayError": "Apple Pay يتطلب تكوينًا إضافيًا على هذا الجهاز",
+                "genericError": "حدث خطأ أثناء الدفع"
+            },
             "payment": {
                 "moyasar": "بطاقة مدى / ائتمانية",
                 "moyasarDesc": "دفع آمن وسريع عبر ميسر",
                 "polar": "اشتراك عالمي (Polar)",
                 "polarDesc": "للاشتراكات والمنتجات الرقمية العالمية",
                 "cash": "عند الاستلام",
-                "cashDesc": "ادفع نقداً عند وصول طلبك"
+                "cashDesc": "ادفع نقداً عند وصول طلبك",
+                "card": "بطاقة مدى / اائتمانية",
+                "cardDesc": "دفع آمن و سريع (للمنتجات المادية)",
+                "stcpay": "STC Pay",
+                "stcpayDesc": "الدفع المباشر برقم الجوال",
+                "applepay": "Apple Pay",
+                "applepayDesc": "دفع آمن عبر iPhone / Mac",
+                "saveCard": "حفظ بيانات البطاقة للمشتريات القادمة",
+                "mobileNumber": "رقم الجوال المرتبط بـ STC Pay",
+                "stcOtpDesc": "سيتم إرسال رمز التحقق (OTP) إلى جوالك بعد الضغط على \"إتمام الطلب\"",
+                "goToPayment": "الذهاب للدفع",
+                "securePayment": "إتمام الدفع الآمن",
+                "redirectDesc": "سيتم تحويلك لصفحة الدفع المشفرة.",
+                "subscriptionDesc": "اشتراكك يتطلب دفع دوري آمن.",
+                "verifyMobile": "التحقق من رقم الجوال",
+                "otpSent": "تم إرسال رمز التحقق إلى رقم جوالك",
+                "confirmOtp": "تأكيد الرمز",
+                "changeMobile": "تغيير رقم الجوال",
+                "testModeNote": "ملاحظة: في وضع التجربة، يمكنك استخدام الرمز 123456 لإتمام العملية بنجاح.",
+                "nameOnCard": "الاسم على البطاقة",
+                "cardNumber": "رقم البطاقة",
+                "cvc": "رمز (CVC)",
+                "month": "الشهر",
+                "year": "السنة"
             }
+        },
+        "thankYou": {
+            "orderNumber": "رقم طلبك هو ",
+            "confirmationEmail": " ستتلقى بريداً إلكترونياً بتفاصيل التأكيد والشحن قريباً.",
+            "trackOrders": "تتبع طلباتي",
+            "confirming": "جاري تأكيد طلبك..."
         },
         "account": {
             "title": "حسابي",

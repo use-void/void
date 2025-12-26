@@ -14,11 +14,10 @@ export async function ProductActions({ locale, product }: { locale: string, prod
                     size="lg" 
                     className="flex-1 h-12 text-lg font-bold" 
                     product={product}
-                    locale={locale}
                 >
                     <ShoppingCart className="mr-2 h-5 w-5" />
                     {product.type === 'subscription' 
-                        ? (locale === 'ar' ? 'اشترك الآن' : 'Subscribe Now') 
+                        ? t("common.subscribeNow")
                         : t("common.addToCart")}
                 </AddToCartButton>
                 <Button size="lg" variant="outline" className="h-12 w-12 p-0 rounded-full border-muted-foreground/20 hover:text-red-500 hover:border-red-500 transition-colors">

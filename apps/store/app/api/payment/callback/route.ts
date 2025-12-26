@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPaymentAction } from '@void/payment/actions';
-import { PaymentProviderId } from '@void/payment';
-
+import { PaymentProviderId, TransactionStatus } from '@void/payment';
+import { getLocalizedValue } from '@repo/i18n';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
@@ -14,7 +14,6 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   console.log('Payment Callback Params:', Object.fromEntries(searchParams.entries()));
   
-  // Polar sends 'checkout_id', Moyasar sends 'id'
   const checkoutId = searchParams.get('checkout_id');
   const moyasarId = searchParams.get('id');
   const id = moyasarId || checkoutId;
@@ -33,9 +32,8 @@ export async function GET(request: NextRequest) {
           const verifyResult = await verifyPaymentAction(gateway, id);
 
           if (verifyResult.status === 'success') {
-              const { status: txStatus } = verifyResult.data;
+              const txStatus = verifyResult.data.status as TransactionStatus;
               
-              // Use unified statuses: PAID, CAPTURED, AUTHORIZED
               if (['PAID', 'CAPTURED', 'AUTHORIZED'].includes(txStatus)) {
                   verifiedId = verifyResult.data.id;
                   verifiedResult = verifyResult.data;
@@ -62,7 +60,6 @@ export async function GET(request: NextRequest) {
   const baseUrl = request.nextUrl.origin;
 
   if (verifiedId && verifiedResult) {
-      // 1. Order Creation Logic
       try {
           const { cartId, amount, currency, metadata } = verifiedResult;
           const productId = metadata?.productId || searchParams.get('productId');
@@ -83,14 +80,14 @@ export async function GET(request: NextRequest) {
                       orderItems = finalCart.items;
                       finalUserId = finalCart.userId?.toString() || userId;
                       
-                      // Mark Cart as converted
                       finalCart.status = 'converted';
                       await finalCart.save();
                   }
               } else if (productId) {
                   const product = await (db.Product as any).findById(productId);
                   if (product) {
-                      const name = product.name instanceof Map ? (product.name.get(locale) || product.name.get('en')) : (product.name[locale] || product.name['en']);
+                      const name = getLocalizedValue(product.name, locale);
+                        
                       orderItems = [{
                           productId: product._id.toString(),
                           quantity: 1,
@@ -99,7 +96,6 @@ export async function GET(request: NextRequest) {
                           image: product.images?.[0]?.url || '/placeholder.png'
                       }];
 
-                      // Use customer info from Polar if guest
                       if (!finalUserId) {
                            guestInfo = {
                                email: metadata?.customerEmail || 'guest@example.com',
@@ -116,11 +112,10 @@ export async function GET(request: NextRequest) {
                       items: orderItems,
                       amount: amount.value / 100, 
                       currency: currency,
-                      paymentMethod: verifiedResult.paymentMethodType || 'card'
+                      paymentMethod: verifiedResult.paymentMethodType
                   });
 
                   if (orderResult.success) {
-                      // 4. Link Order to Transaction
                       await (db.PaymentTransaction as any).updateOne(
                           { providerTransactionId: id, provider: gateway } as any,
                           { orderId: orderResult.orderId }

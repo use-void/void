@@ -2,18 +2,16 @@
 
 import { Category, Product, connectToDatabase } from "@void/db";
 import { cacheTag } from "next/cache";
+import { getLocalizedValue } from "@repo/i18n";
 
-// Helper type for localized string access
-type LocalizedString = Map<string, string>;
+const CATEGORY_ICONS: Record<string, string> = {
+    electronics: "📱",
+    fashion: "👕",
+    digital: "💾",
+    default: "📦"
+};
 
-function getLocalizedValue(map: LocalizedString | undefined | any, locale: string): string {
-    if (!map) return '';
-    if (map instanceof Map) {
-        return map.get(locale) || map.get('en') || '';
-    }
-    // Handle plain object case if lean() returns POJOs
-    return map[locale] || map['en'] || '';
-}
+const DEFAULT_PRODUCT_IMAGE = '/placeholder.png';
 
 export async function getFeaturedCategories(locale: string) {
     'use cache';
@@ -24,9 +22,7 @@ export async function getFeaturedCategories(locale: string) {
 
         return categories.map((category) => {
             const name = getLocalizedValue(category.name, locale);
-            const icon = category.slug === 'electronics' ? "📱" :
-                         category.slug === 'fashion' ? "👕" :
-                         category.slug === 'digital' ? "💾" : "📦";
+            const icon = CATEGORY_ICONS[category.slug] || CATEGORY_ICONS.default;
 
             return {
                 id: category._id.toString(),
@@ -51,7 +47,7 @@ export async function getFeaturedProducts(locale: string) {
         
         return products.map((product) => {
             const name = getLocalizedValue(product.name, locale);
-            const image = product.images?.[0]?.url || '/placeholder.png';
+            const image = product.images?.[0]?.url || DEFAULT_PRODUCT_IMAGE;
 
             return {
                 id: product._id.toString(),
@@ -80,7 +76,7 @@ export async function getProducts(locale: string, categorySlug?: string) {
 
         return products.map((product) => {
             const name = getLocalizedValue(product.name, locale);
-            const image = product.images?.[0]?.url || '/placeholder.png';
+            const image = product.images?.[0]?.url || DEFAULT_PRODUCT_IMAGE;
 
             return {
                 id: product._id.toString(),
@@ -147,7 +143,7 @@ export async function getRelatedProducts(locale: string, categoryId: string | un
 
         return products.map((product) => {
             const name = getLocalizedValue(product.name, locale);
-            const image = product.images?.[0]?.url || '/placeholder.png';
+            const image = product.images?.[0]?.url || DEFAULT_PRODUCT_IMAGE;
 
             return {
                 id: product._id.toString(),

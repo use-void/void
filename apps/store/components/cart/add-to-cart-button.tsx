@@ -8,13 +8,14 @@ import { useCartStore, CartItem } from "@/stores/cart-store";
 import { initiatePolarCheckout } from "@/app/actions/checkout";
 import { useRouter } from "next/navigation";
 
+import { useTranslations, useLocale } from "@repo/i18n";
+
 interface AddToCartButtonProps {
     children: React.ReactNode;
     className?: string;
     size?: "default" | "sm" | "lg" | "icon";
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
     product?: Omit<CartItem, 'quantity'>;
-    locale?: string;
 }
 
 export function AddToCartButton({ 
@@ -23,10 +24,11 @@ export function AddToCartButton({
     size = "default",
     variant = "default",
     product,
-    locale = "ar"
 }: AddToCartButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
     const addItem = useCartStore((state) => state.addItem);
+    const t = useTranslations("Store");
+    const locale = useLocale();
     const router = useRouter();
 
     const handleAction = async (e: React.MouseEvent) => {
@@ -36,31 +38,31 @@ export function AddToCartButton({
         setIsLoading(true);
         
         if (!product) {
-             toast.error(locale === 'ar' ? "فشل العملية (بيانات مفقودة)" : "Action failed (data missing)");
+             toast.error(t("product.messages.dataMissing"));
              setIsLoading(false);
              return;
         }
 
         try {
             if (product.type === 'subscription') {
-                // Subscription Flow: Direct Checkout
                 const result = await initiatePolarCheckout(product.id, locale);
                 if (result.success && result.checkoutUrl) {
                     window.location.href = result.checkoutUrl;
                 } else {
-                    toast.error(locale === 'ar' ? "فشل بدء الاشتراك" : "Failed to initiate subscription", {
+                    toast.error(t("product.messages.subscribeFailed"), {
                         description: result.message
                     });
                 }
-                await new Promise(resolve => setTimeout(resolve, 500)); // UX delay
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 300));
                 addItem({ ...product, quantity: 1 });
-                toast.success(locale === 'ar' ? "تمت إضافة المنتج إلى السلة" : "Product added to cart", {
+                toast.success(t("product.messages.addedToCart"), {
                     description: product.name
                 });
             }
         } catch (error: any) {
             console.error("Cart/Checkout Error:", error);
-            toast.error(locale === 'ar' ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
+            toast.error(t("common.unexpectedError"));
         } finally {
             setIsLoading(false);
         }
@@ -78,7 +80,7 @@ export function AddToCartButton({
             {isLoading ? (
                 <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span>{locale === 'ar' ? 'جاري التحميل...' : 'Loading...'}</span>
+                    <span>{t("common.loading")}</span>
                 </>
             ) : children}
         </Button>

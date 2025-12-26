@@ -1,14 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "@repo/i18n";
 import { useCartStore } from "@/stores/cart-store";
 import { useEffect, useState } from "react";
+import { formatPrice } from "@void/payment";
 
 export function CheckoutSummary() {
-    const t = useTranslations("Store"); // Using root namespace or specifically 'Store' + keys
-    // Needs keys like "checkout.orderSummary", "cart.total", "checkout.vatInclude"
-    // Wait, useTranslations hook prefix depends on finding keys.
-    // The previous page used t("checkout.orderSummary"). It seems "Store" namespace has "checkout" object.
+    const t = useTranslations("Store");
+    const locale = useLocale();
 
     const items = useCartStore((state) => state.items);
     
@@ -29,14 +28,14 @@ export function CheckoutSummary() {
                 {items.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
                         <span className="text-muted-foreground">{item.name} × {item.quantity}</span>
-                        <span>{item.price * item.quantity} {t("common.currency_SAR")}</span>
+                        <span>{formatPrice(item.price * item.quantity, 'SAR', locale)}</span>
                     </div>
                 ))}
             </div>
             <div className="space-y-4 text-lg font-bold">
                 <div className="flex justify-between">
                     <span>{t("cart.total")}</span>
-                    <span className="text-primary">{total} {t("common.currency_SAR")}</span>
+                    <span className="text-primary">{formatPrice(total, 'SAR', locale)}</span>
                 </div>
             </div>
             

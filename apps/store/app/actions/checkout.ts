@@ -4,9 +4,11 @@ import { Order, connectToDatabase, Product } from "@void/db";
 import { randomBytes } from "crypto";
 import { createPaymentIntentAction } from "@void/payment/actions";
 import { getSession } from "@void/auth";
+import { getLocalizedValue } from "@repo/i18n";
+import { getPaymentConfig } from "./config";
+import type { Currency } from "@void/payment";
 
 export async function createOrder(data: {
-// ... (rest of the code below createOrder handled by replace_file_content)
     userId?: string;
     guestInfo?: { email: string; name: string };
     items: any[];
@@ -37,7 +39,7 @@ export async function createOrder(data: {
             paymentMethod: data.paymentMethod || 'card'
         },
         status: 'pending',
-        paymentStatus: 'paid' // Called only after success
+        paymentStatus: 'paid' 
     });
 
     if (!order) {
@@ -55,12 +57,13 @@ export async function initiatePolarCheckout(productId: string, locale: string = 
     if (!product) throw new Error("Product not found");
 
     const session = await getSession();
+    const config = await getPaymentConfig();
 
     // 2. Call Payment Intent Action for Polar
     const result = await createPaymentIntentAction('polar', {
         amount: product.price,
-        currency: 'USD',
-        description: `Subscription: ${product.name}`,
+        currency: (config.defaultCurrency || 'USD') as Currency,
+        description: `Subscription: ${getLocalizedValue(product.name, locale)}`,
         callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/callback?gateway=polar&locale=${locale}&checkout_id={CHECKOUT_ID}`,
         metadata: {
             productId: product._id.toString(),
