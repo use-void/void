@@ -1,7 +1,8 @@
 'use server';
 
-import { Order, connectToDatabase } from "@void/db";
+import { Order, connectToDatabase, Product } from "@void/db";
 import { randomBytes } from "crypto";
+import { createPaymentIntentAction } from "@void/payment/actions";
 
 export async function createOrder(data: {
     userId?: string;
@@ -42,4 +43,33 @@ export async function createOrder(data: {
     }
 
     return { success: true, orderId: order._id.toString(), orderNumber: order.orderNumber };
+}
+
+export async function initiatePolarCheckout(productId: string, locale: string = 'en') {
+    await connectToDatabase();
+    
+    // 1. Get Product info
+    const product = await (Product as any).findById(productId);
+    if (!product) throw new Error("Product not found");
+
+    // 2. Call Payment Intent Action for Polar
+    const result = await createPaymentIntentAction('polar', {
+        amount: product.price,
+        currency: 'USD',
+        description: `Subscription: ${product.name}`,
+        callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/callback?gateway=polar&locale=${locale}`,
+        metadata: {
+            productId: product._id.toString(),
+            type: 'subscription',
+            polarProductIds: [product.integrations?.polar?.productId].filter(Boolean)
+        }
+    });
+
+    if (result.status === 'success') {
+        const checkoutUrl = (result.data as any).checkoutUrl || result.data.metadata?.checkoutUrl;
+        if (!checkoutUrl) throw new Error("Polar checkout URL missing in response");
+        return { success: true, checkoutUrl };
+    }
+
+    return { success: false, message: result.message };
 }

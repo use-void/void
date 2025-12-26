@@ -6,7 +6,6 @@ import { ProductInfo } from '@/components/products/product-info';
 import { ProductActions } from '@/components/products/product-actions';
 import { FeaturedProducts } from '@/components/home/featured-products';
 
-
 export async function generateStaticParams({ params }: { params: { locale: string } }) {
     const { locale } = params;
     const products = await getAllProductsSlugs(locale);
@@ -15,7 +14,6 @@ export async function generateStaticParams({ params }: { params: { locale: strin
         slug: product.slug,
     }));
 }
-
 
 export default async function ProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
     const { locale, slug } = await params;
@@ -42,12 +40,8 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
                          <ProductActions 
                             locale={locale} 
                             product={{
-                                id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.images[0] || '/placeholder.png', 
-                                slug: product.slug,
-                                type: product.type as any
+                                ...product,
+                                image: product.images[0] || '/placeholder.png'
                             }}
                          />
                     </div>
@@ -55,7 +49,6 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
             </div>
             
             <div className="mt-24 border-t pt-16">
-                 {/* Better to use getRelatedProducts from action now, but keeping FeaturedProducts for visual consistency unless we create RelatedProducts component */}
                     <FeaturedProducts locale={locale} />
             </div>
         </div>

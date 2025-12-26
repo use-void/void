@@ -1,45 +1,58 @@
 import { getTranslations } from "@repo/i18n";
-import { CreditCard, Banknote, Wallet } from "lucide-react";
+import { CreditCard, Banknote, Wallet, LucideIcon } from "lucide-react";
+import { PAYMENT_PROVIDERS, PaymentProviderId } from "@void/payment";
+
+const ICON_MAP: Record<string, LucideIcon> = {
+    'credit-card': CreditCard,
+    'wallet': Wallet,
+    'banknote': Banknote,
+};
+
+const COLOR_MAP: Record<string, string> = {
+    'primary': 'text-primary bg-primary/10',
+    'orange': 'text-orange-600 bg-orange-100',
+    'green': 'text-green-600 bg-green-100',
+};
 
 export async function PaymentMethods({ locale }: { locale: string }) {
     const t = await getTranslations({ locale, namespace: "Store" });
+
+    // In a real scenario, we might filter these based on cart content (Checkout Guard)
+    const providers = Object.values(PAYMENT_PROVIDERS);
 
     return (
         <div className="space-y-6 mt-8">
             <h3 className="text-xl font-bold border-b pb-4">{t("checkout.paymentMethod")}</h3>
             <div className="grid grid-cols-1 gap-4">
-                <div className="flex items-center space-x-4 space-x-reverse border p-4 rounded-xl cursor-pointer hover:bg-muted/10 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <div className="bg-primary/10 p-2 rounded-lg">
-                        <CreditCard className="h-6 w-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                        <p className="font-semibold">بطاقة مدى / ائتمانية</p>
-                        <p className="text-sm text-muted-foreground">دفع آمن و سريع</p>
-                    </div>
-                    <input type="radio" name="payment" value="card" className="h-5 w-5 accent-primary" defaultChecked />
-                </div>
-                
-                <div className="flex items-center space-x-4 space-x-reverse border p-4 rounded-xl cursor-pointer hover:bg-muted/10 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <div className="bg-orange-100 p-2 rounded-lg">
-                        <Wallet className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                        <p className="font-semibold">Apple Pay</p>
-                        <p className="text-sm text-muted-foreground">ادفع بلمسة واحدة</p>
-                    </div>
-                    <input type="radio" name="payment" value="applepay" className="h-5 w-5 accent-primary" />
-                </div>
+                {providers.map((provider, index) => {
+                    const Icon = ICON_MAP[provider.icon] || CreditCard;
+                    const colorClass = COLOR_MAP[provider.color] || 'text-primary bg-primary/10';
+                    const [textColor, bgColor] = colorClass.split(' ');
 
-                <div className="flex items-center space-x-4 space-x-reverse border p-4 rounded-xl cursor-pointer hover:bg-muted/10 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                    <div className="bg-green-100 p-2 rounded-lg">
-                        <Banknote className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                        <p className="font-semibold">{t("buy")} عند الاستلام</p>
-                        <p className="text-sm text-muted-foreground">ادفع نقداً عند وصول طلبك</p>
-                    </div>
-                    <input type="radio" name="payment" value="cash" className="h-5 w-5 accent-primary" />
-                </div>
+                    return (
+                        <div 
+                            key={provider.id}
+                            className="flex items-center space-x-4 space-x-reverse border p-4 rounded-xl cursor-pointer hover:bg-muted/10 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                        >
+                            <div className={`${bgColor} p-2 rounded-lg`}>
+                                <Icon className={`h-6 w-6 ${textColor}`} />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-semibold">
+                                    {provider.id === 'cash' ? `${t("buy")} ${t(`checkout.payment.${provider.id}`)}` : t(`checkout.payment.${provider.id}`)}
+                                </p>
+                                <p className="text-sm text-muted-foreground">{t(`checkout.payment.${provider.id}Desc`)}</p>
+                            </div>
+                            <input 
+                                type="radio" 
+                                name="payment" 
+                                value={provider.id} 
+                                className="h-5 w-5 accent-primary" 
+                                defaultChecked={index === 0} 
+                            />
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

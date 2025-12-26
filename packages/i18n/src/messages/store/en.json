@@ -87,7 +87,15 @@
             "phone": "Phone Number",
             "orderSummary": "Order Summary",
             "freeShipping": "Free Shipping",
-            "vatInclude": "Prices include VAT"
+            "vatInclude": "Prices include VAT",
+            "payment": {
+                "moyasar": "Mada / Credit Card",
+                "moyasarDesc": "Secure and fast payment via Moyasar",
+                "polar": "Global Subscription (Polar)",
+                "polarDesc": "For global subscriptions and digital products",
+                "cash": "Cash on Delivery",
+                "cashDesc": "Pay cash when your order arrives"
+            }
         },
         "account": {
             "title": "My Account",

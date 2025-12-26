@@ -20,12 +20,10 @@ export async function getFeaturedCategories(locale: string) {
     cacheTag('categories');
     try {
         await connectToDatabase();
-        // Cast query to any if strict typing fails due to inference lag or complexity
         const categories = await Category.find({ isActive: true } as any).limit(4).lean();
 
         return categories.map((category) => {
             const name = getLocalizedValue(category.name, locale);
-            // Simple icon mapping or fallback based on slug
             const icon = category.slug === 'electronics' ? "📱" :
                          category.slug === 'fashion' ? "👕" :
                          category.slug === 'digital' ? "💾" : "📦";
@@ -47,11 +45,9 @@ export async function getFeaturedProducts(locale: string) {
     'use cache';
     cacheTag('featured-products');
     try {
-        console.log("🛒 Fetching featured products...");
         await connectToDatabase();
         
         const products = await Product.find({ status: 'active' }).limit(4).sort({ createdAt: -1 }).lean();
-        console.log(`✅ Found ${products.length} featured products`);
         
         return products.map((product) => {
             const name = getLocalizedValue(product.name, locale);
@@ -62,7 +58,8 @@ export async function getFeaturedProducts(locale: string) {
                 name,
                 slug: product.slug,
                 price: product.price,
-                image
+                image,
+                type: (product as any).type
             };
         });
     } catch (error) {
@@ -75,17 +72,11 @@ export async function getProducts(locale: string, categorySlug?: string) {
     'use cache';
     cacheTag('products');
     try {
-        console.log(`📦 Fetching products (category: ${categorySlug || 'all'})...`);
         await connectToDatabase();
 
         const query: any = { status: 'active' };
 
-        // If category filtering is needed in the future, we would resolve the slug to an ID here
-        // const categoryDoc = await Category.findOne({ slug: categorySlug });
-        // if (categoryDoc) query.category = categoryDoc._id;
-
         const products = await Product.find(query).sort({ createdAt: -1 }).lean();
-        console.log(`✅ Found ${products.length} products`);
 
         return products.map((product) => {
             const name = getLocalizedValue(product.name, locale);
@@ -97,7 +88,8 @@ export async function getProducts(locale: string, categorySlug?: string) {
                 slug: product.slug,
                 price: product.price,
                 image,
-                category: (product as any).category?.toString()
+                category: (product as any).category?.toString(),
+                type: (product as any).type
             };
         });
     } catch (error) {
@@ -118,12 +110,10 @@ export async function getProductBySlug(locale: string, slug: string) {
         const name = getLocalizedValue(product.name, locale);
         const description = getLocalizedValue(product.description, locale);
         
-        // Ensure we only return strings, filtering out undefined/null
         const images = product.images
             ?.map(img => img.url)
             .filter((url): url is string => !!url) || [];
 
-        // Access nested physical details safely
         const stock = (product as any).physicalDetails?.stock ?? (product as any).stock ?? 0;
 
         return {
@@ -136,7 +126,7 @@ export async function getProductBySlug(locale: string, slug: string) {
             category: (product as any).category?.toString(),
             stock: stock,
             sku: (product as any).physicalDetails?.sku || (product as any).sku || '',
-            type: (product as any).type // Added for checkout logic
+            type: (product as any).type
         };
     } catch (error) {
         console.error("❌ Error fetching product by slug:", error);
@@ -164,7 +154,8 @@ export async function getRelatedProducts(locale: string, categoryId: string | un
                 name,
                 slug: product.slug,
                 price: product.price,
-                image
+                image,
+                type: (product as any).type
             };
         });
     } catch (error) {
@@ -176,7 +167,6 @@ export async function getRelatedProducts(locale: string, categoryId: string | un
 export async function getAllProductsSlugs(locale: string) {
     try {
         await connectToDatabase();
-        // Fetch only slugs for SSG
         const products = await Product.find({ status: 'active' }).select('slug').lean();
         return products.map((product) => ({
             slug: product.slug,

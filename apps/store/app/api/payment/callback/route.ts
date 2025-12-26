@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyPaymentAction } from '@void/payment/actions';
+import { PaymentProviderId } from '@void/payment';
 
 
 const MAX_RETRIES = 3;
@@ -13,13 +14,14 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   console.log('Payment Callback Params:', Object.fromEntries(searchParams.entries()));
   
-  const status = searchParams.get('status');
   // Polar sends 'checkout_id', Moyasar sends 'id'
   const checkoutId = searchParams.get('checkout_id');
-  const id = searchParams.get('id') || checkoutId;
-  const message = searchParams.get('message');
+  const moyasarId = searchParams.get('id');
+  const id = moyasarId || checkoutId;
+  
+  const gateway = (searchParams.get('gateway') || (checkoutId ? 'polar' : 'moyasar')) as PaymentProviderId;
   const locale = searchParams.get('locale') || 'en';
-  const gateway = searchParams.get('gateway') || (checkoutId ? 'polar' : 'moyasar'); // Auto-detect or use explicit
+  const message = searchParams.get('message');
 
   let verifiedId: string | null = null;
   let verifiedResult: any = null;
@@ -28,22 +30,19 @@ export async function GET(request: NextRequest) {
   if (id) {
     for (let i = 0; i < MAX_RETRIES; i++) {
         try {
-          // Use the dynamic gateway, defaulting to Moyasar if unknown
-          const providerName: any = gateway === 'polar' ? 'polar' : 'moyasar';
-          const verifyResult = await verifyPaymentAction(providerName, id);
+          const verifyResult = await verifyPaymentAction(gateway, id);
 
           if (verifyResult.status === 'success') {
               const { status: txStatus } = verifyResult.data;
               
-              // Map Polar statuses generally map to 'paid'/'authorized'. 
-              // Moyasar uses 'paid'.
-              if (['paid', 'captured', 'authorized', 'succeeded', 'confirmed'].includes(txStatus?.toLowerCase())) {
-                 verifiedId = verifyResult.data.id;
-                 verifiedResult = verifyResult.data;
-                 break; // Success!
-              } else if (txStatus?.toLowerCase() === 'failed') {
-                 errorMsg = verifyResult.data.metadata?.source?.message || 'Payment failed.';
-                 break; // Stop retrying
+              // Use unified statuses: PAID, CAPTURED, AUTHORIZED
+              if (['PAID', 'CAPTURED', 'AUTHORIZED'].includes(txStatus)) {
+                  verifiedId = verifyResult.data.id;
+                  verifiedResult = verifyResult.data;
+                  break; 
+              } else if (txStatus === 'FAILED') {
+                  errorMsg = verifyResult.data.failureReason || 'Payment failed.';
+                  break; 
               }
           } else {
               errorMsg = verifyResult.message;
@@ -73,11 +72,9 @@ export async function GET(request: NextRequest) {
               const db = await import("@void/db");
               
               await db.connectToDatabase();
-              
-              // We likely have an _id for cart, ensure correct lookup
               const finalCart = await (db.Cart as any).findById(cartId);
 
-              if (finalCart && finalCart.status === 'active') {
+              if (finalCart && (finalCart.status === 'active' || finalCart.status === 'pending')) {
                   const orderResult = await createOrder({
                       userId: finalCart.userId?.toString(),
                       items: finalCart.items,

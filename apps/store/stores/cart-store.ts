@@ -26,6 +26,12 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       addItem: (item) => {
+        // Validation: Subscriptions cannot be added to cart
+        if (item.type === 'subscription') {
+          console.error("⛔ Subscriptions cannot be added to the cart. They must be purchased directly.");
+          return;
+        }
+
         const currentItems = get().items;
         const existingItem = currentItems.find((i) => i.id === item.id);
 

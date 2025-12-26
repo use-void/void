@@ -1,7 +1,8 @@
 import { IPaymentProvider } from '../core/types';
 import { MoyasarProvider } from './providers/moyasar';
+import { PaymentProviderId } from '../constants';
 
-type ProviderName = 'moyasar' | 'stripe' | 'tabby' | 'tamara' | 'polar';
+// type ProviderName = 'moyasar' | 'stripe' | 'tabby' | 'tamara' | 'polar';
 
 export class PaymentFactory {
   private static instances: Map<string, IPaymentProvider> = new Map();
@@ -10,7 +11,7 @@ export class PaymentFactory {
     this.instances.set(name, provider);
   }
 
-  static getProvider(name: ProviderName, config: Record<string, any>): IPaymentProvider {
+  static getProvider(name: PaymentProviderId, config: Record<string, any>): IPaymentProvider {
     let provider = this.instances.get(name);
     
     if (!provider) {

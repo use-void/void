@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { Button, cn } from "@repo/ui";
+import { Button } from "@repo/ui";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useCartStore, CartItem } from "@/stores/cart-store";
+import { initiatePolarCheckout } from "@/app/actions/checkout";
+import { useRouter } from "next/navigation";
 
 interface AddToCartButtonProps {
     children: React.ReactNode;
     className?: string;
     size?: "default" | "sm" | "lg" | "icon";
     variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
-    product?: Omit<CartItem, 'quantity'>; // Pass product details
+    product?: Omit<CartItem, 'quantity'>;
+    locale?: string;
 }
 
 export function AddToCartButton({ 
@@ -19,33 +22,54 @@ export function AddToCartButton({
     className,
     size = "default",
     variant = "default",
-    product
+    product,
+    locale = "ar"
 }: AddToCartButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
     const addItem = useCartStore((state) => state.addItem);
+    const router = useRouter();
 
-    const handleAddToCart = async (e: React.MouseEvent) => {
+    const handleAction = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         
         setIsLoading(true);
         
-        // Simulate network delay for UX
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        if (product) {
-            addItem({ ...product, quantity: 1 });
-            console.log("Added to cart:", product);
-            toast.success("تمت إضافة المنتج إلى السلة بنجاح", {
-                description: product.name
-            });
-        } else {
-             // Fallback for when product prop isn't passed yet (during refactor)
-             console.warn("Product details missing in AddToCartButton");
-             toast.error("فشل إضافة المنتج (بيانات مفقودة)");
+        if (!product) {
+             toast.error(locale === 'ar' ? "فشل العملية (بيانات مفقودة)" : "Action failed (data missing)");
+             setIsLoading(false);
+             return;
         }
-        
-        setIsLoading(false);
+
+        try {
+            if (product.type === 'subscription') {
+                // Subscription Flow: Direct Checkout
+                const result = await initiatePolarCheckout(product.id, locale);
+                if (result.success && result.checkoutUrl) {
+                    window.location.href = result.checkoutUrl;
+                } else {
+                    toast.error(locale === 'ar' ? "فشل بدء الاشتراك" : "Failed to initiate subscription", {
+                        description: result.message
+                    });
+                }
+            } else {
+                // One-time Flow: Add to Cart
+                if (product.type === 'subscription') {
+                     toast.error(locale === 'ar' ? "لا يمكن إضافة الاشتراكات للسلة" : "Subscriptions cannot be added to cart");
+                     return;
+                }
+                await new Promise(resolve => setTimeout(resolve, 500)); // UX delay
+                addItem({ ...product, quantity: 1 });
+                toast.success(locale === 'ar' ? "تمت إضافة المنتج إلى السلة" : "Product added to cart", {
+                    description: product.name
+                });
+            }
+        } catch (error: any) {
+            console.error("Cart/Checkout Error:", error);
+            toast.error(locale === 'ar' ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -55,12 +79,12 @@ export function AddToCartButton({
             className={className} 
             size={size} 
             variant={variant}
-            onClick={handleAddToCart}
+            onClick={handleAction}
         >
             {isLoading ? (
                 <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    <span>جاري الإضافة...</span>
+                    <span>{locale === 'ar' ? 'جاري التحميل...' : 'Loading...'}</span>
                 </>
             ) : children}
         </Button>

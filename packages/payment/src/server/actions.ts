@@ -2,12 +2,13 @@
 
 import { PaymentFactory } from './factory';
 import { CreatePaymentOptions, PaymentResult } from '../core/types';
+import { PaymentProviderId } from '../constants';
 import { connectToDatabase, PaymentTransaction, PaymentLog, Order } from '@void/db';
 import { randomUUID } from 'crypto';
 
 // This action should be called by the frontend
 export async function createPaymentIntentAction(
-  providerName: 'moyasar' | 'stripe' | 'polar',
+  providerName: PaymentProviderId,
   options: CreatePaymentOptions
 ): Promise<PaymentResult> {
   await connectToDatabase();
@@ -157,7 +158,7 @@ export async function createPaymentIntentAction(
 }
 
 export async function verifyPaymentAction(
-  providerName: 'moyasar' | 'stripe' | 'polar',
+  providerName: PaymentProviderId,
   transactionId: string
 ): Promise<PaymentResult> {
   await connectToDatabase();

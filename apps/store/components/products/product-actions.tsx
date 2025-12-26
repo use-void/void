@@ -10,7 +10,12 @@ export async function ProductActions({ locale, product }: { locale: string, prod
     return (
         <div className="flex flex-col gap-4 mt-8">
             <div className="flex items-center gap-4">
-                <AddToCartButton size="lg" className="flex-1 h-12 text-lg font-bold" product={product}>
+                <AddToCartButton 
+                    size="lg" 
+                    className="flex-1 h-12 text-lg font-bold" 
+                    product={product}
+                    locale={locale}
+                >
                     <ShoppingCart className="mr-2 h-5 w-5" />
                     {product.type === 'subscription' 
                         ? (locale === 'ar' ? 'اشترك الآن' : 'Subscribe Now') 

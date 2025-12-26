@@ -12,6 +12,7 @@ interface ProductCardProps {
         price: number;
         image: string;
         slug: string;
+        type?: 'physical' | 'digital' | 'subscription';
     };
     locale: string;
     className?: string;
@@ -57,15 +58,19 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 <AddToCartButton 
                     variant="default"
                     className="w-full"
+                    locale={locale}
                     product={{
                         id: product.id,
                         name: product.name,
                         price: product.price,
                         image: product.image,
-                        slug: product.slug
+                        slug: product.slug,
+                        type: product.type
                     }}
                 >
-                    {t("common.addToCart")}
+                    {product.type === 'subscription' 
+                        ? (locale === 'ar' ? 'اشترك الآن' : 'Subscribe Now') 
+                        : t("common.addToCart")}
                 </AddToCartButton>
             </CardFooter>
         </Card>

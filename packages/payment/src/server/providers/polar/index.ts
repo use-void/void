@@ -36,7 +36,8 @@ export class PolarProvider extends BasePaymentProvider {
       
       const session = await this.polar.checkouts.create({
           amount: options.amount,
-          // currency: options.currency, 
+          // Polar SDK 0.1.0+ might use "products" array mostly, but some methods use amount
+          // The error said "products" was too short, confirming it's the primary way.
           products: productIds,
           successUrl: options.callbackUrl,
           metadata: cleanMetadata,
