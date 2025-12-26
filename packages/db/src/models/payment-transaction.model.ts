@@ -8,7 +8,7 @@ const PaymentTransactionSchema = new Schema(
         
         provider: { 
             type: String, 
-            enum: ["moyasar", "stripe", "tamara"], 
+            enum: ["moyasar", "stripe", "tamara", "polar"], 
             required: true 
         },
         providerTransactionId: { type: String, unique: true, sparse: true }, // Unique ID from provider
@@ -49,13 +49,19 @@ const PaymentTransactionSchema = new Schema(
         
         failureReason: { type: String },
         
+        // For Saved Cards / Recurring
+        tokenId: { type: String, index: true },
+        isRecurring: { type: Boolean, default: false },
+        
+        metadata: { type: Schema.Types.Mixed }, // Structured metadata
+        
         timeline: [{
             status: String,
             date: { type: Date, default: Date.now },
             message: String
         }],
         
-        metadata: { type: Schema.Types.Mixed } // Raw response for debugging
+        rawResponse: { type: Schema.Types.Mixed } // Raw response for debugging
     },
     { 
         timestamps: true,

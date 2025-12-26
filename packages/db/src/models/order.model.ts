@@ -24,7 +24,8 @@ const OrderSchema = new Schema(
 
         financials: {
             total: { type: Number, required: true },
-            currency: { type: String, default: "USD" },
+            totalRefunded: { type: Number, default: 0 },
+            currency: { type: String, default: "SAR" },
             paymentMethod: String,
         },
 
@@ -37,7 +38,7 @@ const OrderSchema = new Schema(
         
         paymentStatus: {
             type: String,
-            enum: ["unpaid", "authorized", "paid", "partially_refunded", "refunded", "failed"],
+            enum: ["unpaid", "authorized", "paid", "partially_refunded", "refunded", "voided", "failed"],
             default: "unpaid",
             index: true
         },

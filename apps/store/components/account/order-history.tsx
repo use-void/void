@@ -19,29 +19,25 @@ export async function OrderHistory({ locale, userId }: { locale: string, userId:
                     <Accordion className="space-y-4">
                         {orders.map((order) => (
                             <AccordionItem key={order.id} value={order.id} className="border rounded-xl overflow-hidden bg-background">
-                                <AccordionTrigger 
-                                    className="hover:underline-none p-0 border-none transition-all data-[state=open]:bg-muted/5 group"
-                                    nativeButton={false}
-                                    render={
-                                        <div className="flex flex-wrap items-center justify-between p-4 gap-4 w-full">
-                                            <div className="space-y-1 text-start">
-                                                <p className="font-bold">#{order.orderNumber}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {format.dateTime(new Date(order.createdAt), { dateStyle: 'long' })}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center gap-6">
-                                                <div className="text-start md:text-end">
-                                                    <p className="text-sm text-muted-foreground">{t("total")}</p>
-                                                    <p className="font-bold">{order.total} {locale === 'ar' ? 'ر.س' : 'SAR'}</p>
-                                                </div>
-                                                <Badge variant={order.status === "completed" || order.status === "delivered" ? "default" : "secondary"} className="h-7 px-4">
-                                                    {t(`statuses.${order.status}`)}
-                                                </Badge>
-                                            </div>
+                            <AccordionTrigger className="hover:underline-none p-0 border-none transition-all data-[state=open]:bg-muted/5 group">
+                                <div className="flex flex-wrap items-center justify-between p-4 gap-4 w-full">
+                                    <div className="space-y-1 text-start">
+                                        <p className="font-bold">#{order.orderNumber}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {format.dateTime(new Date(order.createdAt), { dateStyle: 'long' })}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-6">
+                                        <div className="text-start md:text-end">
+                                            <p className="text-sm text-muted-foreground">{t("total")}</p>
+                                            <p className="font-bold">{order.total} {locale === 'ar' ? 'ر.س' : 'SAR'}</p>
                                         </div>
-                                    }
-                                />
+                                        <Badge variant={order.status === "completed" || order.status === "delivered" ? "default" : "secondary"} className="h-7 px-4">
+                                            {t(`statuses.${order.status}`)}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </AccordionTrigger>
                                 <AccordionContent className="border-t bg-muted/5 px-4 pt-6 pb-6">
                                     <div className="space-y-6">
                                         {/* Order Summary */}
@@ -75,15 +71,30 @@ export async function OrderHistory({ locale, userId }: { locale: string, userId:
                                                             <div className="flex justify-between items-center">
                                                                 <div className="space-y-1">
                                                                     <div className="flex items-center gap-2">
-                                                                        <p className="text-sm font-bold uppercase">{tx.provider}</p>
+                                                                        <p className="text-sm font-bold uppercase">
+                                                                            {tx.paymentMethodType === 'stcpay' ? 'STC PAY' : 
+                                                                             tx.paymentMethodType === 'applepay' ? 'APPLE PAY' : 
+                                                                             tx.paymentMethodType === 'creditcard' ? 'CARD' : 
+                                                                             tx.provider}
+                                                                        </p>
                                                                         {tx.reference && <Badge variant="outline" className="text-[10px] h-4 px-1">{tx.reference}</Badge>}
                                                                     </div>
-                                                                    <p className="text-xs text-muted-foreground font-mono">{tx._id}</p>
+                                                                    <p className="text-xs text-muted-foreground font-mono">{tx.providerTransactionId || tx._id}</p>
                                                                 </div>
                                                                 <Badge variant={tx.status === 'paid' ? 'default' : tx.status === 'failed' ? 'destructive' : 'secondary'} className="capitalize">
                                                                     {t(`statuses.${tx.status}`)}
                                                                 </Badge>
                                                             </div>
+
+                                                            {tx.paymentMethodType === 'stcpay' && tx.rawResponse?.source?.mobile && (
+                                                                <div className="text-sm bg-background p-3 rounded-lg border flex justify-between items-center">
+                                                                    <div>
+                                                                        <p className="font-bold">STC Pay</p>
+                                                                        <p className="text-muted-foreground">{tx.rawResponse.source.mobile}</p>
+                                                                    </div>
+                                                                    <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">Mobile Payment</Badge>
+                                                                </div>
+                                                            )}
 
                                                             {tx.cardDetails && (
                                                                 <div className="text-sm bg-background p-3 rounded-lg border flex justify-between items-center">

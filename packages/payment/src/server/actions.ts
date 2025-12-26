@@ -24,15 +24,18 @@ export async function createPaymentIntentAction(
   let transactionRecord;
   try {
       if (options.metadata?.orderId || options.metadata?.cartId) {
-           transactionRecord = await PaymentTransaction.create({
+           transactionRecord = await (PaymentTransaction as any).create({
                orderId: options.metadata?.orderId,
                cartId: options.metadata?.cartId,
+               userId: options.metadata?.userId || options.metadata?.sessionId, // Supporting optional userId
                provider: providerName,
                type: 'payment',
                status: 'pending',
                amount: options.amount,
                currency: options.currency,
                idempotencyKey: idempotencyKey,
+               tokenId: options.metadata?.tokenId,
+               isRecurring: options.metadata?.isRecurring || false,
                createdAt: new Date(),
                timeline: [{
                    status: 'pending',
@@ -123,15 +126,11 @@ export async function createPaymentIntentAction(
 
 export async function verifyPaymentAction(
   providerName: 'moyasar' | 'stripe',
-  transactionId: string // This is the PROVIDER transaction ID
+  transactionId: string
 ): Promise<PaymentResult> {
-   await connectToDatabase();
-
-   const config = {
-    secretKey: process.env.MOYASAR_SECRET_KEY,
-    publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
-  };
-
+  await connectToDatabase();
+  const config = { secretKey: process.env.MOYASAR_SECRET_KEY };
+  
   try {
     const provider = PaymentFactory.getProvider(providerName as any, config);
     
@@ -141,7 +140,20 @@ export async function verifyPaymentAction(
     // 2. Update DB if successful
     if (result.status === 'success') {
         const txData = result.data;
-        const { status: txStatus, metadata, failureReason, reference, cardDetails, responseCode, gatewayId, terminalId } = txData;
+        const { 
+          status: txStatus, 
+          metadata, 
+          failureReason, 
+          reference, 
+          cardDetails, 
+          responseCode, 
+          gatewayId, 
+          terminalId, 
+          tokenId,
+          paymentMethodType,
+          cartId: rootCartId,
+          orderId: rootOrderId
+        } = txData as any;
         
         // Map Unified Status to DB Status
         let dbStatus = 'pending';
@@ -155,11 +167,11 @@ export async function verifyPaymentAction(
             orderPaymentStatus = 'authorized';
         } else if (txStatus === 'FAILED' || txStatus === 'VOIDED' || txStatus === 'REFUNDED') {
             dbStatus = txStatus.toLowerCase();
-            orderPaymentStatus = dbStatus === 'voided' ? 'failed' : dbStatus;
+            orderPaymentStatus = dbStatus === 'voided' ? 'voided' : (dbStatus === 'refunded' ? 'refunded' : 'failed');
         }
 
         // Find transaction by Provider ID
-        const dbTx = await PaymentTransaction.findOne({ providerTransactionId: transactionId } as any);
+        const dbTx = await (PaymentTransaction as any).findOne({ providerTransactionId: transactionId });
         
         if (dbTx) {
             // Check if status changed to push to timeline
@@ -180,7 +192,9 @@ export async function verifyPaymentAction(
             if (gatewayId) dbTx.gatewayId = gatewayId;
             if (terminalId) dbTx.terminalId = terminalId;
             if (cardDetails) dbTx.cardDetails = cardDetails;
-            
+            if (tokenId) dbTx.tokenId = tokenId;
+            if (paymentMethodType) dbTx.paymentMethodType = paymentMethodType;
+        
             if (dbStatus === 'failed' || failureReason) {
                 dbTx.failureMessage = failureReason; // Legacy field support
                 dbTx.failureReason = failureReason;
@@ -188,16 +202,16 @@ export async function verifyPaymentAction(
 
             await dbTx.save();
             
-            // Update Order Status
+            // Update Order Status if cart was already linked to an order
             if (dbTx.orderId) {
-                await Order.updateOne(
+                await (Order as any).updateOne(
                     { _id: dbTx.orderId } as any,
                     { paymentStatus: orderPaymentStatus }
                 );
             }
 
             // Log Verification
-            await PaymentLog.create({
+            await (PaymentLog as any).create({
                 transactionId: dbTx._id,
                 eventType: 'api_response',
                 provider: providerName,
@@ -206,13 +220,18 @@ export async function verifyPaymentAction(
             });
 
             // Return cartId and orderId in the result data for the caller to handle logic
-            (result.data as any).cartId = dbTx.cartId;
-            (result.data as any).orderId = dbTx.orderId;
+            (result.data as any).cartId = dbTx.cartId?.toString() || rootCartId;
+            (result.data as any).orderId = dbTx.orderId?.toString() || rootOrderId;
+        } else {
+            // Fallback for missing DB record (metadata mapping)
+            (result.data as any).cartId = (result.data as any).cartId || rootCartId || (metadata as any)?.cartId;
+            (result.data as any).orderId = (result.data as any).orderId || rootOrderId || (metadata as any)?.orderId;
         }
     }
 
     return result;
   } catch (error: any) {
+    console.error('Verify Payment Action Error:', error);
     return {
       status: 'error',
       code: 'VERIFICATION_FAILED',
@@ -220,3 +239,95 @@ export async function verifyPaymentAction(
     };
   }
 }
+
+export async function refundPaymentAction(
+  providerName: 'moyasar' | 'stripe',
+  transactionId: string,
+  amount?: number, // in major unit (e.g. 50.00 SAR), optional for full refund
+  reason?: string
+): Promise<PaymentResult> {
+    await connectToDatabase();
+    const config = { secretKey: process.env.MOYASAR_SECRET_KEY };
+    
+    try {
+        const provider = PaymentFactory.getProvider(providerName as any, config);
+        
+        // Find existing transaction to get small units and order links
+        const dbTx = await PaymentTransaction.findOne({ providerTransactionId: transactionId } as any);
+        if (!dbTx) return { status: 'error', code: 'NOT_FOUND', message: 'Transaction not found' };
+
+        // Convert amount to smallest unit if provided, otherwise null for full refund
+        const amountSmallestUnit = amount ? Math.round(amount * 100) : undefined;
+        
+        const result = await provider.refund(transactionId, amountSmallestUnit, reason);
+        
+        if (result.status === 'success') {
+            const refundData = result.data;
+            
+            // Update DB Transaction
+            dbTx.status = refundData.status.toLowerCase();
+            dbTx.amountRefunded = (dbTx.amountRefunded || 0) + (amountSmallestUnit || dbTx.amount);
+            dbTx.timeline.push({
+                status: 'refunded',
+                date: new Date(),
+                message: `Refund of ${amount || (dbTx.amount/100)} processed. Reason: ${reason || 'N/A'}`
+            });
+            await dbTx.save();
+            
+            // Update Order
+            if (dbTx.orderId) {
+                const order = await (Order as any).findById(dbTx.orderId);
+                if (order) {
+                    order.financials.totalRefunded = (order.financials.totalRefunded || 0) + (amount || (dbTx.amount/100));
+                    order.paymentStatus = order.financials.totalRefunded >= order.financials.total ? 'refunded' : 'partially_refunded';
+                    if (order.paymentStatus === 'refunded') order.status = 'refunded';
+                    await order.save();
+                }
+            }
+        }
+        return result;
+    } catch (error: any) {
+        console.error('Refund Action Error:', error);
+        return { status: 'error', code: 'REFUND_FAILED', message: error.message };
+    }
+}
+
+export async function capturePaymentAction(
+  providerName: 'moyasar' | 'stripe',
+  transactionId: string,
+  amount?: number
+): Promise<PaymentResult> {
+    await connectToDatabase();
+    const config = { secretKey: process.env.MOYASAR_SECRET_KEY };
+    
+    try {
+        const provider = PaymentFactory.getProvider(providerName as any, config);
+        const amountSmallestUnit = amount ? Math.round(amount * 100) : undefined;
+        
+        const result = await provider.capture(transactionId, amountSmallestUnit);
+        
+        if (result.status === 'success') {
+            const captureData = result.data;
+            const dbTx = await PaymentTransaction.findOne({ providerTransactionId: transactionId } as any);
+            
+            if (dbTx) {
+                dbTx.status = 'paid';
+                dbTx.timeline.push({
+                    status: 'paid',
+                    date: new Date(),
+                    message: `Authorized payment captured. Amount: ${amount || (dbTx.amount/100)}`
+                });
+                await dbTx.save();
+                
+                if (dbTx.orderId) {
+                    await (Order as any).updateOne({ _id: dbTx.orderId } as any, { paymentStatus: 'paid' });
+                }
+            }
+        }
+        return result;
+    } catch (error: any) {
+        console.error('Capture Action Error:', error);
+        return { status: 'error', code: 'CAPTURE_FAILED', message: error.message };
+    }
+}
+

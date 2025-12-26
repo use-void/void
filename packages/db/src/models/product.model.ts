@@ -19,24 +19,40 @@ const ProductSchema = new Schema(
 
         images: [{ url: String, alt: String, isThumbnail: Boolean }],
 
-        // النوع: رقمي حالياً، مادي مستقبلاً
-        type: { type: String, enum: ["digital", "physical"], default: "digital", required: true },
+        // النوع: رقمي حالياً، مادي مستقبلاً + اشتراك
+        type: { type: String, enum: ["digital", "physical", "subscription"], default: "digital", required: true },
 
         status: { type: String, enum: ["draft", "active", "archived"], default: "draft", index: true },
 
         // تفاصيل المنتجات الرقمية (ملفات، روابط)
         digitalDetails: {
-            fileUrl: String, // رابط الملف الآمن
+            fileUrl: String, 
             fileName: String,
             fileSize: String,
-            isExternalLink: Boolean, // هل هو رابط خارجي؟
+            isExternalLink: Boolean, 
         },
 
-        // تفاصيل المنتجات المادية (مستقبلاً)
+        // تفاصيل الاشتراكات
+        subscriptionDetails: {
+            interval: { type: String, enum: ['month', 'year', 'week', 'day'] }, // دورة الفوترة
+            intervalCount: { type: Number, default: 1 }, // تكرار الدورة
+            trialPeriodDays: { type: Number, default: 0 }, // فترة التجربة
+        },
+
+        // تفاصيل المنتجات المادية
         physicalDetails: {
             sku: String,
             stock: { type: Number, default: 0 },
             weight: Number,
+        },
+
+        // تكاملات (Polar, others)
+        integrations: {
+            polar: {
+                productId: String, // ID في Polar
+                priceId: String,   // ID للسعر في Polar
+                url: String,       // رابط الشراء المباشر إن وجد
+            }
         },
 
         // AI Search Vector

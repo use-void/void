@@ -14,44 +14,55 @@ export function mapMoyasarStatus(status: string): PaymentStatus {
   }
 }
 
-export function mapMoyasarTransaction(data: MoyasarPaymentResponse): Transaction {
-  const status = mapMoyasarStatus(data.status);
+export function mapMoyasarTransaction(raw: MoyasarPaymentResponse): Transaction {
+    const status = mapMoyasarStatus(raw.status);
 
-  return {
-    id: data.id,
-    providerId: data.id,
-    amount: {
-      value: data.amount,
-      currency: data.currency as Currency,
-    },
-    status: status,
-    createdAt: new Date(data.created_at),
-    
-    reference: (data.source as any)?.reference_number,
-    responseCode: (data.source as any)?.response_code,
-    gatewayId: (data.source as any)?.gateway_id,
-    terminalId: (data.source as any)?.terminal_id,
-    failureReason: data.status === 'failed' ? (data.source as any)?.message : undefined,
-    
-    cardDetails: {
-        brand: (data as any).source?.company,
-        scheme: (data as any).source?.type, // e.g. mada
-        last4: (data as any).source?.number?.slice(-4),
-        name: (data as any).source?.name
-    },
+    const timeline = raw.updated_at ? [
+        { status: status, date: new Date(raw.updated_at), message: raw.source.message || `Status updated to ${raw.status}` }
+    ] : [];
 
-    timeline: [{
+    // Extract card details or wallet info
+    let cardDetails;
+    let paymentMethodType = raw.source.type;
+    
+    if (raw.source.type === 'creditcard') {
+        cardDetails = {
+            brand: raw.source.company || 'unknown',
+            scheme: raw.source.company || 'card',
+            last4: raw.source.number ? raw.source.number.slice(-4) : '****',
+            name: raw.source.name
+        };
+    } else if (raw.source.type === 'applepay' || raw.source.type === 'stcpay') {
+        paymentMethodType = raw.source.type;
+    }
+
+    return {
+        id: raw.id,
+        providerId: raw.id, // standardized
         status: status,
-        date: new Date(data.created_at),
-        message: (data as any).source?.message || `Transaction ${status}`
-    }],
-
-    metadata: {
-      source: data.source,
-      invoiceId: data.invoice_id,
-      ip: data.ip,
-      callbackUrl: data.callback_url,
-    },
-    rawResponse: data,
-  };
+        amount: {
+            value: raw.amount,
+            currency: raw.currency as Currency
+        },
+        currency: raw.currency,
+        createdAt: new Date(raw.created_at), // legacy/standardized
+        description: raw.description || '',
+        metadata: {
+            ...(raw as any).metadata,
+            ip: raw.ip,
+            callbackUrl: raw.callback_url
+        },
+        reference: (raw as any).reference,
+        responseCode: (raw as any).response_code,
+        gatewayId: (raw as any).gateway_id,
+        terminalId: (raw as any).terminal_id,
+        failureReason: raw.status === 'failed' ? raw.source.message : undefined,
+        cardDetails,
+        paymentMethodType,
+        tokenId: (raw as any).token_id,
+        cartId: (raw as any).metadata?.cartId, // Added root mapping
+        orderId: (raw as any).metadata?.orderId, // Added root mapping
+        timeline,
+        rawResponse: raw
+    };
 }

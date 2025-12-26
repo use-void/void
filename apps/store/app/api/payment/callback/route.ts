@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
                       items: finalCart.items,
                       amount: amount.value / 100, // Smallest unit to main unit
                       currency: currency,
-                      paymentMethod: 'card'
+                      paymentMethod: verifiedResult.paymentMethodType || 'card'
                   });
 
                   if (orderResult.success) {

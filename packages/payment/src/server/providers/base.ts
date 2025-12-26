@@ -1,5 +1,4 @@
 import { IPaymentProvider, PaymentResult, CreatePaymentOptions, Transaction } from '../../core/types';
-import { PaymentError } from '../../core/errors';
 import 'server-only';
 
 export abstract class BasePaymentProvider implements IPaymentProvider {

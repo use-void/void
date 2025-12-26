@@ -27,8 +27,10 @@ export interface Transaction {
   id: string;
   providerId: string;
   amount: PaymentAmount;
+  currency: string; // Added for easy access
   status: PaymentStatus;
   createdAt: Date;
+  description?: string; // added
   
   cartId?: string;
   orderId?: string;
@@ -39,6 +41,9 @@ export interface Transaction {
   failureReason?: string;
   gatewayId?: string;
   terminalId?: string;
+  
+  paymentMethodType?: string; // added
+  tokenId?: string; // added
   
   cardDetails?: {
     brand?: string;
