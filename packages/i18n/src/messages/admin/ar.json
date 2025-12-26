@@ -223,80 +223,178 @@
         },
         "settings": {
             "title": "الإعدادات",
-            "header": {
-                "title": "قائمة الإعدادات",
-                "description": "إدارة تكوين وتفضيلات متجرك."
+            "description": "إدارة تكوين وتفضيلات متجرك.",
+            "sections": {
+                "general": "خيارات عامة",
+                "localization": "اللغات والمناطق",
+                "financials": "الخيارات المالية",
+                "contact": "التواصل والدعم",
+                "shop": "إعدادات المتجر",
+                "seo": "الأرشفة و SEO",
+                "policies": "السياسات القانونية"
             },
-            "sidebar": {
-                "title": "قائمة الإعدادات",
-                "general": "عام",
-                "localization": "الموقع واللغات",
-                "payments": "المدفوعات",
-                "notifications": "الإشعارات",
-                "team": "الفريق",
-                "help_title": "تحتاج مساعدة؟",
-                "help_desc": "تحقق من وثائقنا للحصول على أدلة إعداد مفصلة.",
-                "read_docs": "قراءة الوثائق"
+            "buttons": {
+                "save": "حفظ التغييرات",
+                "discard": "تجاهل",
+                "saving": "جاري الحفظ...",
+                "addLanguage": "إضافة لغة",
+                "addCurrency": "إضافة عملة"
             },
-            "actions": {
-                "save_changes": "حفظ التغييرات",
-                "saving": "جاري الحفظ..."
+            "notifications": {
+                "saveSuccess": "تم حفظ الإعدادات بنجاح",
+                "saveError": "فشل حفظ الإعدادات"
             },
-            "success_message": "تم حفظ الإعدادات بنجاح",
-            "error_message": "فشل حفظ الإعدادات",
+            "placeholders": {
+                "selectLanguage": "اختر اللغة",
+                "selectTimezone": "اختر المنطقة الزمنية",
+                "selectCurrency": "اختر العملة"
+            },
             "general": {
-                "title_view": "تفاصيل المتجر",
-                "desc_view": "إدارة المعلومات الأساسية لمتجرك والعلامة التجارية."
-            },
-            "localization": {
-                "title_view": "الموقع والأسواق",
-                "desc_view": "تكوين اللغات والعملات والإعدادات الإقليمية لعملائك العالميين.",
-                "languages": {
-                    "title": "اللغات",
-                    "default_language": "اللغة الافتراضية",
-                    "default_language_desc": "تستخدم كخيار احتياطي",
-                    "active_languages": "اللغات النشطة",
-                    "default_badge": "افتراضي",
-                    "add_language": "إضافة لغة"
+                "basicInfo": {
+                    "title": "المعلومات الأساسية",
+                    "description": "معلومات حول هوية متجرك."
                 },
-                "currencies": {
-                    "title": "العملات",
-                    "base_currency": "العملة الأساسية",
-                    "base_currency_desc": "عملة التقارير",
-                    "exchange_rates": "أسعار الصرف"
+                "fields": {
+                    "name": "اسم المتجر",
+                    "slogan": "وصف قصير (Slogan)",
+                    "description": "نبذة عن المتجر",
+                    "logoPrimary": "الشعار الأساسي",
+                    "logoPrimaryDesc": "يستخدم في الترويسات الفاتحة",
+                    "logoSecondary": "الشعار الثانوي",
+                    "logoSecondaryDesc": "يستخدم في الخلفيات الداكنة",
+                    "favicon": "أيقونة المتصفح",
+                    "faviconDesc": "الأيقونة الصغيرة في شريط العنوان"
                 },
-                "formats": {
-                    "title": "التنسيقات الإقليمية",
-                    "timezone": "المنطقة الزمنية",
-                    "unit_system": "نظام الوحدات",
-                    "date_format": "تنسيق التاريخ"
+                "assets": {
+                    "title": "الهوية البصرية",
+                    "description": "الشعارات والأيقونات المستخدمة في المتجر."
                 }
             },
-            "brand": {
-                "title": "علامة المتجر التجارية",
-                "description": "إدارة أصول العلامة التجارية لمتجرك.",
-                "logo_label": "شعار المتجر",
-                "logo_placeholder": "شعار المتجر",
-                "logo_help": "موصى به: 512x512px"
+            "localization": {
+                "regional": {
+                    "title": "الإعدادات الإقليمية",
+                    "description": "تكوين اللغة الافتراضية والمنطقة الزمنية."
+                },
+                "languages": {
+                    "title": "اللغات النشطة",
+                    "description": "إدارة اللغات المتاحة لعملائك."
+                },
+                "fields": {
+                    "default": "افتراضي",
+                    "timezone": "المنطقة الزمنية",
+                    "langName": "اسم اللغة",
+                    "langCode": "رمز اللغة (ISO)",
+                    "code": "الرمز",
+                    "language": "اللغة",
+                    "rtl": "RTL",
+                    "active": "نشط"
+                },
+                "noLanguages": "لم يتم إضافة لغات بعد.",
+                "placeholders": {
+                    "selectLanguage": "اختر لغة من القائمة",
+                    "selectTimezone": "اختر المنطقة الزمنية"
+                }
             },
-            "status": {
-                "store_status": "الحالة",
-                "active": "نشط",
-                "maintenance": "صيانة",
-                "visibility_note": "متجرك مرئي للجمهور حالياً. قد تتطلب التغييرات في التفاصيل الهامة إعادة التحقق."
-            },
-            "basic_info": {
-                "title": "المعلومات الأساسية",
-                "description": "يتم عرض هذه المعلومات في واجهة متجرك وفي الفواتير."
+            "financials": {
+                "currency": {
+                    "title": "العملة الأساسية",
+                    "description": "حدد عملة المتجر الافتراضية للتقارير."
+                },
+                "currencies": {
+                    "title": "العملات المدعومة",
+                    "description": "السماح للعملاء بالتصفح بعملات متعددة."
+                },
+                "tax": {
+                    "title": "إعدادات الضرائب",
+                    "description": "تكوين الهوية الضريبية وقواعد العملية."
+                },
+                "fields": {
+                    "defaultCurrency": "العملة الافتراضية",
+                    "currencyCode": "الرمز",
+                    "symbol": "العلامة",
+                    "rate": "سعر الصرف",
+                    "active": "نشط",
+                    "taxId": "الرقم الضريبي",
+                    "enableTax": "تفعيل الضريبة",
+                    "taxInclusive": "الأسعار شاملة للضريبة"
+                },
+                "placeholders": {
+                    "selectCurrency": "اختر عملة"
+                }
             },
             "contact": {
-                "title": "معلومات الدعم",
-                "email_label": "بريد الدعم",
-                "phone_label": "هاتف الدعم"
+                "support": {
+                    "title": "قنوات الدعم",
+                    "description": "كيف يمكن للعملاء التواصل مع فريقك."
+                },
+                "address": {
+                    "title": "عنوان المقر",
+                    "description": "الموقع الجغرافي لمتجرك."
+                },
+                "social": {
+                    "title": "وسائل التواصل",
+                    "description": "اربط حساباتك الرسمية."
+                },
+                "fields": {
+                    "supportEmail": "بريد الدعم",
+                    "supportPhone": "هاتف الدعم",
+                    "whatsapp": "رقم الواتساب",
+                    "address": "العنوان"
+                }
             },
-            "socials": {
-                "title": "حسابات التواصل الاجتماعي",
-                "description": "اربط حسابات التواصل الاجتماعي لتعزيز محركات البحث."
+            "shop": {
+                "maintenance": {
+                    "title": "وضع الصيانة",
+                    "description": "إغلاق المتجر مؤقتاً للتحديثات."
+                },
+                "checkout": {
+                    "title": "سلوك الشراء",
+                    "description": "التحكم في كيفية إتمام الطلبات."
+                },
+                "announcement": {
+                    "title": "شريط الإعلانات",
+                    "description": "عرض رسالة تنبيهية في أعلى الصفحات."
+                },
+                "fields": {
+                    "maintenanceMode": "تفعيل وضع الصيانة",
+                    "maintenanceModeDesc": "حجب واجهة المتجر عن الزوار",
+                    "maintenanceMessage": "رسالة الصيانة",
+                    "guestCheckout": "الشراء كضيف",
+                    "guestCheckoutDesc": "السماح بالطلب بدون تسجيل حساب",
+                    "inventoryTracking": "تتبع المخزون",
+                    "inventoryTrackingDesc": "مراقبة كميات المنتجات تلقائياً",
+                    "enableAnnouncement": "تفعيل شريط الإعلان",
+                    "announcementText": "نص الإعلان",
+                    "announcementLink": "رابط الإعلان (اختياري)"
+                }
+            },
+            "seo": {
+                "general": {
+                    "title": "تحسين محركات البحث",
+                    "description": "تحسين ظهور متجرك في نتائج البحث."
+                },
+                "preview": {
+                    "title": "معاينة نتائج جوجل",
+                    "exampleTitle": "آيفون 15 برو ماكس | متجري",
+                    "exampleDesc": "اشتري الآن آيفون 15 برو ماكس بأفضل الأسعار مع توصيل سريع من متجري. متوفر بجميع الألوان."
+                },
+                "fields": {
+                    "titleTemplate": "نموذج عنوان الصفحات (Title Template)",
+                    "defaultDesc": "وصف الموقع الافتراضي (Meta Description)"
+                }
+            },
+            "policies": {
+                "title": "سياسات المتجر",
+                "description": "الاتفاقيات القانونية بينك وبين عملائك.",
+                "fields": {
+                    "terms": "الشروط والأحكام",
+                    "privacy": "سياسة الخصوصية",
+                    "refund": "سياسة الاسترجاع",
+                    "shipping": "سياسة الشحن"
+                },
+                "placeholders": {
+                    "writePolicy": "اكتب نص السياسة هنا..."
+                }
             }
         },
         "forbidden": {

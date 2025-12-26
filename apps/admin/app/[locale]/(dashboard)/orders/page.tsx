@@ -1,6 +1,8 @@
+import { PageHeader } from "@/components/layout/headers/header-page";
+import { Filter, FileDown } from "lucide-react";
 import { OrderTable } from "@/components/orders/order-table";
-import { OrderPageHeader } from "@/components/orders/order-page-header";
 import { getTranslations, setRequestLocale } from "@repo/i18n";
+import { Button } from "@repo/ui";
 
 // Mock data for orders
 const MOCK_ORDERS = [
@@ -70,12 +72,26 @@ export default async function OrdersPage({
     setRequestLocale(locale);
     
     return (
-        <div className="flex flex-col w-full p-10 pb-20">
-            <OrderPageHeader 
+        <div className="flex flex-col w-full min-h-screen pb-20">
+            <PageHeader 
                 title="الطلبات" 
                 description="إدارة وإدارة طلبات المتجر الخاصة بك" 
+                actions={
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
+                      <Filter className="h-4 w-4" />
+                      <span>تصفية</span>
+                    </Button>
+                    <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
+                      <FileDown className="h-4 w-4" />
+                      <span>تصدير</span>
+                    </Button>
+                  </div>
+                }
             />
-            <OrderTable orders={MOCK_ORDERS} />
+            <div className="w-full px-6 lg:px-10 py-8">
+                <OrderTable orders={MOCK_ORDERS} />
+            </div>
         </div>
     );
 }

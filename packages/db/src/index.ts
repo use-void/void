@@ -10,6 +10,9 @@ export * from "./models/product.model";
 export * from "./models/order.model";
 export * from "./models/integration.model";
 export * from "./models/category.model";
+export * from "./models/payment-transaction.model";
+export * from "./models/payment-method.model";
+export * from "./models/payment-log.model";
 
 // 3. Utils & Types
 import { Types } from "mongoose";

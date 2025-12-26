@@ -3,7 +3,106 @@
         "title": "تطبيق المتجر",
         "description": "تسوق أحدث منتجاتنا",
         "hero": "أفضل المنتجات لك",
-        "cart": "السلة",
-        "buy": "شراء الآن"
+        "buy": "شراء الآن",
+        "auth": {
+            "alreadyHaveAccount": "لديك حساب بالفعل؟",
+            "authFailed": "فشل المصادقة.",
+            "confirmPassword": "تأكيد",
+            "createAccount": "إنشاء حساب",
+            "createAccountTitle": "إنشاء حساب",
+            "creatingAccount": "جاري إنشاء الحساب...",
+            "dontHaveAccount": "ليس لديك حساب؟",
+            "email": "البريد الإلكتروني",
+            "emailInvalid": "البريد الإلكتروني غير صحيح.",
+            "forgotPassword": "نسيت كلمة المرور؟",
+            "fullName": "الاسم الكامل",
+            "nameRequired": "يجب أن يكون الاسم حرفين على الأقل.",
+            "password": "كلمة المرور",
+            "passwordMin": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
+            "passwordRequired": "كلمة المرور مطلوبة.",
+            "passwordsDontMatch": "كلمات المرور غير متطابقة",
+            "registrationFailed": "فشل التسجيل.",
+            "signIn": "تسجيل الدخول",
+            "unexpectedError": "حدث خطأ غير متوقع.",
+            "verifying": "جاري التحقق...",
+            "welcomeBack": "مرحباً بعودتك",
+            "joinStore": "انضم إلى متجرنا وابدأ التسوق",
+            "signInDesc": "سجل الدخول إلى حساب المتجر الخاص بك"
+        },
+        "footer": {
+            "shop": "تسوق",
+            "support": "الدعم",
+            "company": "الشركة",
+            "contactUs": "اتصل بنا",
+            "privacyPolicy": "سياسة الخصوصية",
+            "termsOfService": "شروط الخدمة",
+            "aboutUs": "من نحن",
+            "faq": "الأسئلة الشائعة"
+        },
+        "common": {
+            "products": "المنتجات",
+            "categories": "التصنيفات",
+            "collections": "المجموعات",
+            "viewAll": "عرض الكل",
+            "addToCart": "إضافة إلى السلة",
+            "currency_SAR": "ر.س"
+        },
+        "home": {
+            "heroTitle": "اكتشف عالم التسوق بين يديك",
+            "heroSubtitle": "أفضل المنتجات بأفضل الأسعار وبجودة عالية تضمن رضاكم.",
+            "shopNow": "تسوق الآن",
+            "featuredCategories": "التصنيفات المميزة",
+            "featuredProducts": "المنتجات المختارة"
+        },
+        "product": {
+            "description": "الوصف",
+            "specifications": "المواصفات",
+            "quantity": "الكمية",
+            "outOfStock": "غير متوفر",
+            "relatedProducts": "منتجات ذات صلة"
+        },
+        "cart": {
+            "title": "سلة المشتريات",
+            "empty": "سلة المشتريات فارغة",
+            "summary": "ملخص الطلب",
+            "items": "المنتجات",
+            "subtotal": "المجموع الفرعي",
+            "shipping": "الشحن",
+            "total": "المجموع الكلي",
+            "checkout": "إتمام الطلب",
+            "currency_SAR": "ر.س",
+            "continueShopping": "متابعة التسوق"
+        },
+        "checkout": {
+            "title": "إتمام الشراء",
+            "shippingAddress": "عنوان الشحن",
+            "paymentMethod": "طريقة الدفع",
+            "placeOrder": "تأكيد الطلب",
+            "success": "تم تقديم طلبك بنجاح!",
+            "firstName": "الاسم الأول",
+            "lastName": "اللقب",
+            "address": "العنوان",
+            "city": "المدينة",
+            "zip": "الرمز البريدي",
+            "phone": "رقم الجوال",
+            "orderSummary": "ملخص الطلب",
+            "freeShipping": "توصيل مجاني",
+            "vatInclude": "الأسعار تشمل ضريبة القيمة المضافة"
+        },
+        "account": {
+            "title": "حسابي",
+            "myOrders": "طلباتي",
+            "noOrders": "لا توجد طلبات سابقة.",
+            "profile": "الملف الشخصي",
+            "settings": "الإعدادات",
+            "logout": "تسجيل الخروج",
+            "orderId": "رقم الطلب",
+            "total": "الإجمالي",
+            "status": {
+                "delivered": "تم التوصيل",
+                "processing": "قيد التنفيذ",
+                "cancelled": "ملغي"
+            }
+        }
     }
 }

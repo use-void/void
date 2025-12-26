@@ -1,21 +1,21 @@
-import localFont from "next/font/local";
+import { Inter } from "next/font/google";
 import "../globals.css";
 import { notFound } from 'next/navigation';
-import { NextIntlClientProvider, localeConfig } from '@repo/i18n';
+import { 
+  hasLocale,
+  setRequestLocale,
+  getLocaleDir,
+  getMessages,
+  NextIntlClientProvider,
+} from '@repo/i18n';
 import { routing } from "@repo/i18n/routing";
-import { ThemeProvider } from "@repo/ui";
-import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
+import { ThemeProvider, cn, Toaster } from "@repo/ui";
+import { getTranslations } from '@repo/i18n';
 
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export function generateStaticParams() {
@@ -40,29 +40,30 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const dir = localeConfig[locale as keyof typeof localeConfig]?.dir || 'ltr';
+  
+  // Validate locale
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
 
   // Enable static rendering
   setRequestLocale(locale);
 
-  // Validate locale
-  if (!routing.locales.includes(locale as any)) {
-    notFound();
-  }
-
   const messages = await getMessages();
+  const dir = getLocaleDir(locale);
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}>
+    <html lang={locale} dir={dir} suppressHydrationWarning className={cn(inter.variable, "h-full antialiased")}>
+      <body className="h-full bg-background overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages} locale={locale}>
+          <NextIntlClientProvider messages={messages}>
             {children}
+            <Toaster position="bottom-left" />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

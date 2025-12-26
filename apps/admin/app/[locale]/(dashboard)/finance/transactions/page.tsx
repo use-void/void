@@ -1,5 +1,7 @@
+import { PageHeader } from "@/components/layout/headers/header-page";
+import { Button } from "@repo/ui";
 import { TransactionTable } from "@/components/finance/transaction-table";
-import { FinancePageHeader } from "@/components/finance/finance-page-header";
+import { Filter, FileDown } from "lucide-react";
 import { setRequestLocale } from "@repo/i18n";
 
 // Mock data for transactions (reused)
@@ -61,13 +63,28 @@ export default async function TransactionsPage({
     setRequestLocale(locale);
     
     return (
-        <div className="flex flex-col w-full pb-20">
-            <FinancePageHeader 
+        <div className="flex flex-col w-full min-h-screen pb-20">
+            <PageHeader 
                 title="المعاملات المالية" 
-                description="سجل كامل بجميع الحركات المالية والتحويلات" 
+                description="سجل كامل بجميع الحركات المالية والتحويلات"
+                actions={
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
+                      <Filter className="h-4 w-4" />
+                      <span>تصفية</span>
+                    </Button>
+                    
+                    <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
+                      <FileDown className="h-4 w-4" />
+                      <span>تصدير التقارير</span>
+                    </Button>
+                  </div>
+                }
             />
             
-            <TransactionTable transactions={MOCK_TRANSACTIONS} />
+            <div className="w-full px-6 lg:px-10 py-8">
+                <TransactionTable transactions={MOCK_TRANSACTIONS} />
+            </div>
         </div>
     );
 }

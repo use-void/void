@@ -27,5 +27,4 @@ const nextConfig = {
     },
 };
 
-// استخدام (as any) هنا يجبر التايب سكريبت على قبول الإعدادات وتجاهل الخطأ
 export default withNextIntl(nextConfig as any);

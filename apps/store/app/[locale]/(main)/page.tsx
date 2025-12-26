@@ -1,13 +1,20 @@
-import { getTranslations } from '@repo/i18n/server';
+
+import { setRequestLocale } from '@repo/i18n';
+import { HeroSection } from '@/components/home/hero-section';
+import { FeaturedCategories } from '@/components/home/featured-categories';
+import { FeaturedProducts } from '@/components/home/featured-products';
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
-  "use cache";
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Store' });
+  setRequestLocale(locale);
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-      <h1 className="text-4xl font-bold text-red-300">{t('title')}</h1>
+    <div className="flex flex-col w-full pb-12">
+        <HeroSection locale={locale} />
+        
+            <FeaturedCategories locale={locale} />
+
+            <FeaturedProducts locale={locale} />
     </div>
   );
 }

@@ -223,80 +223,178 @@
         },
         "settings": {
             "title": "Settings",
-            "header": {
-                "title": "Settings Menu",
-                "description": "Manage your store's configuration and preferences."
-            },
-            "sidebar": {
-                "title": "Settings Menu",
+            "description": "Manage your store's configuration and preferences.",
+            "sections": {
                 "general": "General",
                 "localization": "Localization",
-                "payments": "Payments",
-                "notifications": "Notifications",
-                "team": "Team",
-                "help_title": "Need Help?",
-                "help_desc": "Check our documentation for detailed setup guides.",
-                "read_docs": "Read Docs"
+                "financials": "Financials",
+                "contact": "Contact",
+                "shop": "Shop Settings",
+                "seo": "SEO",
+                "policies": "Policies"
             },
-            "actions": {
-                "save_changes": "Save Changes",
-                "saving": "Saving..."
+            "buttons": {
+                "save": "Save Changes",
+                "discard": "Discard",
+                "saving": "Saving...",
+                "addLanguage": "Add Language",
+                "addCurrency": "Add Currency"
             },
-            "success_message": "Settings saved successfully",
-            "error_message": "Failed to save settings",
+            "notifications": {
+                "saveSuccess": "Settings saved successfully",
+                "saveError": "Failed to save settings"
+            },
+            "placeholders": {
+                "selectLanguage": "Select Language",
+                "selectTimezone": "Select Timezone",
+                "selectCurrency": "Select Currency"
+            },
             "general": {
-                "title_view": "Store Details",
-                "desc_view": "Manage your store's basic information and branding."
-            },
-            "localization": {
-                "title_view": "Localization & Markets",
-                "desc_view": "Configure languages, currencies and regional settings for your global customers.",
-                "languages": {
-                    "title": "Languages",
-                    "default_language": "Default Language",
-                    "default_language_desc": "Used for fallback",
-                    "active_languages": "Active Languages",
-                    "default_badge": "Default",
-                    "add_language": "Add Language"
+                "basicInfo": {
+                    "title": "Basic Details",
+                    "description": "Information about your store's identity."
                 },
-                "currencies": {
-                    "title": "Currencies",
-                    "base_currency": "Base Currency",
-                    "base_currency_desc": "Reporting currency",
-                    "exchange_rates": "Exchange Rates"
+                "fields": {
+                    "name": "Store Name",
+                    "slogan": "Slogan",
+                    "description": "Description",
+                    "logoPrimary": "Primary Logo",
+                    "logoPrimaryDesc": "Main logo for light headers",
+                    "logoSecondary": "Secondary Logo",
+                    "logoSecondaryDesc": "Logo for dark backgrounds",
+                    "favicon": "Favicon",
+                    "faviconDesc": "Little icon for browser tabs"
                 },
-                "formats": {
-                    "title": "Regional Formats",
-                    "timezone": "Timezone",
-                    "unit_system": "Unit System",
-                    "date_format": "Date Format"
+                "assets": {
+                    "title": "Branding Assets",
+                    "description": "Logos and icons used across your store."
                 }
             },
-            "brand": {
-                "title": "Store Brand",
-                "description": "Manage your store's branding assets.",
-                "logo_label": "Store Logo",
-                "logo_placeholder": "Store Logo",
-                "logo_help": "Rec: 512x512px"
+            "localization": {
+                "regional": {
+                    "title": "Regional Settings",
+                    "description": "Configure the default locale and timezone."
+                },
+                "languages": {
+                    "title": "Active Languages",
+                    "description": "Manage languages available for your customers."
+                },
+                "fields": {
+                    "default": "Default",
+                    "timezone": "Timezone",
+                    "langName": "Language Name",
+                    "langCode": "Code (ISO)",
+                    "code": "Code",
+                    "language": "Language",
+                    "rtl": "RTL",
+                    "active": "Active"
+                },
+                "noLanguages": "No languages added yet.",
+                "placeholders": {
+                    "selectLanguage": "Choose a language",
+                    "selectTimezone": "Choose a timezone"
+                }
             },
-            "status": {
-                "store_status": "Status",
-                "active": "Active",
-                "maintenance": "Maintenance",
-                "visibility_note": "Your store is currently visible to the public. Changes to critical details may require re-verification."
-            },
-            "basic_info": {
-                "title": "Basic Information",
-                "description": "This information is displayed on your storefront and invoices."
+            "financials": {
+                "currency": {
+                    "title": "Primary Currency",
+                    "description": "Set your default store currency."
+                },
+                "currencies": {
+                    "title": "Active Currencies",
+                    "description": "Allow customers to browse in multiple currencies."
+                },
+                "tax": {
+                    "title": "Tax Configuration",
+                    "description": "Configure your tax identity and rules."
+                },
+                "fields": {
+                    "defaultCurrency": "Default Currency",
+                    "currencyCode": "Code",
+                    "symbol": "Symbol",
+                    "rate": "Exchange Rate",
+                    "active": "Active",
+                    "taxId": "VAT / Tax ID",
+                    "enableTax": "Enable Tax",
+                    "taxInclusive": "Prices include tax"
+                },
+                "placeholders": {
+                    "selectCurrency": "Choose a currency"
+                }
             },
             "contact": {
-                "title": "Support Information",
-                "email_label": "Support Email",
-                "phone_label": "Support Phone"
+                "support": {
+                    "title": "Support Channels",
+                    "description": "How customers can reach your team."
+                },
+                "address": {
+                    "title": "Office Address",
+                    "description": "Physical location for your store."
+                },
+                "social": {
+                    "title": "Social Media",
+                    "description": "Link your official social profiles."
+                },
+                "fields": {
+                    "supportEmail": "Support Email",
+                    "supportPhone": "Support Phone",
+                    "whatsapp": "WhatsApp Number",
+                    "address": "Address"
+                }
             },
-            "socials": {
-                "title": "Social Accounts",
-                "description": "Connect your social media to boost SEO."
+            "shop": {
+                "maintenance": {
+                    "title": "Maintenance Mode",
+                    "description": "Temporarily close your store for updates."
+                },
+                "checkout": {
+                    "title": "Checkout Behavior",
+                    "description": "Control how customers buy from you."
+                },
+                "announcement": {
+                    "title": "Announcement Bar",
+                    "description": "Display a message at the top of every page."
+                },
+                "fields": {
+                    "maintenanceMode": "Maintenance Mode",
+                    "maintenanceModeDesc": "Block storefront access",
+                    "maintenanceMessage": "Maintenance Message",
+                    "guestCheckout": "Guest Checkout",
+                    "guestCheckoutDesc": "Allow orders without an account",
+                    "inventoryTracking": "Inventory Tracking",
+                    "inventoryTrackingDesc": "Keep track of stock levels",
+                    "enableAnnouncement": "Enable Announcement Bar",
+                    "announcementText": "Text",
+                    "announcementLink": "Link (Optional)"
+                }
+            },
+            "seo": {
+                "general": {
+                    "title": "Search Engine Optimization",
+                    "description": "Improve your store's visibility in search results."
+                },
+                "preview": {
+                    "title": "Google Search Preview",
+                    "exampleTitle": "iPhone 15 Pro Max | My Store",
+                    "exampleDesc": "Buy the latest iPhone 15 Pro Max with best prices and fast shipping from My Store. Available in all colors."
+                },
+                "fields": {
+                    "titleTemplate": "Meta Title Template",
+                    "defaultDesc": "Default Meta Description"
+                }
+            },
+            "policies": {
+                "title": "Store Policies",
+                "description": "Legal agreements between you and your customers.",
+                "fields": {
+                    "terms": "Terms & Conditions",
+                    "privacy": "Privacy Policy",
+                    "refund": "Refund Policy",
+                    "shipping": "Shipping Policy"
+                },
+                "placeholders": {
+                    "writePolicy": "Write your policy here..."
+                }
             }
         },
         "forbidden": {

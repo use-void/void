@@ -2,7 +2,8 @@
 
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@repo/i18n/navigation";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
+import { cn } from "../lib/utils";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { LanguageSquareIcon, Loading03Icon } from "@hugeicons/core-free-icons";
 import { useTransition } from "react";
@@ -39,32 +40,32 @@ export function LanguageSwitcher({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        render={
-          <Button
-            variant={variant === "store" ? "ghost" : "outline"}
-            size={variant === "admin" ? "sm" : "default"}
-            disabled={isPending}
-            className="gap-2"
-          >
-            {isPending ? (
-              <HugeiconsIcon
-                icon={Loading03Icon}
-                strokeWidth={2}
-                className="h-4 w-4 animate-spin"
-              />
-            ) : (
-              <HugeiconsIcon
-                icon={LanguageSquareIcon}
-                strokeWidth={2}
-                className="h-4 w-4"
-              />
-            )}
-            <span className="hidden sm:inline-block">
-              {getLocaleLabel(locale)}
-            </span>
-          </Button>
-        }
-      ></DropdownMenuTrigger>
+        disabled={isPending}
+        className={cn(
+          buttonVariants({
+            variant: variant === "store" ? "ghost" : "outline",
+            size: variant === "admin" ? "sm" : "default",
+          }),
+          "gap-2 h-9 px-4 py-2" // Adjust size slightly for consistency
+        )}
+      >
+        {isPending ? (
+          <HugeiconsIcon
+            icon={Loading03Icon}
+            strokeWidth={2}
+            className="h-4 w-4 animate-spin"
+          />
+        ) : (
+          <HugeiconsIcon
+            icon={LanguageSquareIcon}
+            strokeWidth={2}
+            className="h-4 w-4"
+          />
+        )}
+        <span className="hidden sm:inline-block">
+          {getLocaleLabel(locale)}
+        </span>
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuGroup>
           <DropdownMenuLabel>Select Language</DropdownMenuLabel>

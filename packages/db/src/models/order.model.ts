@@ -30,10 +30,19 @@ const OrderSchema = new Schema(
 
         status: {
             type: String,
-            enum: ["pending", "completed", "failed", "refunded"],
+            enum: ["pending", "processing", "completed", "cancelled", "refunded"],
             default: "pending",
             index: true
         },
+        
+        paymentStatus: {
+            type: String,
+            enum: ["unpaid", "authorized", "paid", "partially_refunded", "refunded", "failed"],
+            default: "unpaid",
+            index: true
+        },
+        
+        totalDue: { type: Number, default: 0 } // Amount remaining to be paid
     },
     { timestamps: true }
 );

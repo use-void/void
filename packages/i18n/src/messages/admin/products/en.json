@@ -3,6 +3,7 @@
     "description": "Manage inventory and track sales performance",
     "add": "Add Product",
     "filter": "Filter",
+    "reset": "Reset",
     "empty": "No products found",
     "table": {
         "product": "Product",
@@ -10,7 +11,28 @@
         "price": "Price",
         "stock": "Stock",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+        "brand": "Brand",
+        "color": "Color",
+        "price_range": "Price Range"
+    },
+    "brands": {
+        "apple": "Apple",
+        "samsung": "Samsung",
+        "sony": "Sony",
+        "logitech": "Logitech"
+    },
+    "colors": {
+        "black": "Black",
+        "white": "White",
+        "silver": "Silver",
+        "blue": "Blue"
+    },
+    "priceRanges": {
+        "under_100": "Under 100",
+        "100_500": "100 - 500",
+        "500_1000": "500 - 1000",
+        "over_1000": "Over 1000"
     },
     "status": {
         "active": "Active",

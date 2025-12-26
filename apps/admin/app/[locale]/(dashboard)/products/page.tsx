@@ -1,5 +1,4 @@
-import { ProductTable } from "@/components/products/product-table";
-import { ProductPageHeader } from "@/components/products/product-page-header";
+import { ProductListContainer } from "@/components/products/product-list-container";
 import { getTranslations, setRequestLocale } from "@repo/i18n";
 
 // Mock data to match the design in the image
@@ -61,15 +60,8 @@ export default async function ProductsPage({
 }) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: "Admin.products" });
     
     return (
-        <div className="flex flex-col w-full p-10 pb-20">
-            <ProductPageHeader 
-                title={t("title")} 
-                description={t("description")} 
-            />
-            <ProductTable products={MOCK_PRODUCTS} />
-        </div>
+        <ProductListContainer initialProducts={MOCK_PRODUCTS} />
     );
 }

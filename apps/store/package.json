@@ -16,8 +16,9 @@
     "@repo/tailwind-config": "*",
     "@repo/ui": "*",
     "@void/auth": "*",
-    "next-intl": "^4.3.4",
+    "@void/payment": "^0.1.0",
     "next": "^16.0.4",
+    "next-intl": "^4.3.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

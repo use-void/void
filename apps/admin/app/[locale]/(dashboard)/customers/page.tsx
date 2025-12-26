@@ -1,6 +1,8 @@
 import { CustomerTable } from "@/components/customers/customer-table";
-import { CustomerPageHeader } from "@/components/customers/customer-page-header";
+import { PageHeader } from "@/components/layout/headers/header-page";
+import { FileDown } from "lucide-react";
 import { getTranslations, setRequestLocale } from "@repo/i18n";
+import { Button } from "@repo/ui";
 
 // Mock data for customers
 const MOCK_CUSTOMERS = [
@@ -63,12 +65,20 @@ export default async function CustomersPage({
     const t = await getTranslations("Admin.customers");
     
     return (
-        <div className="flex flex-col w-full p-10 pb-20">
-            <CustomerPageHeader 
+        <div className="flex flex-col w-full min-h-screen pb-20">
+            <PageHeader 
                 title={t("title")} 
-                description={t("header.description")} 
+                description={t("header.description")}
+                actions={
+                  <Button variant="outline" className="h-11 px-5 border-border bg-secondary/50 hover:bg-secondary text-muted-foreground hover:text-foreground gap-2 ">
+                    <FileDown className="h-4 w-4" />
+                    <span>تصدير</span>
+                  </Button>
+                }
             />
-            <CustomerTable customers={MOCK_CUSTOMERS} />
+            <div className="w-full px-6 lg:px-10 py-8">
+                <CustomerTable customers={MOCK_CUSTOMERS} />
+            </div>
         </div>
     );
 }

@@ -1,10 +1,18 @@
 import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
+const LocalizedString = {
+    type: Map,
+    of: String,
+    required: true
+};
+
 const ProductSchema = new Schema(
     {
-        name: { type: String, required: true, index: "text" },
+        name: LocalizedString,
         slug: { type: String, required: true, unique: true, index: true },
-        description: String,
+        description: { type: Map, of: String },
+
+        category: { type: Schema.Types.ObjectId, ref: "Category", required: true, index: true },
 
         price: { type: Number, required: true, index: true },
         compareAtPrice: Number, // سعر قبل الخصم

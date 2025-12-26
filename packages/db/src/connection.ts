@@ -1,14 +1,11 @@
 import mongoose from "mongoose";
 import type { Db, MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB || "void";
+// Top-level env access removed to support delayed loading
+// const uri = process.env.MONGODB_URI;
+// const dbName = process.env.MONGODB_DB || "void";
 
-if (!uri) {
-    throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
-}
-
-// 1. تعريف واجهة الكاش في الـ Global
+// 1. Define Cache Interface in Global
 interface GlobalMongoose {
     conn: typeof mongoose | null;
     promise: Promise<typeof mongoose> | null;
@@ -24,7 +21,7 @@ if (!globalWithMongoose.mongoose) {
 }
 
 /**
- * الدالة الرئيسية للاتصال بـ Mongoose
+ * Main Mongoose Connection Function
  */
 export async function connectDB(): Promise<typeof mongoose> {
     if (globalWithMongoose.mongoose!.conn) {
@@ -32,6 +29,13 @@ export async function connectDB(): Promise<typeof mongoose> {
     }
 
     if (!globalWithMongoose.mongoose!.promise) {
+        const uri = process.env.MONGODB_URI;
+        const dbName = process.env.MONGODB_DB || "void";
+
+        if (!uri) {
+            throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+        }
+
         const opts = {
             bufferCommands: false,
             dbName: dbName,
@@ -40,7 +44,7 @@ export async function connectDB(): Promise<typeof mongoose> {
 
         console.log("⏳ [DB] Connecting to MongoDB via Mongoose...");
 
-        globalWithMongoose.mongoose!.promise = mongoose.connect(uri!, opts).then((m) => {
+        globalWithMongoose.mongoose!.promise = mongoose.connect(uri, opts).then((m) => {
             console.log("✅ [DB] Connection established successfully.");
             return m;
         });
@@ -56,8 +60,11 @@ export async function connectDB(): Promise<typeof mongoose> {
     return globalWithMongoose.mongoose!.conn;
 }
 
+// Alias for consistency with other parts of the app
+export const connectToDatabase = connectDB;
+
 /**
- * دالة مساعدة للحصول على Native DB Instance
+ * Helper to get Native DB Instance
  */
 export async function getMongoDb(): Promise<Db> {
     await connectDB();
@@ -67,12 +74,12 @@ export async function getMongoDb(): Promise<Db> {
         throw new Error("Database instance not found after connection.");
     }
     
-    // ✅ الإضافة الوحيدة: (as Db) لإسكات خطأ التايب سكريبت دون تغيير الكود
+    // Cast to Db logic
     return db as Db;
 }
 
 /**
- * دالة مساعدة للحصول على MongoClient الأصلي
+ * Helper to get Native MongoClient
  */
 export async function getMongoClient(): Promise<MongoClient> {
     await connectDB();

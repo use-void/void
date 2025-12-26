@@ -4,8 +4,24 @@ const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    transpilePackages: ['@repo/i18n', '@repo/ui'],
-    cacheComponents: true
+    cacheComponents: true,
+    transpilePackages: ['@repo/i18n', '@repo/ui', '@void/db'],
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'placehold.co',
+            },
+            {
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.pravatar.cc',
+            },
+        ],
+    },
 };
 
-export default withNextIntl(nextConfig);
+export default withNextIntl(nextConfig as any);

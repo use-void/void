@@ -1,0 +1,36 @@
+{
+  "name": "@void/payment",
+  "version": "0.1.0",
+  "private": true,
+  "sideEffects": false,
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./server": "./src/server/index.ts",
+    "./actions": "./src/server/actions.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@void/db": "^0.0.0",
+    "ofetch": "^1.4.1",
+    "server-only": "^0.0.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "^22.10.4",
+    "@types/react": "^19.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": "^19.2.0"
+  }
+}
