@@ -99,7 +99,6 @@ async function CheckoutFormWrapper({
         <CheckoutFlow 
             locale={locale} 
             translations={translations}
-            amount={0} 
             userId={userId}
             initialGateway={activeGateway}
             cartIdProp={resolvedCartId}

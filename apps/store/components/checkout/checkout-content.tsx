@@ -9,14 +9,10 @@ export async function CheckoutContent({ locale }: { locale: string }) {
     return (
         <CheckoutFlow 
             locale={locale} 
-            translations={t.raw('paymentMethod') ? {
+            translations={{
                 "checkout.paymentMethod": t('paymentMethod'),
                 "checkout.placeOrder": t('placeOrder'),
-                "buy": t.raw('buy') || "Buy"
-            } : {
-                "checkout.paymentMethod": "Payment Method",
-                "checkout.placeOrder": "Place Order",
-                "buy": "Buy"
+                "buy": t('buy')
             }}
             userId={session?.user?.id}
         />

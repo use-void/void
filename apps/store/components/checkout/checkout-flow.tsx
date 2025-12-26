@@ -35,7 +35,7 @@ const TEST_CARDS = {
 };
 
 interface CheckoutFlowProps {
-  amount: number;
+  amount?: number;
   locale: string;
   translations: any;
   userId?: string;
