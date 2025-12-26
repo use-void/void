@@ -11,6 +11,8 @@ async function sleep(ms: number) {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
+  console.log('Payment Callback Params:', Object.fromEntries(searchParams.entries()));
+  
   const status = searchParams.get('status');
   // Polar sends 'checkout_id', Moyasar sends 'id'
   const checkoutId = searchParams.get('checkout_id');

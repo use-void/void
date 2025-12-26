@@ -238,7 +238,8 @@ export function CheckoutFlow({ amount, locale, translations, userId, initialGate
              return;
           }
 
-          const callbackUrl = `${window.location.origin}/api/payment/callback?locale=${locale}&gateway=polar`; // Tag gateway
+          // We append {CHECKOUT_ID} template so Polar replaces it with the actual ID on success
+          const callbackUrl = `${window.location.origin}/api/payment/callback?locale=${locale}&gateway=polar&checkout_id={CHECKOUT_ID}`; 
           
           // Import dynamically or use the action passed as prop/imported
           const { createPaymentIntentAction } = await import('@void/payment/actions');

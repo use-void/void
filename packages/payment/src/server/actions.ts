@@ -157,14 +157,18 @@ export async function createPaymentIntentAction(
 }
 
 export async function verifyPaymentAction(
-  providerName: 'moyasar' | 'stripe',
+  providerName: 'moyasar' | 'stripe' | 'polar',
   transactionId: string
 ): Promise<PaymentResult> {
   await connectToDatabase();
-  const config = { secretKey: process.env.MOYASAR_SECRET_KEY };
+  const config = { 
+      secretKey: process.env.MOYASAR_SECRET_KEY, // Moyasar
+      accessToken: process.env.POLAR_ACCESS_TOKEN, // Polar
+      organizationId: process.env.POLAR_ORGANIZATION_ID, // Polar
+  };
   
   try {
-    const provider = PaymentFactory.getProvider(providerName as any, config);
+    const provider = PaymentFactory.getProvider(providerName, config);
     
     // 1. Fetch latest status from Provider
     const result = await provider.verify(transactionId);
