@@ -4,6 +4,7 @@ const PaymentTransactionSchema = new Schema(
     {
         orderId: { type: Schema.Types.ObjectId, ref: "Order", index: true }, // Optional until payment success
         cartId: { type: Schema.Types.ObjectId, ref: "Cart", index: true }, // To link to cart during pending phase
+        productId: { type: Schema.Types.ObjectId, ref: "Product", index: true }, // For direct product purchases
         userId: { type: Schema.Types.ObjectId, ref: "User", index: true }, // Can be null for guest checkout
         
         provider: { 

@@ -46,8 +46,11 @@ export class PolarProvider extends BasePaymentProvider {
       // Map response
       const transaction = mapPolarTransaction(session);
       
+      // Ensure checkoutUrl is available in both metadata and as a property for easy access
       if (session.url) {
         transaction.metadata = { ...transaction.metadata, checkoutUrl: session.url };
+        (transaction as any).checkoutUrl = session.url;
+        (transaction as any).url = session.url;
       }
       
       return this.success(transaction);

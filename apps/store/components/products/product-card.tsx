@@ -18,7 +18,7 @@ interface ProductCardProps {
     className?: string;
 }
 
-export function ProductCard({ product, className }: ProductCardProps) {
+export function ProductCard({ product, className, locale }: ProductCardProps) {
     const t = useTranslations("Store");
 
     return (

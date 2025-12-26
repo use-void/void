@@ -52,12 +52,6 @@ export function AddToCartButton({
                         description: result.message
                     });
                 }
-            } else {
-                // One-time Flow: Add to Cart
-                if (product.type === 'subscription') {
-                     toast.error(locale === 'ar' ? "لا يمكن إضافة الاشتراكات للسلة" : "Subscriptions cannot be added to cart");
-                     return;
-                }
                 await new Promise(resolve => setTimeout(resolve, 500)); // UX delay
                 addItem({ ...product, quantity: 1 });
                 toast.success(locale === 'ar' ? "تمت إضافة المنتج إلى السلة" : "Product added to cart", {

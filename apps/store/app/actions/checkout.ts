@@ -3,8 +3,10 @@
 import { Order, connectToDatabase, Product } from "@void/db";
 import { randomBytes } from "crypto";
 import { createPaymentIntentAction } from "@void/payment/actions";
+import { getSession } from "@void/auth";
 
 export async function createOrder(data: {
+// ... (rest of the code below createOrder handled by replace_file_content)
     userId?: string;
     guestInfo?: { email: string; name: string };
     items: any[];
@@ -52,22 +54,31 @@ export async function initiatePolarCheckout(productId: string, locale: string = 
     const product = await (Product as any).findById(productId);
     if (!product) throw new Error("Product not found");
 
+    const session = await getSession();
+
     // 2. Call Payment Intent Action for Polar
     const result = await createPaymentIntentAction('polar', {
         amount: product.price,
         currency: 'USD',
         description: `Subscription: ${product.name}`,
-        callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/callback?gateway=polar&locale=${locale}`,
+        callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/callback?gateway=polar&locale=${locale}&checkout_id={CHECKOUT_ID}`,
         metadata: {
             productId: product._id.toString(),
+            userId: session?.user?.id,
             type: 'subscription',
             polarProductIds: [product.integrations?.polar?.productId].filter(Boolean)
         }
     });
 
     if (result.status === 'success') {
-        const checkoutUrl = (result.data as any).checkoutUrl || result.data.metadata?.checkoutUrl;
-        if (!checkoutUrl) throw new Error("Polar checkout URL missing in response");
+        const data = result.data as any;
+        const checkoutUrl = data.checkoutUrl || data.metadata?.checkoutUrl || data.url;
+        
+        if (!checkoutUrl) {
+             console.error("❌ Polar Checkout Error: No URL found in result", result);
+             throw new Error("Polar checkout URL missing in response");
+        }
+        
         return { success: true, checkoutUrl };
     }
 

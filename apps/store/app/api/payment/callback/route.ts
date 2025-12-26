@@ -64,32 +64,63 @@ export async function GET(request: NextRequest) {
   if (verifiedId && verifiedResult) {
       // 1. Order Creation Logic
       try {
-          const { cartId, amount, currency } = verifiedResult;
+          const { cartId, amount, currency, metadata } = verifiedResult;
+          const productId = metadata?.productId || searchParams.get('productId');
+          const userId = metadata?.userId || verifiedResult.userId;
 
-          if (cartId) {
-              // 2. Create Order from Cart
+          if (cartId || productId) {
               const { createOrder } = await import("@/app/actions/checkout");
               const db = await import("@void/db");
-              
               await db.connectToDatabase();
-              const finalCart = await (db.Cart as any).findById(cartId);
 
-              if (finalCart && (finalCart.status === 'active' || finalCart.status === 'pending')) {
+              let orderItems = [];
+              let finalUserId = userId;
+              let guestInfo = undefined;
+
+              if (cartId) {
+                  const finalCart = await (db.Cart as any).findById(cartId);
+                  if (finalCart && (finalCart.status === 'active' || finalCart.status === 'pending')) {
+                      orderItems = finalCart.items;
+                      finalUserId = finalCart.userId?.toString() || userId;
+                      
+                      // Mark Cart as converted
+                      finalCart.status = 'converted';
+                      await finalCart.save();
+                  }
+              } else if (productId) {
+                  const product = await (db.Product as any).findById(productId);
+                  if (product) {
+                      const name = product.name instanceof Map ? (product.name.get(locale) || product.name.get('en')) : (product.name[locale] || product.name['en']);
+                      orderItems = [{
+                          productId: product._id.toString(),
+                          quantity: 1,
+                          name: name,
+                          price: product.price,
+                          image: product.images?.[0]?.url || '/placeholder.png'
+                      }];
+
+                      // Use customer info from Polar if guest
+                      if (!finalUserId) {
+                           guestInfo = {
+                               email: metadata?.customerEmail || 'guest@example.com',
+                               name: metadata?.customerName || 'Guest'
+                           };
+                      }
+                  }
+              }
+
+              if (orderItems.length > 0) {
                   const orderResult = await createOrder({
-                      userId: finalCart.userId?.toString(),
-                      items: finalCart.items,
-                      amount: amount.value / 100, // Smallest unit to main unit
+                      userId: finalUserId,
+                      guestInfo,
+                      items: orderItems,
+                      amount: amount.value / 100, 
                       currency: currency,
                       paymentMethod: verifiedResult.paymentMethodType || 'card'
                   });
 
                   if (orderResult.success) {
-                      // 3. Mark Cart as converted
-                      finalCart.status = 'converted';
-                      await finalCart.save();
-
                       // 4. Link Order to Transaction
-                      // Ensure we find the transaction by provider ID
                       await (db.PaymentTransaction as any).updateOne(
                           { providerTransactionId: id, provider: gateway } as any,
                           { orderId: orderResult.orderId }
@@ -99,7 +130,6 @@ export async function GET(request: NextRequest) {
           }
       } catch (orderError) {
           console.error('Order creation failed after payment success:', orderError);
-          // Redirect to thank-you anyway if payment is success but order logic failed (could be handled manually)
           return NextResponse.redirect(`${baseUrl}/${locale}/thank-you?id=${verifiedId}&orderError=true`);
       }
 

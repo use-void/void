@@ -26,11 +26,12 @@ export async function createPaymentIntentAction(
   // 1. Create Pending Transaction Record
   let transactionRecord;
   try {
-      if (options.metadata?.orderId || options.metadata?.cartId) {
+      if (options.metadata?.orderId || options.metadata?.cartId || options.metadata?.productId) {
            transactionRecord = await (PaymentTransaction as any).create({
                orderId: options.metadata?.orderId,
                cartId: options.metadata?.cartId,
-               userId: options.metadata?.userId || options.metadata?.sessionId, // Supporting optional userId
+               productId: options.metadata?.productId,
+               userId: options.metadata?.userId || options.metadata?.sessionId,
                provider: providerName,
                type: 'payment',
                status: 'pending',
@@ -38,7 +39,7 @@ export async function createPaymentIntentAction(
                currency: options.currency,
                idempotencyKey: idempotencyKey,
                tokenId: options.metadata?.tokenId,
-               isRecurring: options.metadata?.isRecurring || false,
+               isRecurring: options.metadata?.isRecurring || options.metadata?.type === 'subscription',
                createdAt: new Date(),
                timeline: [{
                    status: 'pending',
@@ -278,7 +279,7 @@ export async function verifyPaymentAction(
 }
 
 export async function refundPaymentAction(
-  providerName: 'moyasar' | 'stripe',
+  providerName: PaymentProviderId,
   transactionId: string,
   amount?: number, // in major unit (e.g. 50.00 SAR), optional for full refund
   reason?: string
@@ -330,7 +331,7 @@ export async function refundPaymentAction(
 }
 
 export async function capturePaymentAction(
-  providerName: 'moyasar' | 'stripe',
+  providerName: PaymentProviderId,
   transactionId: string,
   amount?: number
 ): Promise<PaymentResult> {

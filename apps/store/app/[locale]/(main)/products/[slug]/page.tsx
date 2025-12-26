@@ -40,8 +40,12 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
                          <ProductActions 
                             locale={locale} 
                             product={{
-                                ...product,
-                                image: product.images[0] || '/placeholder.png'
+                                id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                image: product.images[0] || '/placeholder.png',
+                                slug: product.slug,
+                                type: product.type as any
                             }}
                          />
                     </div>

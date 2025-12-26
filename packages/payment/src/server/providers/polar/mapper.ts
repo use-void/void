@@ -22,13 +22,18 @@ export function mapPolarTransaction(data: any): Transaction {
     createdAt: new Date(data.created_at || Date.now()),
     reference: data.id,
     paymentMethodType: 'polar_checkout',
-    metadata: data.metadata,
+    metadata: {
+      ...data.metadata,
+      checkoutUrl: data.url || data.metadata?.checkoutUrl,
+      customerEmail: data.customer_email || data.metadata?.customerEmail,
+      customerName: data.customer_name || data.metadata?.customerName,
+    },
     rawResponse: data,
     timeline: [
       {
         status,
         date: new Date(),
-        message: `Polar status: ${data.status}`
+        message: `Polar status: ${data.status || data.payment_status}`
       }
     ]
   };
