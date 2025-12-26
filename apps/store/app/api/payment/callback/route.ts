@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
   const locale = searchParams.get('locale') || 'en'; // Fallback locale
 
   let verifiedId: string | null = null;
+  let verifiedResult: any = null;
   let errorMsg = message || 'Payment verification failed.';
 
   if (id) {
@@ -29,6 +30,7 @@ export async function GET(request: NextRequest) {
               
               if (txStatus === 'PAID' || txStatus === 'CAPTURED' || txStatus === 'AUTHORIZED') {
                  verifiedId = verifyResult.data.id;
+                 verifiedResult = verifyResult.data;
                  break; // Success!
               } else if (txStatus === 'FAILED') {
                  errorMsg = verifyResult.data.metadata?.source?.message || 'Payment failed.';
@@ -51,9 +53,49 @@ export async function GET(request: NextRequest) {
 
   const baseUrl = request.nextUrl.origin;
 
-  if (verifiedId) {
-     return NextResponse.redirect(`${baseUrl}/${locale}/thank-you?id=${verifiedId}`);
+  if (verifiedId && verifiedResult) {
+      // 1. Order Creation Logic
+      try {
+          const { cartId, amount, currency } = verifiedResult;
+
+          if (cartId) {
+              // 2. Create Order from Cart
+              const { createOrder } = await import("@/app/actions/checkout");
+              const db = await import("@void/db");
+              
+              await db.connectToDatabase();
+              const finalCart = await (db.Cart as any).findById(cartId);
+
+              if (finalCart && finalCart.status === 'active') {
+                  const orderResult = await createOrder({
+                      userId: finalCart.userId?.toString(),
+                      items: finalCart.items,
+                      amount: amount.value / 100, // Smallest unit to main unit
+                      currency: currency,
+                      paymentMethod: 'card'
+                  });
+
+                  if (orderResult.success) {
+                      // 3. Mark Cart as converted
+                      finalCart.status = 'converted';
+                      await finalCart.save();
+
+                      // 4. Link Order to Transaction
+                      await (db.PaymentTransaction as any).updateOne(
+                          { providerTransactionId: id } as any,
+                          { orderId: orderResult.orderId }
+                      );
+                  }
+              }
+          }
+      } catch (orderError) {
+          console.error('Order creation failed after payment success:', orderError);
+          // Redirect to thank-you anyway if payment is success
+          return NextResponse.redirect(`${baseUrl}/${locale}/thank-you?id=${verifiedId}&orderError=true`);
+      }
+
+      return NextResponse.redirect(`${baseUrl}/${locale}/thank-you?id=${verifiedId}`);
   } else {
-     return NextResponse.redirect(`${baseUrl}/${locale}/checkout?error=${encodeURIComponent(errorMsg)}`);
+      return NextResponse.redirect(`${baseUrl}/${locale}/checkout?error=${encodeURIComponent(errorMsg)}`);
   }
 }

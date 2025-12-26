@@ -97,11 +97,22 @@
             "settings": "الإعدادات",
             "logout": "تسجيل الخروج",
             "orderId": "رقم الطلب",
+            "orderDetails": "تفاصيل الطلب",
             "total": "الإجمالي",
-            "status": {
+            "summary": "ملخص الطلب",
+            "paymentDetails": "تفاصيل الدفع",
+            "date": "التاريخ",
+            "timeline": "سجل الدفع",
+            "failureReason": "سبب الفشل",
+            "status": "الحالة",
+            "statuses": {
                 "delivered": "تم التوصيل",
                 "processing": "قيد التنفيذ",
-                "cancelled": "ملغي"
+                "cancelled": "ملغي",
+                "pending": "قيد الانتظار",
+                "completed": "مكتمل",
+                "paid": "مدفوع",
+                "failed": "فاشل"
             }
         }
     }

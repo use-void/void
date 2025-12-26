@@ -23,9 +23,10 @@ export async function createPaymentIntentAction(
   // 1. Create Pending Transaction Record
   let transactionRecord;
   try {
-      if (options.metadata?.orderId) {
+      if (options.metadata?.orderId || options.metadata?.cartId) {
            transactionRecord = await PaymentTransaction.create({
-               orderId: options.metadata.orderId,
+               orderId: options.metadata?.orderId,
+               cartId: options.metadata?.cartId,
                provider: providerName,
                type: 'payment',
                status: 'pending',
@@ -33,6 +34,11 @@ export async function createPaymentIntentAction(
                currency: options.currency,
                idempotencyKey: idempotencyKey,
                createdAt: new Date(),
+               timeline: [{
+                   status: 'pending',
+                   date: new Date(),
+                   message: 'Payment Initiated'
+               }]
            });
            
            // Log initiation
@@ -57,11 +63,13 @@ export async function createPaymentIntentAction(
     
     // 2. Update Transaction with Provider ID
     if (transactionRecord && result.status === 'success') {
-        const { id, status, rawResponse } = result.data;
+        const { id, rawResponse, reference, gatewayId } = result.data;
         await PaymentTransaction.updateOne(
-            { _id: transactionRecord._id }, 
+            { _id: transactionRecord._id } as any, 
             { 
                 providerTransactionId: id,
+                reference: reference,
+                gatewayId: gatewayId,
                 metadata: rawResponse
             }
         );
@@ -93,7 +101,14 @@ export async function createPaymentIntentAction(
             { _id: transactionRecord._id } as any, 
             { 
                 status: 'failed',
-                failureMessage: error.message
+                failureMessage: error.message,
+                $push: {
+                    timeline: {
+                        status: 'failed',
+                        date: new Date(),
+                        message: error.message
+                    }
+                }
             }
         );
     }
@@ -108,7 +123,7 @@ export async function createPaymentIntentAction(
 
 export async function verifyPaymentAction(
   providerName: 'moyasar' | 'stripe',
-  transactionId: string // This is the PROVIDER transaction ID (not our DB ID usually, but dependent on flow)
+  transactionId: string // This is the PROVIDER transaction ID
 ): Promise<PaymentResult> {
    await connectToDatabase();
 
@@ -125,7 +140,8 @@ export async function verifyPaymentAction(
     
     // 2. Update DB if successful
     if (result.status === 'success') {
-        const { status: txStatus, metadata } = result.data;
+        const txData = result.data;
+        const { status: txStatus, metadata, failureReason, reference, cardDetails, responseCode, gatewayId, terminalId } = txData;
         
         // Map Unified Status to DB Status
         let dbStatus = 'pending';
@@ -146,15 +162,36 @@ export async function verifyPaymentAction(
         const dbTx = await PaymentTransaction.findOne({ providerTransactionId: transactionId } as any);
         
         if (dbTx) {
+            // Check if status changed to push to timeline
+            if (dbTx.status !== dbStatus) {
+                dbTx.timeline.push({
+                    status: dbStatus,
+                    date: new Date(),
+                    message: failureReason || `Transaction is ${dbStatus}`
+                });
+            }
+
             dbTx.status = dbStatus;
-            dbTx.metadata = metadata; // Update metadata if needed
-            if (dbStatus === 'failed') dbTx.failureMessage = (metadata as any)?.source?.message;
+            dbTx.metadata = metadata;
+            
+            // Save detailed info
+            if (reference) dbTx.reference = reference;
+            if (responseCode) dbTx.responseCode = responseCode;
+            if (gatewayId) dbTx.gatewayId = gatewayId;
+            if (terminalId) dbTx.terminalId = terminalId;
+            if (cardDetails) dbTx.cardDetails = cardDetails;
+            
+            if (dbStatus === 'failed' || failureReason) {
+                dbTx.failureMessage = failureReason; // Legacy field support
+                dbTx.failureReason = failureReason;
+            }
+
             await dbTx.save();
             
             // Update Order Status
             if (dbTx.orderId) {
                 await Order.updateOne(
-                    { _id: dbTx.orderId },
+                    { _id: dbTx.orderId } as any,
                     { paymentStatus: orderPaymentStatus }
                 );
             }
@@ -162,11 +199,15 @@ export async function verifyPaymentAction(
             // Log Verification
             await PaymentLog.create({
                 transactionId: dbTx._id,
-                eventType: 'api_response', // or 'verification'
+                eventType: 'api_response',
                 provider: providerName,
                 response: result.data,
                 statusCode: 200
             });
+
+            // Return cartId and orderId in the result data for the caller to handle logic
+            (result.data as any).cartId = dbTx.cartId;
+            (result.data as any).orderId = dbTx.orderId;
         }
     }
 

@@ -2,7 +2,8 @@ import mongoose, { Schema, type InferSchemaType } from "mongoose";
 
 const PaymentTransactionSchema = new Schema(
     {
-        orderId: { type: Schema.Types.ObjectId, ref: "Order", required: true, index: true },
+        orderId: { type: Schema.Types.ObjectId, ref: "Order", index: true }, // Optional until payment success
+        cartId: { type: Schema.Types.ObjectId, ref: "Cart", index: true }, // To link to cart during pending phase
         userId: { type: Schema.Types.ObjectId, ref: "User", index: true }, // Can be null for guest checkout
         
         provider: { 
@@ -33,17 +34,33 @@ const PaymentTransactionSchema = new Schema(
         
         cardDetails: {
             brand: String,
+            scheme: String,
             last4: String,
             name: String
         },
         
         idempotencyKey: { type: String, unique: true, index: true }, // To prevent double charges
         
-        failureMessage: { type: String },
+        // Detailed Payment Info
+        reference: String, // Moyasar Reference
+        responseCode: String,
+        gatewayId: String,
+        terminalId: String,
+        
+        failureReason: { type: String },
+        
+        timeline: [{
+            status: String,
+            date: { type: Date, default: Date.now },
+            message: String
+        }],
         
         metadata: { type: Schema.Types.Mixed } // Raw response for debugging
     },
-    { timestamps: true }
+    { 
+        timestamps: true,
+        collection: "transactions"
+    }
 );
 
 export type PaymentTransactionType = InferSchemaType<typeof PaymentTransactionSchema> & { _id: mongoose.Types.ObjectId };

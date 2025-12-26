@@ -1,1 +1,1 @@
-export { getLocale, getRequestConfig, getTranslations } from 'next-intl/server';
+export { getLocale, getMessages, getRequestConfig, getTranslations, getFormatter } from 'next-intl/server';

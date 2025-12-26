@@ -15,19 +15,37 @@ export function mapMoyasarStatus(status: string): PaymentStatus {
 }
 
 export function mapMoyasarTransaction(data: MoyasarPaymentResponse): Transaction {
+  const status = mapMoyasarStatus(data.status);
+
   return {
     id: data.id,
     providerId: data.id,
     amount: {
-      value: data.amount, // Moyasar uses subunits (halalas/cents) but often returns them as such.
-      // Note: We should be consistent. If the system expects units (e.g. 100.00), we divide.
-      // Assuming system works with smallest units (cents) as integer is best practice.
-      // If system expects float, divide by 100.
-      // For now, I will pass through, assuming unified system also uses integers / smallest units.
+      value: data.amount,
       currency: data.currency as Currency,
     },
-    status: mapMoyasarStatus(data.status),
+    status: status,
     createdAt: new Date(data.created_at),
+    
+    reference: (data.source as any)?.reference_number,
+    responseCode: (data.source as any)?.response_code,
+    gatewayId: (data.source as any)?.gateway_id,
+    terminalId: (data.source as any)?.terminal_id,
+    failureReason: data.status === 'failed' ? (data.source as any)?.message : undefined,
+    
+    cardDetails: {
+        brand: (data as any).source?.company,
+        scheme: (data as any).source?.type, // e.g. mada
+        last4: (data as any).source?.number?.slice(-4),
+        name: (data as any).source?.name
+    },
+
+    timeline: [{
+        status: status,
+        date: new Date(data.created_at),
+        message: (data as any).source?.message || `Transaction ${status}`
+    }],
+
     metadata: {
       source: data.source,
       invoiceId: data.invoice_id,

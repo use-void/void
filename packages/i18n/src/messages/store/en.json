@@ -97,11 +97,22 @@
             "settings": "Settings",
             "logout": "Log out",
             "orderId": "Order ID",
+            "orderDetails": "Order Details",
             "total": "Total",
-            "status": {
+            "summary": "Order Summary",
+            "paymentDetails": "Payment Details",
+            "date": "Date",
+            "timeline": "Payment Timeline",
+            "failureReason": "Failure Reason",
+            "status": "Status",
+            "statuses": {
                 "delivered": "Delivered",
                 "processing": "Processing",
-                "cancelled": "Cancelled"
+                "cancelled": "Cancelled",
+                "pending": "Pending",
+                "completed": "Completed",
+                "paid": "Paid",
+                "failed": "Failed"
             }
         }
     }

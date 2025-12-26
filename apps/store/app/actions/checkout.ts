@@ -5,9 +5,11 @@ import { randomBytes } from "crypto";
 
 export async function createOrder(data: {
     userId?: string;
+    guestInfo?: { email: string; name: string };
     items: any[];
     amount: number;
     currency: string;
+    paymentMethod?: string;
 }) {
     await connectToDatabase();
 
@@ -16,23 +18,28 @@ export async function createOrder(data: {
     const order = await Order.create({
         orderNumber,
         user: data.userId || null, 
+        guestInfo: data.guestInfo,
         items: data.items.map(item => ({
-            product: item.id, // Assuming item.id is the Product ID
+            productId: item.productId || item.id,
             quantity: item.quantity,
-            price: item.price
+            snapshot: {
+                name: item.name,
+                price: item.price,
+                image: item.image
+            }
         })),
         financials: {
             total: data.amount,
             currency: data.currency,
-            paymentMethod: 'card' // Default or passed
+            paymentMethod: data.paymentMethod || 'card'
         },
         status: 'pending',
-        paymentStatus: 'unpaid'
+        paymentStatus: 'paid' // Called only after success
     });
 
     if (!order) {
         throw new Error("Failed to create order");
     }
 
-    return { success: true, orderId: order._id.toString() };
+    return { success: true, orderId: order._id.toString(), orderNumber: order.orderNumber };
 }

@@ -13,6 +13,7 @@ export * from "./models/category.model";
 export * from "./models/payment-transaction.model";
 export * from "./models/payment-method.model";
 export * from "./models/payment-log.model";
+export * from "./models/cart.model";
 
 // 3. Utils & Types
 import { Types } from "mongoose";

@@ -17,12 +17,38 @@ export type PaymentStatus =
   | 'CAPTURED'
   | 'VOIDED';
 
+export interface TransactionTimeline {
+  status: PaymentStatus;
+  date: Date;
+  message?: string;
+}
+
 export interface Transaction {
   id: string;
   providerId: string;
   amount: PaymentAmount;
   status: PaymentStatus;
   createdAt: Date;
+  
+  cartId?: string;
+  orderId?: string;
+  
+  // Detailed Info
+  reference?: string;
+  responseCode?: string;
+  failureReason?: string;
+  gatewayId?: string;
+  terminalId?: string;
+  
+  cardDetails?: {
+    brand?: string;
+    scheme?: string;
+    last4?: string;
+    name?: string;
+  };
+  
+  timeline: TransactionTimeline[];
+  
   metadata?: Record<string, any>;
   rawResponse?: any;
 }
