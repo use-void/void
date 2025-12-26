@@ -17,7 +17,7 @@ export async function OrderList() {
     const t = await getTranslations("Admin.orders");
 
     return (
-        <Card className="bg-card border-border rounded-xl">
+        <Card className="bg-card border-border ">
             <CardHeader>
                 <CardTitle>{t("title")}</CardTitle>
             </CardHeader>
@@ -25,7 +25,7 @@ export async function OrderList() {
                 <div className="space-y-4">
                     {orders.map((order) => (
                         <Link href={`/orders/${order.id}`} key={order.id} className="block group">
-                            <div className="flex items-center justify-between p-4 border rounded-lg bg-background group-hover:border-primary/50 transition-colors">
+                            <div className="flex items-center justify-between p-4 border  bg-background group-hover:border-primary/50 transition-colors">
                                 <div>
                                     <p className="font-medium">{order.id}</p>
                                     <p className="text-sm text-muted-foreground">{order.customer}</p>
@@ -35,7 +35,7 @@ export async function OrderList() {
                                     <p className="text-sm text-muted-foreground">{order.date}</p>
                                 </div>
                                 <div>
-                                    <span className={`px-2 py-1 text-xs rounded-full 
+                                    <span className={`px-2 py-1 text-xs  
                                         ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
                                           order.status === 'Processing' ? 'bg-blue-100 text-blue-700' : 
                                           'bg-yellow-100 text-yellow-700'}`}>
@@ -53,14 +53,14 @@ export async function OrderList() {
 
 export function OrderListSkeleton() {
     return (
-        <Card className="bg-card border-border rounded-xl">
+        <Card className="bg-card border-border ">
             <CardHeader>
                  <Skeleton className="h-6 w-[150px] bg-muted" />
             </CardHeader>
             <CardContent>
                  <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
-                         <div key={i} className="flex items-center justify-between p-4 border rounded-lg bg-background">
+                         <div key={i} className="flex items-center justify-between p-4 border  bg-background">
                             <div className="space-y-2">
                                 <Skeleton className="h-4 w-[100px] bg-muted" />
                                 <Skeleton className="h-3 w-[150px] bg-muted/50" />

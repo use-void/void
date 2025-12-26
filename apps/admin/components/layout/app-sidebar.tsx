@@ -94,7 +94,7 @@ export function AppSidebar({ locale, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader className="items-center justify-center h-32">
-        <div className="w-10 h-10 bg-sidebar-foreground rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+        <div className="w-10 h-10 bg-sidebar-foreground  flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.1)]">
           <span className="font-bold text-sidebar text-sm tracking-tighter">
             NR
           </span>
@@ -114,10 +114,10 @@ export function AppSidebar({ locale, ...props }: AppSidebarProps) {
                     <SidebarMenuButton
                       isActive={isActive}
                       className={`
-                        w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group relative h-11
+                        w-full flex items-center gap-3 p-3  transition-all duration-200 group relative h-11
                         ${
                           isActive
-                            ? "bg-sidebar-accent text-sidebar-accent-foreground border border-sidebar-border shadow-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground border border-sidebar-border  hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                             : "text-muted-foreground hover:bg-secondary hover:text-sidebar-foreground border border-transparent hover:border-sidebar-border"
                         }
                       `}
@@ -130,7 +130,7 @@ export function AppSidebar({ locale, ...props }: AppSidebarProps) {
                           prefetch={false}
                         >
                           {isActive && (
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
+                            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground " />
                           )}
                           <item.icon
                             size={20}
@@ -161,10 +161,10 @@ export function AppSidebar({ locale, ...props }: AppSidebarProps) {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         isActive={isActive}
-                        className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 group relative h-11
+                        className={`w-full flex items-center gap-3 p-3  transition-all duration-200 group relative h-11
                             ${
                               isActive
-                                ? "bg-sidebar-accent text-sidebar-accent-foreground border border-sidebar-border shadow-sm hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                                ? "bg-sidebar-accent text-sidebar-accent-foreground border border-sidebar-border  hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                                 : "text-muted-foreground hover:bg-secondary hover:text-sidebar-foreground border border-transparent hover:border-sidebar-border"
                             }
                         `}
@@ -176,7 +176,7 @@ export function AppSidebar({ locale, ...props }: AppSidebarProps) {
                             onClick={() => handleLinkClick(item.url)}
                           >
                             {isActive && (
-                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground rounded-l-full" />
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-foreground " />
                             )}
                             <item.icon
                               size={20}

@@ -2,21 +2,24 @@ import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
 
 const UserSchema = new Schema(
     {
-        // --- Better Auth Core Fields ---
+        // Better Auth يستخدم String للـ ID عادةً، لذا نحتاج لتعريف ذلك لضمان التوافق
+        // إذا كان Better Auth يستخدم ObjectId، يمكنك إزالة هذا السطر، لكن الأغلب هو String
+        _id: { type: String }, 
+        
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         emailVerified: { type: Boolean, default: false },
         image: { type: String },
-        phone: { type: String }, // Admin/User Phone
         role: { type: String, default: "customer" }, 
         banned: { type: Boolean, default: false },
-
-        // --- Custom Extensions (Store Specific) ---
+        
+        // الحقول الإضافية
+        phone: { type: String },
         customerProfile: {
             phone: String,
             addresses: [
                 {
-                    label: String, // e.g. "Home"
+                    label: String,
                     country: String,
                     city: String,
                     line1: String,
@@ -33,11 +36,12 @@ const UserSchema = new Schema(
     },
     {
         timestamps: true,
+        _id: false, // نمنع Mongoose من إنشاء ObjectId تلقائي لأن Better Auth يدير الـ ID
+        collection: "user" // ✅ إجبار Mongoose على الكتابة في نفس مكان Better Auth
     }
 );
 
-// تصدير النوع
-export type UserType = InferSchemaType<typeof UserSchema> & { _id: mongoose.Types.ObjectId };
+export type UserType = InferSchemaType<typeof UserSchema>; // & { _id: string }
 
-// الحل هنا: إجبار TypeScript على معرفة أن هذا هو موديل من نوع UserType
+// التحقق من وجود الموديل لمنع إعادة التجميع
 export const User = (mongoose.models.User as Model<UserType>) || mongoose.model<UserType>("User", UserSchema);

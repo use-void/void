@@ -1,11 +1,18 @@
 import mongoose, { Schema, type InferSchemaType } from "mongoose";
 
+const LocalizedString = {
+    type: Map,
+    of: String,
+    required: true
+};
+
 const CategorySchema = new Schema(
     {
-        name: { type: String, required: true },
+        name: LocalizedString,
         slug: { type: String, required: true, unique: true },
-        description: String,
+        description: { type: Map, of: String },
         image: String,
+        isActive: { type: Boolean, default: true, index: true },
     },
     { timestamps: true }
 );

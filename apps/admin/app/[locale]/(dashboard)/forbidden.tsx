@@ -4,7 +4,7 @@ export default function ForbiddenPage() {
   return (
     <div className="flex h-[calc(100vh-160px)] w-full flex-col items-center justify-center">
       <div className="flex flex-col items-center max-w-[400px] text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 mb-6">
+        <div className="flex h-12 w-12 items-center justify-center  bg-zinc-900 border border-zinc-800 mb-6">
           <ShieldAlert className="h-6 w-6 text-zinc-500" />
         </div>
         

@@ -1,10 +1,11 @@
 import { Suspense } from "react";
-import { Search } from "lucide-react";
 import { SidebarTrigger } from "@repo/ui";
 import { LanguageSwitcher } from "./language-switcher";
 import { DashboardBreadcrumb } from "./dashboard-breadcrumb";
 import { UserNav, UserNavSkeleton } from "./user-nav";
+import { NotificationsNav } from "./notifications-nav";
 import { getSession } from "@void/auth";
+import { ModeToggle } from "@repo/ui";
 
 export function SiteHeader() {
   return (
@@ -18,24 +19,17 @@ export function SiteHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="hidden md:flex items-center gap-2 text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border/50 w-64">
-          <Search size={16} />
-          <input 
-            type="text" 
-            placeholder="Search..." 
-            className="bg-transparent border-none outline-none text-sm w-full" 
-          />
-        </div>
-
-        <div className="hidden md:block h-4 w-px bg-border mx-2 self-center" />
-
         <div className="flex items-center gap-1">
           <Suspense fallback={<LanguageSwitcherSkeleton />}>
             <LanguageSwitcher />
           </Suspense>
 
+          <ModeToggle />
+
           <div className="h-4 w-px bg-border mx-2 self-center" />
           
+          <NotificationsNav />
+
           <Suspense fallback={<UserNavSkeleton />}>
             <UserNavFetcher />
           </Suspense>
@@ -61,15 +55,15 @@ async function UserNavFetcher() {
 function BreadcrumbSkeleton() {
   return (
     <div className="hidden md:flex items-center gap-2">
-      <div className="h-4 w-16 bg-zinc-800/50 rounded animate-pulse" />
+      <div className="h-4 w-16 bg-zinc-800/50 animate-pulse" />
       <span className="text-zinc-800">/</span>
-      <div className="h-4 w-24 bg-zinc-800/50 rounded animate-pulse" />
+      <div className="h-4 w-24 bg-zinc-800/50 animate-pulse" />
     </div>
   );
 }
 
 function LanguageSwitcherSkeleton() {
   return (
-    <div className="h-9 w-9 bg-zinc-800/50 rounded-lg animate-pulse" />
+    <div className="h-9 w-9 bg-zinc-800/50  animate-pulse" />
   );
 }

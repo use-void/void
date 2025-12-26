@@ -1,5 +1,3 @@
-// ✅ استيراد auth من المسار المخصص للسيرفر
-import { auth } from "@void/auth/server";
-import { toNextJsHandler } from "better-auth/next-js";
+import { auth, toNextJsHandler } from "@void/auth";
 
-export const { GET, POST } = toNextJsHandler(auth.handler);
+export const { GET, POST } = toNextJsHandler(auth);

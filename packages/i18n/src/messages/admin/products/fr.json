@@ -1,0 +1,36 @@
+{
+    "title": "Produits",
+    "description": "Gérez l'inventaire et suivez les performances des ventes",
+    "add": "Ajouter un produit",
+    "filter": "Filtrer",
+    "empty": "Aucun produit trouvé",
+    "table": {
+        "product": "Produit",
+        "category": "Catégorie",
+        "price": "Prix",
+        "stock": "Stock",
+        "status": "Statut",
+        "actions": "Actions"
+    },
+    "status": {
+        "active": "Actif",
+        "archived": "Archivé",
+        "draft": "Brouillon"
+    },
+    "bulkActions": {
+        "selected": "{count} produits sélectionnés",
+        "clear": "Effacer la sélection"
+    },
+    "currency": "SAR",
+    "details": {
+        "title": "Détails du produit",
+        "basicInfo": "Informations de base",
+        "status": "Statut",
+        "stock": "Stock",
+        "currentStatus": "Statut actuel",
+        "price": "Prix",
+        "organization": "Organisation",
+        "category": "Catégorie",
+        "sku": "SKU"
+    }
+}

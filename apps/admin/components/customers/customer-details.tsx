@@ -1,83 +1,67 @@
-import { Card, CardContent, CardHeader, CardTitle, Skeleton } from "@repo/ui";
-import { getTranslations } from "@repo/i18n";
+"use client";
 
-async function getCustomerDetails(id: string) {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    return {
-        id,
-        name: "Alice Johnson",
-        email: "alice@example.com",
-        phone: "+1 234 567 890",
-        address: "123 Main St, Anytown, USA",
-        joinDate: "2023-01-15",
-        status: "Active"
-    };
-}
+import React from "react";
+import { useTranslations } from "@repo/i18n";
+import { DetailHeader } from "@/components/layout/headers/header-detail";
+import { Button } from "@repo/ui";
+import { Edit, Ban, Mail } from "lucide-react";
 
-export async function CustomerDetails({ customerId }: { customerId: string }) {
-    const customer = await getCustomerDetails(customerId);
-    const t = await getTranslations("Admin.customers.details");
+export function CustomerDetails({ customerId }: { customerId: string }) {
+  const t = useTranslations("Admin.customers");
 
-    return (
-        <div className="space-y-6">
-            <Card className="bg-card border-border rounded-xl">
-                <CardHeader>
-                    <CardTitle>{customer.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t("email")}</p>
-                            <p>{customer.email}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t("phone")}</p>
-                            <p>{customer.phone}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t("status")}</p>
-                             <span className={`px-2 py-1 text-xs rounded-full ${customer.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-                                {customer.status}
-                            </span>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t("joinDate")}</p>
-                            <p>{customer.joinDate}</p>
-                        </div>
-                    </div>
-                     <div>
-                        <p className="text-sm font-medium text-muted-foreground">{t("address")}</p>
-                        <p>{customer.address}</p>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    );
+  return (
+    <div className="flex flex-col w-full min-h-screen">
+      <DetailHeader 
+        title="John Doe"
+        id={customerId}
+        backHref="/customers"
+        actions={
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2">
+               <Mail className="w-4 h-4" />
+               Email
+            </Button>
+             <Button variant="outline" size="sm" className="gap-2 text-destructive hover:bg-destructive/10">
+               <Ban className="w-4 h-4" />
+               Block
+            </Button>
+            <Button size="sm" className="gap-2">
+               <Edit className="w-4 h-4" />
+               Edit
+            </Button>
+          </div>
+        }
+      />
+
+      <div className="w-full px-6 lg:px-10 py-8">
+         {/* Details Page Skeleton Content */}
+         <div className="grid grid-cols-3 gap-8">
+            <div className="col-span-2 space-y-8">
+                <div className="border-2 border-dashed border-border/20 rounded-xl h-48 flex items-center justify-center text-muted-foreground">
+                    Customer Overview
+                </div>
+                <div className="border-2 border-dashed border-border/20 rounded-xl h-96 flex items-center justify-center text-muted-foreground">
+                    Order History
+                </div>
+            </div>
+            <div className="space-y-8">
+                <div className="border-2 border-dashed border-border/20 rounded-xl h-80 flex items-center justify-center text-muted-foreground">
+                    Contact Info
+                </div>
+                <div className="border-2 border-dashed border-border/20 rounded-xl h-40 flex items-center justify-center text-muted-foreground">
+                    Notes
+                </div>
+            </div>
+         </div>
+      </div>
+    </div>
+  );
 }
 
 export function CustomerDetailsSkeleton() {
-    return (
-        <div className="space-y-6">
-            <Card className="bg-card border-border rounded-xl">
-                 <CardHeader>
-                    <Skeleton className="h-8 w-[250px] bg-muted" />
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                         {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="space-y-2">
-                                <Skeleton className="h-3 w-[100px] bg-muted/50" />
-                                <Skeleton className="h-4 w-[150px] bg-muted" />
-                            </div>
-                        ))}
-                    </div>
-                     <div className="space-y-2">
-                        <Skeleton className="h-3 w-[100px] bg-muted/50" />
-                        <Skeleton className="h-4 w-[300px] bg-muted" />
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    );
+  return (
+    <div className="w-full h-96 flex items-center justify-center">
+      <div className="animate-spin h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
 }

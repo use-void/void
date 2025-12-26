@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
         render={
           <Button
             variant="ghost"
-            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300 transition-colors"
+            className=" p-2 text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300 transition-colors"
           >
             <HugeiconsIcon
               icon={Globe02Icon}

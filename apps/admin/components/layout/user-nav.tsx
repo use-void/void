@@ -43,7 +43,7 @@ export function UserNav({ user }: UserNavProps) {
         DropdownMenuTrigger هو "الزر" الحقيقي (Button).
         نقوم بإزالة الستايلات الافتراضية ونعطيه شكل الدائرة.
       */}
-      <DropdownMenuTrigger className="flex items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all hover:opacity-80">
+      <DropdownMenuTrigger className="flex items-center justify-center  outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all hover:opacity-80">
         <Avatar className="h-9 w-9 border border-border/50 cursor-pointer">
           <AvatarImage src={user.image || ""} alt={user.name} />
           <AvatarFallback className="text-xs font-medium bg-muted">
@@ -103,6 +103,6 @@ export function UserNav({ user }: UserNavProps) {
 
 export function UserNavSkeleton() {
   return (
-    <Skeleton className="h-9 w-9 rounded-full bg-muted" />
+    <Skeleton className="h-9 w-9  bg-muted" />
   );
 }

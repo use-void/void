@@ -1,37 +1,108 @@
-import mongoose, { Schema, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, type Model } from "mongoose";
+
+const LocalizedString = {
+    type: Map,
+    of: String,
+    required: true
+};
 
 const StoreConfigSchema = new Schema(
     {
-        isSetupCompleted: { type: Boolean, default: false },
-        storeName: { type: String, default: "My Store" },
-        supportEmail: String,
+        isSetupCompleted: { type: Boolean, default: false, index: true },
 
-        currency: { type: String, default: "USD" },
-        language: { type: String, default: "en" },
-
-        maintenanceMode: { type: Boolean, default: false },
-
-        logo: String,
-        description: { type: String, required: true },
-
-        location: {
-            country: { type: String, required: true },
-            city: { type: String, required: true },
-            address: { type: String, required: true },
+        name: LocalizedString,
+        slogan: { type: Map, of: String },
+        description: LocalizedString,
+        
+        assets: {
+            logoPrimary: String,
+            logoSecondary: String,
+            favicon: String,
+            ogImageDefault: String,
         },
-        phone: String,
-        timezone: { type: String, default: "UTC" },
+
+        localization: {
+            defaultLanguage: { type: String, default: "en" },
+            languages: [
+                {
+                    code: { type: String, required: true },
+                    name: String,
+                    isRTL: { type: Boolean, default: false },
+                    isActive: { type: Boolean, default: true },
+                    flag: String,
+                }
+            ],
+            timezone: { type: String, default: "Asia/Riyadh" },
+        },
+
+        financials: {
+            defaultCurrency: { type: String, default: "USD" },
+            currencies: [
+                {
+                    code: { type: String, required: true },
+                    symbol: { type: Map, of: String },
+                    exchangeRate: { type: Number, default: 1 },
+                    isActive: { type: Boolean, default: true },
+                    decimalPlaces: { type: Number, default: 2 },
+                }
+            ],
+            tax: {
+                taxId: String,
+                isTaxEnabled: { type: Boolean, default: false },
+                isTaxInclusive: { type: Boolean, default: false },
+            }
+        },
+
+        policies: {
+            termsAndConditions: { type: Map, of: String },
+            privacyPolicy: { type: Map, of: String },
+            refundPolicy: { type: Map, of: String },
+            shippingPolicy: { type: Map, of: String },
+        },
+
+        contact: {
+            supportEmail: String,
+            supportPhone: String,
+            whatsappNumber: String,
+            address: { type: Map, of: String },
+            socialLinks: { type: Map, of: String }
+        },
+
+        shopSettings: {
+            isMaintenanceMode: { type: Boolean, default: false },
+            maintenanceMessage: { type: Map, of: String }, 
+            isGuestCheckoutEnabled: { type: Boolean, default: true },
+            isInventoryTrackingEnabled: { type: Boolean, default: true },
+            announcementBar: {
+                isEnabled: { type: Boolean, default: false },
+                text: { type: Map, of: String },
+                link: String
+            }
+        },
 
         seo: {
-            titleTemplate: { type: String, default: "%s | My Store" },
-            description: String,
-            ogImage: String,
-        },
+            metaTitleTemplate: { type: Map, of: String },
+            metaDescriptionDefault: { type: Map, of: String },
+        }
     },
-    { timestamps: true }
+    { 
+        timestamps: true,
+        // ✅ تأكد أن bufferCommands محذوفة من هنا تماماً
+        autoCreate: false, 
+        capsule: { max: 1 } 
+    }
 );
 
-export type StoreConfigType = InferSchemaType<typeof StoreConfigSchema>;
+export type StoreConfigType = mongoose.InferSchemaType<typeof StoreConfigSchema>;
 
-// الحل هنا: إجبار TypeScript على معرفة أن هذا هو موديل من نوع StoreConfigType
-export const StoreConfig = (mongoose.models.StoreConfig as Model<StoreConfigType>) || mongoose.model<StoreConfigType>("StoreConfig", StoreConfigSchema);
+interface StoreConfigModel extends Model<StoreConfigType> {
+    isSystemInitialized(): Promise<boolean>;
+}
+
+StoreConfigSchema.statics.isSystemInitialized = async function () {
+    const config = await this.findOne({}, { isSetupCompleted: 1 }).lean();
+    return !!config?.isSetupCompleted;
+};
+
+export const StoreConfig = (mongoose.models.StoreConfig as StoreConfigModel) || 
+                           mongoose.model<StoreConfigType, StoreConfigModel>("StoreConfig", StoreConfigSchema);

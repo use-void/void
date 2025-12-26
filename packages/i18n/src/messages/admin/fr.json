@@ -40,7 +40,19 @@
             "dashboardDesc": "Aperçu des performances.",
             "lastMonth": "depuis le mois dernier",
             "sinceLastHour": "depuis la dernière heure",
-            "welcomeMessage": "Bon retour ! Votre thème est {theme}."
+            "welcomeMessage": "Bon retour ! Votre thème est {theme}.",
+            "stats": {
+                "active": "Actif",
+                "activeNow": "Actif maintenant",
+                "activeUsers": "Utilisateurs actifs",
+                "change": {
+                    "fromLastMonth": "depuis le mois dernier",
+                    "newProducts": "nouveaux produits",
+                    "sinceLastHour": "depuis la dernière heure"
+                },
+                "products": "Produits",
+                "totalRevenue": "Revenu total"
+            }
         },
         "auth": {
             "welcomeBack": "Bon retour",
@@ -80,39 +92,333 @@
             "products": "Produits",
             "settings": "Paramètres"
         },
-        "products": {
-            "add": "Ajouter un produit",
-            "delete": "Supprimer",
-            "description": "Gérez l'inventaire de votre magasin",
-            "edit": "Modifier",
-            "empty": "Aucun produit trouvé",
-            "table": {
-                "actions": "Actions",
-                "name": "Nom",
-                "price": "Prix",
-                "product": "Produit",
-                "status": "Statut",
-                "stock": "Stock",
-                "type": "Type",
-                "viewDetails": "Voir les détails"
-            },
-            "title": "Produits"
-        },
         "orders": {
-            "title": "Commandes"
+            "title": "Commandes",
+            "details": {
+                "title": "Détails de la commande",
+                "customerInfo": "Infos client",
+                "orderInfo": "Infos commande",
+                "status": "Statut",
+                "payment": "Méthode de paiement",
+                "items": "Articles",
+                "total": "Montant total",
+                "digitalDelivery": {
+                    "title": "Livraison numérique",
+                    "status": "Statut de livraison",
+                    "method": "Méthode de livraison",
+                    "downloadLink": "Lien de téléchargement",
+                    "licenseKey": "Clé de licence",
+                    "sentTo": "Envoyé à",
+                    "delivered": "Livré",
+                    "pending": "En attente"
+                },
+                "logistics": {
+                    "partner": "Partenaire logistique",
+                    "tracking": "ID de suivi",
+                    "arrival": "Arrivée estimée"
+                }
+            }
         },
         "customers": {
             "title": "Clients",
+            "header": {
+                "description": "Gérer la base de données clients et suivre leur activité",
+                "export": "Exporter"
+            },
             "table": {
                 "actions": "Actions",
                 "viewDetails": "Voir les détails"
+            },
+            "details": {
+                "title": "Détails du client",
+                "email": "E-mail",
+                "phone": "Téléphone",
+                "status": "Statut",
+                "joinDate": "Date d'inscription",
+                "address": "Adresse",
+                "stats": {
+                    "ltv": "LTV",
+                    "orders": "Commandes",
+                    "avgOrder": "Panier moyen",
+                    "tier": "Niveau"
+                },
+                "recentOrders": "Commandes récentes",
+                "internalNotes": "Notes internes",
+                "notesPlaceholder": "Tapez vos notes ici...",
+                "saveNotes": "Sauvegarder",
+                "primaryAddress": "Adresse principale",
+                "tags": "Tags",
+                "actions": {
+                    "sendMessage": "Envoyer un message",
+                    "addDiscount": "Ajouter une remise",
+                    "deleteCustomer": "Supprimer le client"
+                }
             }
         },
         "finance": {
-            "title": "Finance"
+            "title": "Finance",
+            "totalRevenue": "Revenu total",
+            "fromLastMonth": "depuis le mois dernier",
+            "monthlyRevenue": "Revenu mensuel",
+            "expenses": "Dépenses",
+            "netProfit": "Bénéfice net",
+            "recentTransactions": "Transactions récentes"
         },
         "settings": {
-            "title": "Paramètres"
+            "title": "Paramètres",
+            "description": "Gérez la configuration et les préférences de votre boutique.",
+            "sections": {
+                "general": "Général",
+                "localization": "Localisation",
+                "financials": "Finances",
+                "contact": "Contact",
+                "shop": "Boutique",
+                "seo": "SEO",
+                "policies": "Politiques"
+            },
+            "buttons": {
+                "save": "Enregistrer",
+                "discard": "Annuler",
+                "saving": "Enregistrement...",
+                "addLanguage": "Ajouter une langue",
+                "addCurrency": "Ajouter une devise"
+            },
+            "notifications": {
+                "saveSuccess": "Paramètres enregistrés avec succès",
+                "saveError": "Échec de l'enregistrement des paramètres"
+            },
+            "placeholders": {
+                "selectLanguage": "Sélectionner une langue",
+                "selectTimezone": "Sélectionner un fuseau horaire",
+                "selectCurrency": "Sélectionner une devise"
+            },
+            "general": {
+                "basicInfo": {
+                    "title": "Informations de base",
+                    "description": "Informations sur l'identité de votre boutique."
+                },
+                "fields": {
+                    "name": "Nom de la boutique",
+                    "slogan": "Slogan",
+                    "description": "Description",
+                    "logoPrimary": "Logo principal",
+                    "logoPrimaryDesc": "Logo principal pour les en-têtes clairs",
+                    "logoSecondary": "Logo secondaire",
+                    "logoSecondaryDesc": "Logo pour les fonds sombres",
+                    "favicon": "Favicon",
+                    "faviconDesc": "Petite icône pour les onglets du navigateur"
+                },
+                "assets": {
+                    "title": "Actifs de marque",
+                    "description": "Logos et icônes utilisés dans votre boutique."
+                }
+            },
+            "localization": {
+                "regional": {
+                    "title": "Paramètres régionaux",
+                    "description": "Configurer la locale par défaut et le fuseau horaire."
+                },
+                "languages": {
+                    "title": "Langues actives",
+                    "description": "Gérer les langues disponibles pour vos clients."
+                },
+                "fields": {
+                    "default": "Défaut",
+                    "timezone": "Fuseau horaire",
+                    "langName": "Nom de la langue",
+                    "langCode": "Code (ISO)",
+                    "code": "Code",
+                    "language": "Langue",
+                    "rtl": "RTL",
+                    "active": "Actif"
+                },
+                "noLanguages": "Aucune langue ajoutée pour le moment.",
+                "placeholders": {
+                    "selectLanguage": "Choisir une langue",
+                    "selectTimezone": "Choisir un fuseau horaire"
+                }
+            },
+            "financials": {
+                "currency": {
+                    "title": "Devise principale",
+                    "description": "Définissez la devise par défaut de votre boutique."
+                },
+                "currencies": {
+                    "title": "Devises actives",
+                    "description": "Permettre aux clients de naviguer dans plusieurs devises."
+                },
+                "tax": {
+                    "title": "Configuration fiscale",
+                    "description": "Configurez votre identité fiscale et vos règles."
+                },
+                "fields": {
+                    "defaultCurrency": "Devise par défaut",
+                    "currencyCode": "Code",
+                    "symbol": "Symbole",
+                    "rate": "Taux de change",
+                    "active": "Actif",
+                    "taxId": "TVA / ID fiscal",
+                    "enableTax": "Activer la taxe",
+                    "taxInclusive": "Les prix incluent la taxe"
+                },
+                "placeholders": {
+                    "selectCurrency": "Choisir une devise"
+                }
+            },
+            "contact": {
+                "support": {
+                    "title": "Canaux de support",
+                    "description": "Comment les clients peuvent contacter votre équipe."
+                },
+                "address": {
+                    "title": "Adresse du bureau",
+                    "description": "Emplacement physique de votre boutique."
+                },
+                "social": {
+                    "title": "Réseaux sociaux",
+                    "description": "Liez vos profils sociaux officiels."
+                },
+                "fields": {
+                    "supportEmail": "E-mail de support",
+                    "supportPhone": "Téléphone de support",
+                    "whatsapp": "Numéro WhatsApp",
+                    "address": "Adresse"
+                }
+            },
+            "shop": {
+                "maintenance": {
+                    "title": "Mode maintenance",
+                    "description": "Fermer temporairement votre boutique pour les mises à jour."
+                },
+                "checkout": {
+                    "title": "Comportement de commande",
+                    "description": "Contrôlez comment les clients achètent chez vous."
+                },
+                "announcement": {
+                    "title": "Barre d'annonce",
+                    "description": "Afficher un message en haut de chaque page."
+                },
+                "fields": {
+                    "maintenanceMode": "Mode maintenance",
+                    "maintenanceModeDesc": "Bloquer l'accès à la vitrine",
+                    "maintenanceMessage": "Message de maintenance",
+                    "guestCheckout": "Commande invité",
+                    "guestCheckoutDesc": "Autoriser les commandes sans compte",
+                    "inventoryTracking": "Suivi des stocks",
+                    "inventoryTrackingDesc": "Suivre les niveaux de stock",
+                    "enableAnnouncement": "Activer la barre d'annonce",
+                    "announcementText": "Texte",
+                    "announcementLink": "Lien (Optionnel)"
+                }
+            },
+            "seo": {
+                "general": {
+                    "title": "Référencement (SEO)",
+                    "description": "Améliorez la visibilité de votre boutique dans les résultats de recherche."
+                },
+                "preview": {
+                    "title": "Aperçu de recherche Google",
+                    "exampleTitle": "iPhone 15 Pro Max | Ma Boutique",
+                    "exampleDesc": "Achetez le dernier iPhone 15 Pro Max aux meilleurs prix et avec une livraison rapide."
+                },
+                "fields": {
+                    "titleTemplate": "Modèle de titre Meta",
+                    "defaultDesc": "Description Meta par défaut"
+                }
+            },
+            "policies": {
+                "title": "Politiques de la boutique",
+                "description": "Accords juridiques entre vous et vos clients.",
+                "fields": {
+                    "terms": "Conditions générales",
+                    "privacy": "Politique de confidentialité",
+                    "refund": "Politique de remboursement",
+                    "shipping": "Politique d'expédition"
+                },
+                "placeholders": {
+                    "writePolicy": "Écrivez votre politique ici..."
+                }
+            }
+        },
+        "forbidden": {
+            "title": "Accès refusé",
+            "message": "Vous n'avez pas la permission d'accéder à cette page.",
+            "description": "Veuillez contacter votre administrateur si vous pensez qu'il s'agit d'une erreur.",
+            "backToHome": "Retour à l'accueil"
+        },
+        "setup": {
+             "step": "Étape",
+            "sidePanel": {
+                "title": "Lancez votre empire numérique aujourd'hui.",
+                "description": "Complétez l'assistant de configuration pour configurer votre boutique, votre compte administrateur et vos données initiales.",
+                "footer": "ASSISTANT DE CONFIGURATION v1.0"
+            },
+            "buttons": {
+                "back": "Retour",
+                "complete": "Terminer la configuration",
+                "next": "Étape suivante"
+            },
+            "success": {
+                "title": "Tout est prêt !",
+                "description": "Votre boutique a été configurée avec succès. Redirection vers le tableau de bord dans {seconds}s.",
+                "button": "Accéder au tableau de bord"
+            },
+            "steps": {
+                "store": {
+                    "title": "Infos boutique",
+                    "storeName": "Nom de la boutique",
+                    "description": "Description",
+                    "placeholders": {
+                        "name": "Ex: Acme Corp",
+                        "description": "Brève description..."
+                    }
+                },
+                "location": {
+                    "title": "Lieu & Devise",
+                    "country": "Pays",
+                    "city": "Ville",
+                    "address": "Adresse",
+                    "currency": "Devise",
+                    "timezone": "Fuseau horaire"
+                },
+                "admin": {
+                    "title": "Compte Admin",
+                    "firstName": "Prénom",
+                    "lastName": "Nom",
+                    "email": "E-mail",
+                    "password": "Mot de passe",
+                    "confirmPassword": "Confirmer le mot de passe"
+                },
+                "seeding": {
+                    "title": "Initialisation des données",
+                    "description": "Voulez-vous remplir votre boutique avec des données d'exemple ?",
+                    "seedLabel": "Installer les données de démo",
+                    "seedHint": "Ajouter des produits, catégories et clients pour tester la boutique.",
+                    "note": "Note :",
+                    "noteDescription": "Ces données sont à des fins de test et peuvent être supprimées ultérieurement via le menu des paramètres."
+                }
+            },
+            "errors": {
+                "generic": "Une erreur s'est produite",
+                "systemInitialized": "Le système est déjà initialisé.",
+                "validationFailed": "La validation a échoué"
+            },
+            "validation": {
+                "storeNameMin": "Le nom de la boutique doit comporter au moins 3 caractères",
+                "descriptionMin": "La description doit comporter au moins 10 caractères",
+                "countryRequired": "Le pays est requis",
+                "cityRequired": "La ville est requise",
+                "addressRequired": "L'adresse est requise",
+                "currencyRequired": "La devise est requise",
+                "timezoneRequired": "Le fuseau horaire est requis",
+                "firstNameRequired": "Le prénom est requis",
+                "lastNameRequired": "Le nom est requis",
+                "emailInvalid": "Adresse e-mail invalide",
+                "passwordMin": "Le mot de passe doit comporter au moins 8 caractères",
+                "passwordRequired": "Le mot de passe est requis",
+                "confirmPasswordRequired": "La confirmation du mot de passe est requise",
+                "passwordsDontMatch": "Les mots de passe ne correspondent pas"
+            }
         }
     }
 }

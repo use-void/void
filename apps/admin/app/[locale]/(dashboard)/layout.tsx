@@ -24,7 +24,7 @@ export default async function DashboardLayout({
 
       <SidebarInset className="flex flex-col h-screen">
         <SiteHeader />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto">
           <Suspense fallback={
              <div className="flex h-full w-full items-center justify-center">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

@@ -15,9 +15,16 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'placehold.co',
             },
+            {
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.pravatar.cc',
+            },
         ],
     },
 };
 
-// استخدام (as any) هنا يجبر التايب سكريبت على قبول الإعدادات وتجاهل الخطأ
 export default withNextIntl(nextConfig as any);

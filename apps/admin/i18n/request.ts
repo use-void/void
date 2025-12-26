@@ -12,9 +12,17 @@ export default getRequestConfig(async function createRequestConfig({
 
     const sharedMessages = (await import(`@repo/i18n/messages/common/${locale}.json`)).default;
     const localMessages = (await import(`@repo/i18n/messages/admin/${locale}.json`)).default;
+    const productMessages = (await import(`@repo/i18n/messages/admin/products/${locale}.json`)).default;
 
     return {
         locale,
-        messages: { ...sharedMessages, ...localMessages },
+        messages: {
+            ...sharedMessages,
+            ...localMessages,
+            Admin: {
+                ...localMessages.Admin,
+                products: productMessages,
+            },
+        },
     };
 });

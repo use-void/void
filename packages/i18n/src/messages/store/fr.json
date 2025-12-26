@@ -3,7 +3,105 @@
         "title": "Boutique",
         "description": "Découvrez nos derniers produits",
         "hero": "Les meilleurs produits pour vous",
-        "cart": "Panier",
-        "buy": "Acheter maintenant"
+        "auth": {
+            "alreadyHaveAccount": "Vous avez déjà un compte ?",
+            "authFailed": "Échec de l'authentification.",
+            "confirmPassword": "Confirmer",
+            "createAccount": "Créer un compte",
+            "createAccountTitle": "Créer un compte",
+            "creatingAccount": "Création du compte...",
+            "dontHaveAccount": "Vous n'avez pas de compte ?",
+            "email": "Adresse e-mail",
+            "emailInvalid": "Adresse e-mail invalide.",
+            "forgotPassword": "Mot de passe oublié ?",
+            "fullName": "Nom complet",
+            "nameRequired": "Le nom doit comporter au moins 2 caractères.",
+            "password": "Mot de passe",
+            "passwordMin": "Le mot de passe doit comporter au moins 8 caractères.",
+            "passwordRequired": "Le mot de passe est requis.",
+            "passwordsDontMatch": "Les mots de passe ne correspondent pas",
+            "registrationFailed": "Échec de l'inscription.",
+            "signIn": "Se connecter",
+            "unexpectedError": "Une erreur inattendue s'est produite.",
+            "verifying": "Vérification...",
+            "welcomeBack": "Bon retour",
+            "joinStore": "Rejoignez notre boutique et commencez à magasiner",
+            "signInDesc": "Connectez-vous à votre compte boutique"
+        },
+        "footer": {
+            "shop": "Boutique",
+            "support": "Support",
+            "company": "Entreprise",
+            "contactUs": "Contactez-nous",
+            "privacyPolicy": "Politique de confidentialité",
+            "termsOfService": "Conditions d'utilisation",
+            "aboutUs": "À propos de nous",
+            "faq": "FAQ"
+        },
+        "common": {
+            "products": "Produits",
+            "categories": "Catégories",
+            "collections": "Collections",
+            "viewAll": "Voir tout",
+            "addToCart": "Ajouter au panier",
+            "currency_SAR": "SAR"
+        },
+        "home": {
+            "heroTitle": "Découvrez le monde du shopping",
+            "heroSubtitle": "Les meilleurs produits aux meilleurs prix avec une qualité garantie.",
+            "shopNow": "Acheter maintenant",
+            "featuredCategories": "Catégories en vedette",
+            "featuredProducts": "Produits sélectionnés"
+        },
+        "product": {
+            "description": "Description",
+            "specifications": "Caractéristiques",
+            "quantity": "Quantité",
+            "outOfStock": "Rupture de stock",
+            "relatedProducts": "Produits connexes"
+        },
+        "cart": {
+            "title": "Panier d'achat",
+            "empty": "Votre panier est vide",
+            "summary": "Résumé de la commande",
+            "items": "Articles",
+            "subtotal": "Sous-total",
+            "shipping": "Expédition",
+            "total": "Total",
+            "checkout": "Paiement",
+            "currency_SAR": "SAR",
+            "continueShopping": "Continuer vos achats"
+        },
+        "checkout": {
+            "title": "Paiement",
+            "shippingAddress": "Adresse de livraison",
+            "paymentMethod": "Méthode de paiement",
+            "placeOrder": "Passer la commande",
+            "success": "Votre commande a été passée avec succès !",
+            "firstName": "Prénom",
+            "lastName": "Nom",
+            "address": "Adresse",
+            "city": "Ville",
+            "zip": "Code postal",
+            "phone": "Numéro de téléphone",
+            "orderSummary": "Résumé de la commande",
+            "freeShipping": "Livraison gratuite",
+            "vatInclude": "Les prix incluent la TVA"
+        },
+        "account": {
+            "title": "Mon compte",
+            "myOrders": "Mes commandes",
+            "profile": "Profil",
+            "settings": "Paramètres",
+            "logout": "Se déconnecter",
+            "orderId": "ID de commande",
+            "total": "Total",
+            "noOrders": "Aucune commande pour le moment.",
+            "status": {
+                "delivered": "Livré",
+                "processing": "En traitement",
+                "cancelled": "Annulé"
+            }
+        }
     }
 }

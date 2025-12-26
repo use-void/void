@@ -66,44 +66,78 @@
         },
 
         "setup": {
+            "step": "خطوة",
+            "sidePanel": {
+                "title": "أنشئ إمبراطوريتك الرقمية اليوم.",
+                "description": "أكمل معالج الإعداد لتكوين متجرك، وحساب المسؤول، والبيانات الأولية.",
+                "footer": "معالج الإعداد v1.0"
+            },
             "buttons": {
                 "back": "رجوع",
                 "complete": "إكمال الإعداد",
                 "next": "الخطوة التالية"
             },
-            "errors": {
-                "generic": "حدث خطأ ما."
-            },
-            "fields": {
-                "address": "العنوان",
-                "adminName": "اسم المسؤول",
-                "city": "المدينة",
-                "confirmPassword": "تأكيد كلمة المرور",
-                "country": "الدولة",
-                "currency": "العملة",
-                "description": "الوصف",
-                "email": "البريد الإلكتروني",
-                "firstName": "الاسم الأول",
-                "lastName": "الاسم الأخير",
-                "logo": "شعار المتجر (اختياري)",
-                "mobile": "رقم الجوال (اختياري)",
-                "password": "كلمة المرور",
-                "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
-                "phone": "رقم الهاتف (اختياري)",
-                "seedData": "إضافة بيانات تجريبية؟",
-                "seedDesc": "يمكننا إضافة منتجات وتصنيفات تجريبية لتستكشف لوحة التحكم فوراً.",
-                "storeName": "اسم المتجر",
-                "timezone": "المنطقة الزمنية"
+            "success": {
+                "title": "تم الإعداد بنجاح!",
+                "description": "تم تكوين متجرك بنجاح. سيتم تحويلك إلى لوحة التحكم خلال {seconds} ثوانٍ.",
+                "button": "دخول لوحة التحكم"
             },
             "steps": {
-                "admin": "حساب المسؤول",
-                "finish": "إنهاء",
-                "store": "معلومات المتجر"
+                "store": {
+                    "title": "معلومات المتجر",
+                    "storeName": "اسم المتجر",
+                    "description": "الوصف",
+                    "placeholders": {
+                        "name": "مثال: شركة أكمي",
+                        "description": "وصف قصير..."
+                    }
+                },
+                "location": {
+                    "title": "الموقع والعملة",
+                    "country": "الدولة",
+                    "city": "المدينة",
+                    "address": "العنوان",
+                    "currency": "العملة",
+                    "timezone": "المنطقة الزمنية"
+                },
+                "admin": {
+                    "title": "حساب المسؤول",
+                    "firstName": "الاسم الأول",
+                    "lastName": "الاسم الأخير",
+                    "email": "البريد الإلكتروني",
+                    "password": "كلمة المرور",
+                    "confirmPassword": "تأكيد كلمة المرور"
+                },
+                "seeding": {
+                    "title": "تهيئة البيانات",
+                    "description": "هل ترغب في ملء متجرك ببيانات تجريبية؟",
+                    "seedLabel": "تثبيت البيانات التجريبية",
+                    "seedHint": "أضف منتجات وتصنيفات وعملاء تجريبيين لاختبار المتجر.",
+                    "note": "ملاحظة:",
+                    "noteDescription": "هذه البيانات هي لأغراض الاختبار ويمكن حذفها لاحقاً من قائمة الإعدادات."
+                }
             },
-            "successRedirect": "سيتم تحويلك إلى لوحة التحكم خلال {seconds} ثوان...",
-            "successTitle": "تم إعداد المتجر بنجاح!",
-            "welcomeDesc": "دعنا نقم بإعداد متجرك في دقائق قليلة.",
-            "welcomeTitle": "مرحباً بك في فويد"
+            "errors": {
+                "generic": "حدث خطأ ما.",
+                "systemInitialized": "النظام مهيأ بالفعل.",
+                "validationFailed": "فشل التحقق من البيانات"
+            },
+            "validation": {
+                "storeNameMin": "يجب أن يكون اسم المتجر 3 أحرف على الأقل",
+                "descriptionMin": "يجب أن يكون الوصف 10 أحرف على الأقل",
+                "countryRequired": "الدولة مطلوبة",
+                "cityRequired": "المدينة مطلوبة",
+                "addressRequired": "العنوان مطلوب",
+                "currencyRequired": "العملة مطلوبة",
+                "timezoneRequired": "المنطقة الزمنية مطلوبة",
+                "firstNameRequired": "الاسم الأول مطلوب",
+                "lastNameRequired": "الاسم الأخير مطلوب",
+                "emailInvalid": "عنوان البريد الإلكتروني غير صالح",
+                "passwordMin": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+                "passwordRequired": "كلمة المرور مطلوبة",
+                "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+                "passwordsDontMatch": "كلمات المرور غير متطابقة"
+            }
         },
         "sidebar": {
             "content": "المحتوى",
@@ -124,11 +158,30 @@
                 "status": "الحالة",
                 "payment": "طريقة الدفع",
                 "items": "العناصر",
-                "total": "المبلغ الإجمالي"
+                "total": "المبلغ الإجمالي",
+                "digitalDelivery": {
+                    "title": "التسليم الرقمي",
+                    "status": "حالة التسليم",
+                    "method": "طريقة الاستلام",
+                    "downloadLink": "رابط التحميل",
+                    "licenseKey": "مفتاح الترخيص",
+                    "sentTo": "أرسل إلى",
+                    "delivered": "تم التسليم",
+                    "pending": "قيد الانتظار"
+                },
+                "logistics": {
+                    "partner": "شريك اللوجستيات",
+                    "tracking": "رقم التتبع",
+                    "arrival": "الوصول المتوقع"
+                }
             }
         },
         "customers": {
             "title": "العملاء",
+            "header": {
+                "description": "إدارة قاعدة بيانات العملاء وتتبع نشاطهم",
+                "export": "تصدير"
+            },
             "table": {
                 "actions": "إجراءات",
                 "viewDetails": "عرض التفاصيل"
@@ -139,7 +192,24 @@
                 "phone": "رقم الهاتف",
                 "status": "الحالة",
                 "joinDate": "تاريخ الانضمام",
-                "address": "العنوان"
+                "address": "العنوان",
+                "stats": {
+                    "ltv": "إجمالي القيمة",
+                    "orders": "الطلبات",
+                    "avgOrder": "متوسط الطلب",
+                    "tier": "المستوى"
+                },
+                "recentOrders": "الطلبات الأخيرة",
+                "internalNotes": "الملاحظات الداخلية",
+                "notesPlaceholder": "اكتب ملاحظاتك هنا...",
+                "saveNotes": "حفظ الملاحظات",
+                "primaryAddress": "العنوان الأساسي",
+                "tags": "الوسوم",
+                "actions": {
+                    "sendMessage": "إرسال رسالة",
+                    "addDiscount": "إضافة خصم",
+                    "deleteCustomer": "حذف العميل"
+                }
             }
         },
         "finance": {
@@ -151,44 +221,181 @@
             "netProfit": "صافي الربح",
             "recentTransactions": "المعاملات الأخيرة"
         },
-        "products": {
-            "add": "إضافة منتج",
-            "delete": "حذف",
-            "description": "إدارة مخزون متجرك",
-            "edit": "تعديل",
-            "empty": "لا توجد منتجات",
-            "table": {
-                "actions": "إجراءات",
-                "name": "الاسم",
-                "price": "السعر",
-                "product": "المنتج",
-                "status": "الحالة",
-                "stock": "المخزون",
-                "type": "النوع",
-                "viewDetails": "عرض التفاصيل"
-            },
-            "title": "المنتجات",
-            "details": {
-                 "title": "تفاصيل المنتج",
-                 "basicInfo": "المعلومات الأساسية",
-                 "status": "الحالة",
-                 "stock": "المخزون",
-                 "currentStatus": "الحالة الحالية",
-                 "price": "السعر",
-                 "organization": "التنظيم",
-                 "category": "الفئة",
-                 "sku": "رمز التخزين التعريفي (SKU)"
-            }
-        },
         "settings": {
             "title": "الإعدادات",
-            "generalSettings": "الإعدادات العامة",
-            "storeName": "اسم المتجر",
-            "storeNamePlaceholder": "أدخل اسم المتجر",
-            "supportEmail": "بريد الدعم",
-            "supportEmailPlaceholder": "أدخل بريد الدعم",
-            "currency": "العملة",
-            "saveChanges": "حفظ التغييرات"
+            "description": "إدارة تكوين وتفضيلات متجرك.",
+            "sections": {
+                "general": "خيارات عامة",
+                "localization": "اللغات والمناطق",
+                "financials": "الخيارات المالية",
+                "contact": "التواصل والدعم",
+                "shop": "إعدادات المتجر",
+                "seo": "الأرشفة و SEO",
+                "policies": "السياسات القانونية"
+            },
+            "buttons": {
+                "save": "حفظ التغييرات",
+                "discard": "تجاهل",
+                "saving": "جاري الحفظ...",
+                "addLanguage": "إضافة لغة",
+                "addCurrency": "إضافة عملة"
+            },
+            "notifications": {
+                "saveSuccess": "تم حفظ الإعدادات بنجاح",
+                "saveError": "فشل حفظ الإعدادات"
+            },
+            "placeholders": {
+                "selectLanguage": "اختر اللغة",
+                "selectTimezone": "اختر المنطقة الزمنية",
+                "selectCurrency": "اختر العملة"
+            },
+            "general": {
+                "basicInfo": {
+                    "title": "المعلومات الأساسية",
+                    "description": "معلومات حول هوية متجرك."
+                },
+                "fields": {
+                    "name": "اسم المتجر",
+                    "slogan": "وصف قصير (Slogan)",
+                    "description": "نبذة عن المتجر",
+                    "logoPrimary": "الشعار الأساسي",
+                    "logoPrimaryDesc": "يستخدم في الترويسات الفاتحة",
+                    "logoSecondary": "الشعار الثانوي",
+                    "logoSecondaryDesc": "يستخدم في الخلفيات الداكنة",
+                    "favicon": "أيقونة المتصفح",
+                    "faviconDesc": "الأيقونة الصغيرة في شريط العنوان"
+                },
+                "assets": {
+                    "title": "الهوية البصرية",
+                    "description": "الشعارات والأيقونات المستخدمة في المتجر."
+                }
+            },
+            "localization": {
+                "regional": {
+                    "title": "الإعدادات الإقليمية",
+                    "description": "تكوين اللغة الافتراضية والمنطقة الزمنية."
+                },
+                "languages": {
+                    "title": "اللغات النشطة",
+                    "description": "إدارة اللغات المتاحة لعملائك."
+                },
+                "fields": {
+                    "default": "افتراضي",
+                    "timezone": "المنطقة الزمنية",
+                    "langName": "اسم اللغة",
+                    "langCode": "رمز اللغة (ISO)",
+                    "code": "الرمز",
+                    "language": "اللغة",
+                    "rtl": "RTL",
+                    "active": "نشط"
+                },
+                "noLanguages": "لم يتم إضافة لغات بعد.",
+                "placeholders": {
+                    "selectLanguage": "اختر لغة من القائمة",
+                    "selectTimezone": "اختر المنطقة الزمنية"
+                }
+            },
+            "financials": {
+                "currency": {
+                    "title": "العملة الأساسية",
+                    "description": "حدد عملة المتجر الافتراضية للتقارير."
+                },
+                "currencies": {
+                    "title": "العملات المدعومة",
+                    "description": "السماح للعملاء بالتصفح بعملات متعددة."
+                },
+                "tax": {
+                    "title": "إعدادات الضرائب",
+                    "description": "تكوين الهوية الضريبية وقواعد العملية."
+                },
+                "fields": {
+                    "defaultCurrency": "العملة الافتراضية",
+                    "currencyCode": "الرمز",
+                    "symbol": "العلامة",
+                    "rate": "سعر الصرف",
+                    "active": "نشط",
+                    "taxId": "الرقم الضريبي",
+                    "enableTax": "تفعيل الضريبة",
+                    "taxInclusive": "الأسعار شاملة للضريبة"
+                },
+                "placeholders": {
+                    "selectCurrency": "اختر عملة"
+                }
+            },
+            "contact": {
+                "support": {
+                    "title": "قنوات الدعم",
+                    "description": "كيف يمكن للعملاء التواصل مع فريقك."
+                },
+                "address": {
+                    "title": "عنوان المقر",
+                    "description": "الموقع الجغرافي لمتجرك."
+                },
+                "social": {
+                    "title": "وسائل التواصل",
+                    "description": "اربط حساباتك الرسمية."
+                },
+                "fields": {
+                    "supportEmail": "بريد الدعم",
+                    "supportPhone": "هاتف الدعم",
+                    "whatsapp": "رقم الواتساب",
+                    "address": "العنوان"
+                }
+            },
+            "shop": {
+                "maintenance": {
+                    "title": "وضع الصيانة",
+                    "description": "إغلاق المتجر مؤقتاً للتحديثات."
+                },
+                "checkout": {
+                    "title": "سلوك الشراء",
+                    "description": "التحكم في كيفية إتمام الطلبات."
+                },
+                "announcement": {
+                    "title": "شريط الإعلانات",
+                    "description": "عرض رسالة تنبيهية في أعلى الصفحات."
+                },
+                "fields": {
+                    "maintenanceMode": "تفعيل وضع الصيانة",
+                    "maintenanceModeDesc": "حجب واجهة المتجر عن الزوار",
+                    "maintenanceMessage": "رسالة الصيانة",
+                    "guestCheckout": "الشراء كضيف",
+                    "guestCheckoutDesc": "السماح بالطلب بدون تسجيل حساب",
+                    "inventoryTracking": "تتبع المخزون",
+                    "inventoryTrackingDesc": "مراقبة كميات المنتجات تلقائياً",
+                    "enableAnnouncement": "تفعيل شريط الإعلان",
+                    "announcementText": "نص الإعلان",
+                    "announcementLink": "رابط الإعلان (اختياري)"
+                }
+            },
+            "seo": {
+                "general": {
+                    "title": "تحسين محركات البحث",
+                    "description": "تحسين ظهور متجرك في نتائج البحث."
+                },
+                "preview": {
+                    "title": "معاينة نتائج جوجل",
+                    "exampleTitle": "آيفون 15 برو ماكس | متجري",
+                    "exampleDesc": "اشتري الآن آيفون 15 برو ماكس بأفضل الأسعار مع توصيل سريع من متجري. متوفر بجميع الألوان."
+                },
+                "fields": {
+                    "titleTemplate": "نموذج عنوان الصفحات (Title Template)",
+                    "defaultDesc": "وصف الموقع الافتراضي (Meta Description)"
+                }
+            },
+            "policies": {
+                "title": "سياسات المتجر",
+                "description": "الاتفاقيات القانونية بينك وبين عملائك.",
+                "fields": {
+                    "terms": "الشروط والأحكام",
+                    "privacy": "سياسة الخصوصية",
+                    "refund": "سياسة الاسترجاع",
+                    "shipping": "سياسة الشحن"
+                },
+                "placeholders": {
+                    "writePolicy": "اكتب نص السياسة هنا..."
+                }
+            }
         },
         "forbidden": {
             "title": "تم رفض الوصول",

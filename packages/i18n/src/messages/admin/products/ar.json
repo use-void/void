@@ -1,0 +1,70 @@
+{
+    "title": "المنتجات",
+    "description": "إدارة المخزون وتتبع أداء المبيعات",
+    "add": "إضافة منتج",
+    "filter": "تصفية",
+    "reset": "إعادة تعيين",
+    "empty": "لا توجد منتجات",
+    "table": {
+        "product": "المنتج",
+        "category": "الفئة",
+        "price": "السعر",
+        "stock": "المخزون",
+        "status": "الحالة",
+        "actions": "إجراءات",
+        "brand": "العلامة التجارية",
+        "color": "اللون",
+        "price_range": "نطاق السعر"
+    },
+    "brands": {
+        "apple": "أبل",
+        "samsung": "سامسونج",
+        "sony": "سوني",
+        "logitech": "لوجيتك"
+    },
+    "colors": {
+        "black": "أسود",
+        "white": "أبيض",
+        "silver": "فضي",
+        "blue": "أزرق"
+    },
+    "priceRanges": {
+        "under_100": "أقل من 100",
+        "100_500": "100 - 500",
+        "500_1000": "500 - 1000",
+        "over_1000": "أكثر من 1000"
+    },
+    "status": {
+        "active": "نشط",
+        "archived": "مؤرشف",
+        "draft": "مسودة"
+    },
+    "bulkActions": {
+        "selected": "{count} منتج محدد",
+        "clear": "إلغاء التحديد"
+    },
+    "currency": "ر.س",
+    "details": {
+        "title": "تفاصيل المنتج",
+        "basicInfo": "المعلومات الأساسية",
+        "status": "الحالة",
+        "stock": "المخزون",
+        "currentStatus": "الحالة الحالية",
+        "price": "السعر",
+        "organization": "التنظيم",
+        "category": "الفئة",
+        "sku": "رمز التخزين التعريفي (SKU)"
+    },
+    "settings": {
+        "actions": {
+            "save_changes": "حفظ التغييرات"
+        }
+    },
+    "setup": {
+        "steps": {
+            "store": {
+                "description": "الوصف"
+            }
+        }
+    }
+}

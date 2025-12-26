@@ -3,7 +3,106 @@
         "title": "Store App",
         "description": "Shop our latest products",
         "hero": "The best products for you",
-        "cart": "Cart",
-        "buy": "Buy Now"
+        "buy": "Buy Now",
+        "auth": {
+            "alreadyHaveAccount": "Already have an account?",
+            "authFailed": "Authentication failed.",
+            "confirmPassword": "Confirm",
+            "createAccount": "Create an account",
+            "createAccountTitle": "Create Account",
+            "creatingAccount": "Creating account...",
+            "dontHaveAccount": "Don't have an account?",
+            "email": "Email Address",
+            "emailInvalid": "Invalid email address.",
+            "forgotPassword": "Forgot password?",
+            "fullName": "Full Name",
+            "nameRequired": "Name must be at least 2 characters.",
+            "password": "Password",
+            "passwordMin": "Password must be at least 8 characters.",
+            "passwordRequired": "Password is required.",
+            "passwordsDontMatch": "Passwords don't match",
+            "registrationFailed": "Registration failed.",
+            "signIn": "Sign In",
+            "unexpectedError": "An unexpected error occurred.",
+            "verifying": "Verifying...",
+            "welcomeBack": "Welcome Back",
+            "joinStore": "Join our store and start shopping",
+            "signInDesc": "Sign in to your store account"
+        },
+        "footer": {
+            "shop": "Shop",
+            "support": "Support",
+            "company": "Company",
+            "contactUs": "Contact Us",
+            "privacyPolicy": "Privacy Policy",
+            "termsOfService": "Terms of Service",
+            "aboutUs": "About Us",
+            "faq": "FAQ"
+        },
+        "common": {
+            "products": "Products",
+            "categories": "Categories",
+            "collections": "Collections",
+            "viewAll": "View All",
+            "addToCart": "Add to Cart",
+            "currency_SAR": "SAR"
+        },
+        "home": {
+            "heroTitle": "Discover the World of Shopping",
+            "heroSubtitle": "The best products at the best prices with high quality guaranteed.",
+            "shopNow": "Shop Now",
+            "featuredCategories": "Featured Categories",
+            "featuredProducts": "Selected Products"
+        },
+        "product": {
+            "description": "Description",
+            "specifications": "Specifications",
+            "quantity": "Quantity",
+            "outOfStock": "Out of Stock",
+            "relatedProducts": "Related Products"
+        },
+        "cart": {
+            "title": "Shopping Cart",
+            "empty": "Your cart is empty",
+            "summary": "Order Summary",
+            "items": "Items",
+            "subtotal": "Subtotal",
+            "shipping": "Shipping",
+            "total": "Total",
+            "checkout": "Checkout",
+            "currency_SAR": "SAR",
+            "continueShopping": "Continue Shopping"
+        },
+        "checkout": {
+            "title": "Checkout",
+            "shippingAddress": "Shipping Address",
+            "paymentMethod": "Payment Method",
+            "placeOrder": "Place Order",
+            "success": "Your order has been placed successfully!",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "address": "Address",
+            "city": "City",
+            "zip": "Zip Code",
+            "phone": "Phone Number",
+            "orderSummary": "Order Summary",
+            "freeShipping": "Free Shipping",
+            "vatInclude": "Prices include VAT"
+        },
+        "account": {
+            "title": "My Account",
+            "myOrders": "My Orders",
+            "noOrders": "No past orders found.",
+            "profile": "Profile",
+            "settings": "Settings",
+            "logout": "Log out",
+            "orderId": "Order ID",
+            "total": "Total",
+            "status": {
+                "delivered": "Delivered",
+                "processing": "Processing",
+                "cancelled": "Cancelled"
+            }
+        }
     }
 }

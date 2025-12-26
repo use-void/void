@@ -83,7 +83,7 @@
   --chart-3: oklch(0.59 0.2 277);
   --chart-4: oklch(0.51 0.23 277);
   --chart-5: oklch(0.46 0.21 277);
-  --radius: 0.625rem;
+  --radius: 0.45rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.51 0.23 277);
@@ -185,40 +185,38 @@
       "calt" 1; */
   }
 
-  /* تخصيص السكرول بار للموقع بالكامل */
-  * {
-    /* لدعم متصفح Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: var(--muted-foreground) transparent;
-  }
-
-  /* لدعم متصفحات Chrome, Safari, Edge */
+  /* Global Scrollbar */
   ::-webkit-scrollbar {
-    width: 0.25rem; /* عرض السكرول الرأسي */
-    height: 0.25rem; /* ارتفاع السكرول الأفقي */
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent; /* خلفية المسار شفافة */
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--muted-foreground);
-    border-radius: var(--radius);
-    /* الخدعة هنا لجعل السكرول يبدو نحيفاً وبعيداً عن الحواف */
-    border: 0.125rem solid transparent;
-    background-clip: content-box;
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
+  }
+}
+
+/* Custom Scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground-20, oklch(0.556 0 0 / 0.2)) transparent; 
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    /* عند مرور الماوس نجعل اللون يميل للون النص الأساسي ليعطي استجابة تفاعلية */
-    background: var(--foreground);
-    border: 0.125rem solid transparent;
-    background-clip: content-box;
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  /* اختيارياً: تحسين شكل السكرول بار في الزوايا */
-  ::-webkit-scrollbar-corner {
+  .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
   }
 }
