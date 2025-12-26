@@ -7,13 +7,34 @@ import { useMoyasarForm } from '@void/payment/client';
 import { Button, Tabs, TabsList, TabsTrigger, TabsContent, Badge } from '@repo/ui';
 import { CreditCard, Banknote, Wallet, Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
 import { syncCartWithDB } from "@/app/actions/cart";
 import { useCartStore } from "@/stores/cart-store";
-import { CURRENCIES, PaymentProviderId, PaymentMethodId, formatPrice } from '@void/payment';
+import { CURRENCIES, PaymentProviderId, PaymentMethodId } from '@void/payment';
+import { createPaymentIntentAction } from '@void/payment/actions';
 
 const TEST_CARDS = {
-  // ... existing cards ...
+  mada: [
+    { number: '4201320111111010', cvc: '123', status: 'paid', label: 'Approved' },
+    { number: '4201320000013020', cvc: '123', status: 'failed', label: 'Unspecified Failure' },
+    { number: '4201320000311101', cvc: '123', status: 'failed', label: 'Insufficient Funds' },
+    { number: '4201320131000508', cvc: '123', status: 'failed', label: 'Lost Card' },
+  ],
+  visa: [
+    { number: '4111111111111111', cvc: '123', status: 'paid', label: 'Approved' },
+    { number: '4111114005765430', cvc: '123', status: 'paid', label: 'Frictionless Auth' },
+    { number: '4123120000000000', cvc: '123', status: 'failed', label: 'Unspecified Failure' },
+    { number: '4123120001090000', cvc: '123', status: 'failed', label: 'Insufficient Funds' },
+  ],
+  mastercard: [
+    { number: '5421080101000000', cvc: '123', status: 'paid', label: 'Approved' },
+    { number: '5105105105105100', cvc: '123', status: 'failed', label: 'Unspecified Failure' },
+    { number: '5457210001000092', cvc: '123', status: 'failed', label: 'Insufficient Funds' },
+  ],
+  amex: [
+    { number: '340000000900000', cvc: '1234', status: 'paid', label: 'Approved' },
+    { number: '371111111111114', cvc: '1234', status: 'failed', label: 'Unspecified Failure' },
+    { number: '340033000000000', cvc: '1234', status: 'failed', label: 'Insufficient Funds' },
+  ]
 };
 
 interface CheckoutFlowProps {
@@ -27,7 +48,6 @@ interface CheckoutFlowProps {
 }
 
 export function CheckoutFlow({ 
-  locale: propLocale, 
   userId, 
   initialGateway, 
   defaultCurrency = 'SAR' 
@@ -56,6 +76,7 @@ export function CheckoutFlow({
   const [stcTxUrl, setStcTxUrl] = useState('');
   const [localError, setLocalError] = useState('');
   const [isVerifying] = useState(false);
+  const [isPolarLoading, setIsPolarLoading] = useState(false);
 
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => setIsMounted(true), []);
@@ -179,7 +200,7 @@ export function CheckoutFlow({
                     />
                     {errors.otp && <p className="text-red-500 text-xs mt-2">{errors.otp}</p>}
                 </div>
-
+                
                 <div className="flex flex-col gap-3 pt-4">
                     <Button onClick={handleOTPSubmit} className="w-full h-12 text-lg font-bold" disabled={isLoading}>
                         {isLoading ? t("verifying") : t("payment.confirmOtp")}
@@ -204,15 +225,16 @@ export function CheckoutFlow({
   }
 
   const handlePolarCheckout = async () => {
+       setIsPolarLoading(true);
        try {
           const { cartId } = await syncCartWithDB(userId, undefined, cartItems);
           if (!cartId) {
              setLocalError(t("errors.prepareFailed"));
+             setIsPolarLoading(false);
              return;
           }
 
           const callbackUrl = `${window.location.origin}/api/payment/callback?locale=${locale}&gateway=polar&checkout_id={CHECKOUT_ID}`; 
-          const { createPaymentIntentAction } = await import('@void/payment/actions');
           
           const result = await createPaymentIntentAction('polar', {
              amount: finalAmount * 100,
@@ -227,13 +249,16 @@ export function CheckoutFlow({
                 window.location.href = result.data.metadata.checkoutUrl;
              } else {
                 setLocalError(t("errors.prepareFailed"));
+                setIsPolarLoading(false);
              }
           } else {
              setLocalError(result.message || t("errors.genericError"));
+             setIsPolarLoading(false);
           }
        } catch (err: any) {
            console.error(err);
            setLocalError(err.message || t("errors.genericError"));
+           setIsPolarLoading(false);
        }
   };
 
@@ -267,9 +292,13 @@ export function CheckoutFlow({
                      </p>
                  </div>
                  
-                 <Button onClick={handlePolarCheckout} className="w-full h-12 text-lg font-bold">
-                    {t("payment.goToPayment")}
-                 </Button>
+                  <Button 
+                    onClick={handlePolarCheckout} 
+                    className="w-full h-12 text-lg font-bold"
+                    disabled={isPolarLoading}
+                  >
+                     {isPolarLoading ? t("processing") : t("payment.goToPayment")}
+                  </Button>
                  
                  <div className="text-xs text-muted-foreground/50 pt-4 flex justify-center gap-4">
                     <span>Powered by Polar</span>

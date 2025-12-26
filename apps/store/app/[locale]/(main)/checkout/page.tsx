@@ -72,13 +72,7 @@ async function CheckoutFormWrapper({
     // 1. Get Store/Payment Config
     const config = await getPaymentConfig();
     
-    // 2. Gateway Logic
-    const activeGateway = resolveActiveGateway({
-        isMoyasarEnabled: config.moyasar.isEnabled,
-        isPolarEnabled: config.polar.isEnabled
-    });
-
-    // 3. Try to find the cart
+    // 2. Try to find the cart
     let resolvedCartId = cartId;
     let cart: any = null;
     if (cartId) {
@@ -89,6 +83,17 @@ async function CheckoutFormWrapper({
         cart = await getCart(userId, undefined);
         resolvedCartId = cart?._id?.toString();
     }
+
+    // 3. Check for subscriptions to prioritize Polar
+    const hasSubscription = cart?.items?.some((i: any) => 
+        i.type === 'subscription' || (i as any).productId?.type === 'subscription'
+    );
+
+    // 4. Gateway Logic - Now with subscription info!
+    const activeGateway = resolveActiveGateway({
+        isMoyasarEnabled: config.moyasar.isEnabled,
+        isPolarEnabled: config.polar.isEnabled
+    }, !!hasSubscription);
 
     return (
         <CheckoutFlow 
