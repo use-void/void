@@ -7,7 +7,7 @@ import { randomUUID } from 'crypto';
 
 // This action should be called by the frontend
 export async function createPaymentIntentAction(
-  providerName: 'moyasar' | 'stripe',
+  providerName: 'moyasar' | 'stripe' | 'polar',
   options: CreatePaymentOptions
 ): Promise<PaymentResult> {
   await connectToDatabase();
@@ -15,6 +15,8 @@ export async function createPaymentIntentAction(
   const config = {
     secretKey: process.env.MOYASAR_SECRET_KEY,
     publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
+    accessToken: process.env.POLAR_ACCESS_TOKEN, // Added for Polar
+    organizationId: process.env.POLAR_ORGANIZATION_ID, // Added for Polar
   };
   
   // Idempotency Key Generation if not provided? Assuming options might have metadata orderId
@@ -58,6 +60,36 @@ export async function createPaymentIntentAction(
   } catch (dbError) {
       console.error('DB Error creating pending transaction:', dbError);
       // We continue, but this is critical logging failure
+  }
+
+  // 1.5. If provider is Polar, we MUST fetch products to get their Polar IDs because the SDK requires it
+  if (providerName === 'polar' && options.metadata?.cartId) {
+      try {
+        const { Cart } = await import('@void/db'); // Dynamic import to avoid cycles or load heavy model
+        // Fix: Use findById because cartId in metadata is the MongoDB _id
+        const cart = await (Cart as any).findById(options.metadata.cartId).lean();
+        
+        if (cart && cart.items && cart.items.length > 0) {
+            const productIds = cart.items.map((item: any) => item.productId);
+            // We need to fetch the Product docs to get the Polar IDs
+            const { Product } = await import('@void/db');
+            const products = await (Product as any).find({ _id: { $in: productIds } }).select('integrations.polar.productId').lean();
+            
+            const polarIds = products
+                .map((p: any) => p.integrations?.polar?.productId)
+                .filter((id: any) => !!id);
+            
+            if (polarIds.length > 0) {
+                options.metadata = { ...options.metadata, polarProductIds: polarIds };
+            } else {
+                 console.warn('⚠️ No Polar Product IDs found for items in cart', { productIds });
+            }
+        } else {
+            console.warn('⚠️ Cart not found or empty when preparing Polar checkout', { cartId: options.metadata.cartId });
+        }
+      } catch (e) {
+          console.error('Error fetching Polar IDs from cart:', e);
+      }
   }
 
   try {

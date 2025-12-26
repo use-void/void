@@ -36,7 +36,7 @@ import { fakerAR as faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 
 async function seed() {
-    console.log('🌱 Starting Database Seeding...');
+    console.log('🌱 Starting Database Seeding with Realistic Data...');
     await connectToDatabase();
 
     // 1. Clear relevant collections
@@ -50,114 +50,191 @@ async function seed() {
     await StoreConfig.create({
         isSetupCompleted: true,
         name: { ar: 'متجر فويد', en: 'Void Store' },
-        description: { ar: 'أفضل متجر للمنتجات الرقمية والفيزيائية', en: 'The best store for digital and physical products' },
-        slogan: { ar: 'أسلوب حياة جديد', en: 'A new lifestyle' },
+        description: { ar: 'وجهتك الأولى للمنتجات الرقمية والإبداعية', en: 'Your premier destination for digital and creative products' },
+        slogan: { ar: 'إبداع بلا حدود', en: 'Creativity without limits' },
         financials: {
             defaultCurrency: 'SAR',
-            currencies: [{ code: 'SAR', symbol: { ar: 'ر.س', en: 'SAR' }, exchangeRate: 1, isActive: true }],
-            tax: { isTaxEnabled: true, isTaxInclusive: true, taxId: '123456789' }
+            currencies: [
+                { code: 'SAR', symbol: { ar: 'ر.س', en: 'SAR' }, exchangeRate: 1, isActive: true },
+                { code: 'USD', symbol: { ar: '$', en: '$' }, exchangeRate: 3.75, isActive: true }
+            ],
+            tax: { isTaxEnabled: true, isTaxInclusive: true, taxId: '300000000000003' },
+            payment: {
+                moyasar: { isEnabled: true }, // Should be config via env usually
+                polar: { isEnabled: true }
+            }
         },
         localization: {
             defaultLanguage: 'ar',
             languages: [
-                { code: 'ar', name: 'Arabic', isRTL: true, isActive: true },
-                { code: 'en', name: 'English', isRTL: false, isActive: true }
+                { code: 'ar', name: 'Arabic', isRTL: true, isActive: true, flag: '🇸🇦' },
+                { code: 'en', name: 'English', isRTL: false, isActive: true, flag: '🇺🇸' }
             ]
         },
         shopSettings: {
             isMaintenanceMode: false,
-            isGuestCheckoutEnabled: true
+            isGuestCheckoutEnabled: true,
+            isInventoryTrackingEnabled: true
         }
     });
 
     // 3. Seed Categories
     const categories = await Category.insertMany([
-        { name: { ar: 'الكترونيات', en: 'Electronics' }, slug: 'electronics', description: { ar: 'أجهزة الكترونية', en: 'Electronic Devices' }, isActive: true },
-        { name: { ar: 'منتجات رقمية', en: 'Digital Products' }, slug: 'digital', description: { ar: 'بطاقات وكودات', en: 'Cards and Codes' }, isActive: true },
-        { name: { ar: 'ملابس', en: 'Fashion' }, slug: 'fashion', description: { ar: 'أزياء وموضة', en: 'Fashion and Style' }, isActive: true },
+        { 
+            name: { ar: 'ملابس', en: 'Fashion' }, 
+            slug: 'fashion', 
+            description: { ar: 'أحدث صيحات الموضة', en: 'Latest trends' }, 
+            isActive: true 
+        },
+        { 
+            name: { ar: 'منتجات رقمية', en: 'Digital Assets' }, 
+            slug: 'digital', 
+            description: { ar: 'ملفات، قوالب، وكودات', en: 'Files, templates, and codes' }, 
+            isActive: true 
+        },
+        { 
+            name: { ar: 'اشتراكات', en: 'Subscriptions' }, 
+            slug: 'subscriptions', 
+            description: { ar: 'عضويات وخدمات مميزة', en: 'Memberships and premium services' }, 
+            isActive: true 
+        },
     ]);
     console.log(`📁 Created ${categories.length} categories`);
 
     // 4. Seed Products
     const productsDataPayload = [];
 
-    // Physical Products
-    for (let i = 0; i < 10; i++) {
-        const nameEn = faker.commerce.productName();
-        const slug = faker.helpers.slugify(nameEn).toLowerCase() + '-' + faker.string.alphanumeric(4);
-        
-        productsDataPayload.push({
-            name: { ar: faker.commerce.productName(), en: nameEn },
-            slug: slug,
-            description: { ar: faker.commerce.productDescription(), en: faker.commerce.productDescription() },
-            price: parseFloat(faker.commerce.price({ min: 100, max: 2000 })),
-            images: [
-                { url: faker.image.urlLoremFlickr({ category: 'technics' }), alt: nameEn, isThumbnail: true },
-                { url: faker.image.urlLoremFlickr({ category: 'technics' }), alt: nameEn, isThumbnail: false }
-            ],
-            category: categories[0]._id, // Electronics
-            stock: faker.number.int({ min: 10, max: 50 }),
-            type: 'physical',
-            status: 'active',
-            sku: faker.string.alphanumeric(8).toUpperCase(),
-        });
-    }
+    // --- Physical Products (Fashion) ---
+    // Images source: Unsplash source API for stable-ish random images based on keywords
+    
+    productsDataPayload.push({
+        name: { ar: 'تيشرت قطني فاخر - أسود', en: 'Premium Cotton T-Shirt - Black' },
+        slug: 'premium-cotton-black-tee',
+        description: { 
+            ar: 'تيشرت مصنوع من القطن المصري 100%، مريح ومناسب للاستخدام اليومي.', 
+            en: '100% Egyptian cotton t-shirt, comfortable and perfect for daily wear.' 
+        },
+        price: 120, // Reasonable price
+        images: [
+            { url: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&q=80&w=800', alt: 'Black T-Shirt', isThumbnail: true },
+            { url: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&q=80&w=800', alt: 'Black T-Shirt Detail', isThumbnail: false }
+        ],
+        category: categories[0]._id, // Fashion
+        stock: 50,
+        type: 'physical',
+        status: 'active',
+        sku: 'TEE-BLK-001',
+        physicalDetails: { sku: 'TEE-BLK-001', stock: 50, weight: 0.2 }
+    });
 
-    // Digital Products
-    for (let i = 0; i < 5; i++) {
-        const nameEn = `${faker.commerce.productName()} License`;
-        const slug = faker.helpers.slugify(nameEn).toLowerCase() + '-' + faker.string.alphanumeric(4);
+    productsDataPayload.push({
+        name: { ar: 'حقيبة ظهر كلاسيكية', en: 'Classic Backpack' },
+        slug: 'classic-backpack',
+        description: { 
+            ar: 'حقيبة ظهر متينة وأنيقة، مثالية للعمل والسفر.', 
+            en: 'Durable and stylish backpack, perfect for work and travel.' 
+        },
+        price: 350, 
+        images: [
+            { url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800', alt: 'Backpack', isThumbnail: true }
+        ],
+        category: categories[0]._id, 
+        stock: 20,
+        type: 'physical',
+        status: 'active',
+        sku: 'BAG-CLS-002',
+        physicalDetails: { sku: 'BAG-CLS-002', stock: 20, weight: 1.5 }
+    });
 
-        productsDataPayload.push({
-            name: { ar: `رخصة ${faker.commerce.productName()}`, en: nameEn },
-            slug: slug,
-            description: { ar: 'مفتاح تفعيل أصلي مدى الحياة', en: 'Lifetime genuine license key' },
-            price: parseFloat(faker.commerce.price({ min: 50, max: 500 })),
-            images: [
-                { url: faker.image.urlLoremFlickr({ category: 'abstract' }), alt: nameEn, isThumbnail: true }
-            ],
-            category: categories[1]._id, // Digital
-            stock: 999, // Unlimited
-            type: 'digital',
-            status: 'active',
-            sku: faker.string.alphanumeric(8).toUpperCase(),
-            digitalDetails: {
-                fileUrl: 'https://void-store.com/downloads/license-key.txt',
-                fileName: 'license.txt',
-                fileSize: '1KB'
+    // --- Digital Products (Assets) ---
+    
+    productsDataPayload.push({
+        name: { ar: 'حزمة أيقونات Pro 3D', en: 'Pro 3D Icons Pack' },
+        slug: 'pro-3d-icons-pack',
+        description: { 
+            ar: 'مجموعة تضم أكثر من 100 أيقونة ثلاثية الأبعاد عالية الدقة لتصاميمك.', 
+            en: 'A collection of 100+ high-resolution 3D icons for your designs.' 
+        },
+        price: 49, // Approx $13
+        images: [
+            { url: 'https://images.unsplash.com/photo-1633419461186-7d721f1da021?auto=format&fit=crop&q=80&w=800', alt: '3D Icons', isThumbnail: true }
+        ],
+        category: categories[1]._id, // Digital
+        stock: 9999,
+        type: 'digital',
+        status: 'active',
+        sku: 'DIG-ICN-001',
+        digitalDetails: {
+            fileUrl: 'https://cdn.void-store.com/assets/icons-pack-v1.zip', // Mock
+            fileName: 'icons-pack-v1.zip',
+            fileSize: '150MB',
+            isExternalLink: false
+        },
+        integrations: {
+            polar: {
+                // Using a placeholder ID - User should verify integration
+                productId: '9ef6705c-d381-447a-9774-32056e438e8e', 
+                priceId: 'price_12345'
             }
-        });
-    }
+        }
+    });
+
+    // --- Subscription Products ---
+
+    productsDataPayload.push({
+        name: { ar: 'عضوية المصمم المحترف (شهري)', en: 'Pro Designer Membership (Monthly)' },
+        slug: 'pro-designer-monthly',
+        description: { 
+            ar: 'وصول غير محدود لجميع موارد التصميم والقوالب، وتحديثات أسبوعية.', 
+            en: 'Unlimited access to all design resources, templates, and weekly updates.' 
+        },
+        price: 99, 
+        images: [
+            { url: 'https://images.unsplash.com/photo-1626785774573-4b7993143d2d?auto=format&fit=crop&q=80&w=800', alt: 'Membership Card', isThumbnail: true }
+        ],
+        category: categories[2]._id, // Subscriptions
+        type: 'subscription',
+        status: 'active',
+        subscriptionDetails: {
+            interval: 'month',
+            intervalCount: 1,
+            trialPeriodDays: 7
+        },
+        integrations: {
+            polar: {
+                productId: '11111111-2222-3333-4444-555555555555', // Mock
+                priceId: 'price_sub_monthly'
+            }
+        }
+    });
 
     const createdProducts = await Product.insertMany(productsDataPayload);
-    console.log(`📦 Created ${createdProducts.length} products`);
+    console.log(`📦 Created ${createdProducts.length} curated products`);
 
     // 5. Seed Orders (Mock history)
     const ordersData = [];
-    for (let i = 0; i < 5; i++) {
-        const isPaid = faker.datatype.boolean();
-        const p = createdProducts[0];
-        
-        ordersData.push({
-            orderNumber: `ORD-${faker.string.numeric(6)}`,
-            guestInfo: { email: faker.internet.email(), name: faker.person.fullName() },
-            items: [
-                { 
-                    productId: p._id, 
-                    quantity: 1, 
-                    snapshot: { name: (p.name as any).en || (p.name as any).ar || 'Product', price: p.price, image: p.images[0]?.url } 
-                }
-            ],
-            financials: {
-                total: p.price,
-                currency: 'SAR',
-                paymentMethod: isPaid ? 'card' : undefined
-            },
-            status: isPaid ? 'completed' : 'pending',
-            paymentStatus: isPaid ? 'paid' : 'unpaid',
-            totalDue: isPaid ? 0 : p.price
-        });
-    }
+    
+    // Create one mock order
+    ordersData.push({
+        orderNumber: `ORD-${faker.string.numeric(6)}`,
+        guestInfo: { email: 'customer@example.com', name: 'Ahmed Ali' },
+        items: [
+            { 
+                productId: createdProducts[0]._id, 
+                quantity: 1, 
+                snapshot: { name: 'Premium Cotton T-Shirt - Black', price: 120, image: createdProducts[0].images[0].url } 
+            }
+        ],
+        financials: {
+            total: 120,
+            currency: 'SAR',
+            paymentMethod: 'card'
+        },
+        status: 'completed',
+        paymentStatus: 'paid',
+        totalDue: 0
+    });
+
     await Order.insertMany(ordersData);
     console.log(`🛒 Created ${ordersData.length} mock orders`);
 

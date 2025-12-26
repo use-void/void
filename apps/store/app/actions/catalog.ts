@@ -135,7 +135,8 @@ export async function getProductBySlug(locale: string, slug: string) {
             slug: product.slug,
             category: (product as any).category?.toString(),
             stock: stock,
-            sku: (product as any).physicalDetails?.sku || (product as any).sku || ''
+            sku: (product as any).physicalDetails?.sku || (product as any).sku || '',
+            type: (product as any).type // Added for checkout logic
         };
     } catch (error) {
         console.error("❌ Error fetching product by slug:", error);

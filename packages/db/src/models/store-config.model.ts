@@ -50,6 +50,18 @@ const StoreConfigSchema = new Schema(
                 taxId: String,
                 isTaxEnabled: { type: Boolean, default: false },
                 isTaxInclusive: { type: Boolean, default: false },
+            },
+            payment: {
+                moyasar: {
+                    publishableKey: String, // Public Key
+                    secretKey: String,      // Secret Key (should be handled carefully)
+                    isEnabled: { type: Boolean, default: false }
+                },
+                polar: {
+                    accessToken: String, 
+                    organizationId: String,
+                    isEnabled: { type: Boolean, default: false }
+                }
             }
         },
 

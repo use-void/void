@@ -1,7 +1,7 @@
 import { IPaymentProvider } from '../core/types';
 import { MoyasarProvider } from './providers/moyasar';
 
-type ProviderName = 'moyasar' | 'stripe' | 'tabby' | 'tamara';
+type ProviderName = 'moyasar' | 'stripe' | 'tabby' | 'tamara' | 'polar';
 
 export class PaymentFactory {
   private static instances: Map<string, IPaymentProvider> = new Map();
@@ -18,10 +18,18 @@ export class PaymentFactory {
            case 'moyasar':
                provider = new MoyasarProvider();
                break;
+           case 'polar':
+               const { PolarProvider } = require('./providers/polar');
+               provider = new PolarProvider();
+               break;
             // Future providers
            default:
                throw new Error(`Provider ${name} not supported`);
        }
+    }
+    
+    if (!provider) {
+        throw new Error(`Failed to initialize provider ${name}`);
     }
 
     // Re-initialize with config (careful with singleton pattern if config changes per request)

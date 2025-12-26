@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@repo/i18n/navigation";
+import { Link, useRouter } from "@repo/i18n/navigation";
 import { useCartStore } from "@/stores/cart-store";
 import { useEffect, useState } from "react";
 import { 
@@ -11,16 +11,19 @@ import {
     CardHeader, 
     CardTitle,
     buttonVariants,
-    Separator
+    Separator,
+    Button
 } from "@repo/ui";
 import { ShieldCheck } from "lucide-react";
 
 export function CartSummary() {
     const t = useTranslations("Store.cart");
     const items = useCartStore((state) => state.items);
+    const router = useRouter(); // Using standard next/navigation router
     
     // Hydration fix for persisting store
     const [mounted, setMounted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(() => setMounted(true), []);
 
     if (!mounted) return null;
@@ -65,15 +68,46 @@ export function CartSummary() {
             </CardContent>
             
             <CardFooter className="flex flex-col gap-4 pb-6">
-                <Link 
-                    href="/checkout" 
+                <Button 
+                    onClick={async () => {
+                        setIsLoading(true);
+                        try {
+                            const { syncCartWithDB } = await import("@/app/actions/cart");
+                            // Pass undefined for userId/sessionId if we don't have them handy in store yet, 
+                            // but syncCartWithDB needs ONE.
+                            // Ideally useCartStore should tracked userId? 
+                            // Assuming syncCartWithDB can handle guest logic via cookies if not passed? 
+                            // Actually, let's rely on a reliable ID. If user is guest, we might need a session ID.
+                            // For now, let's pass a random ID if we are guest to force a session creation, 
+                            // OR rely on the action to handle it.
+                            
+                            // To be safe and minimal change:
+                            // We will import getSession client side? No.
+                            // We can just rely on the server action generating a session if needed or we use a simple client ID.
+                            const clientId = localStorage.getItem('cart-session-id') || Math.random().toString(36).substring(7);
+                            localStorage.setItem('cart-session-id', clientId);
+                            
+                            const result = await syncCartWithDB(undefined, clientId, items);
+                            if (result.success && result.cartId) {
+                                router.push(`/checkout?cartId=${result.cartId}`);
+                            } else {
+                                // Fallback
+                                router.push(`/checkout`);
+                            }
+                        } catch (e) {
+                             console.error(e);
+                             router.push(`/checkout`);
+                        }
+                        setIsLoading(false);
+                    }}
+                    disabled={items.length === 0 || isLoading}
                     className={buttonVariants({ 
                         variant: "default",
                         className: "w-full h-12 text-base font-bold rounded-xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]" 
                     })}
                 >
-                    {t("checkout")}
-                </Link>
+                    {isLoading ? "جاري التحضير..." : t("checkout")}
+                </Button>
                 <div className="space-y-2 text-center">
                     <p className="text-[10px] text-muted-foreground">
                         {t("taxIncluded") || "الأسعار تشمل ضريبة القيمة المضافة"}

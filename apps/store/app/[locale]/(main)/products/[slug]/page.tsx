@@ -45,8 +45,9 @@ export default async function ProductPage({ params }: { params: Promise<{ locale
                                 id: product.id,
                                 name: product.name,
                                 price: product.price,
-                                image: product.images[0] || '/placeholder.png', // Assuming first image is main
-                                slug: product.slug
+                                image: product.images[0] || '/placeholder.png', 
+                                slug: product.slug,
+                                type: product.type as any
                             }}
                          />
                     </div>

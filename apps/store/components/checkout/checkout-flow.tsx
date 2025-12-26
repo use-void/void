@@ -34,9 +34,19 @@ const TEST_CARDS = {
   ]
 };
 
-export function CheckoutFlow({ translations, locale, amount: initialAmount = 0, userId }: { translations: any, locale: string, amount?: number, userId?: string }) {
+interface CheckoutFlowProps {
+  amount: number;
+  locale: string;
+  translations: any;
+  userId?: string;
+  initialGateway?: 'moyasar' | 'polar';
+  cartIdProp?: string;
+}
+
+export function CheckoutFlow({ amount, locale, translations, userId, initialGateway, cartIdProp }: CheckoutFlowProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
   const { 
     submitCard, 
     submitSTCPay, 
@@ -46,27 +56,35 @@ export function CheckoutFlow({ translations, locale, amount: initialAmount = 0, 
     errors, 
     paymentError 
   } = useMoyasarForm();
-  
-  const cartItems = useCartStore((state) => state.items);
-  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const finalAmount = cartTotal > 0 ? cartTotal : initialAmount;
 
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'applepay' | 'cash' | 'stcpay'>('card');
-  const [localError, setLocalError] = useState<string | null>(null);
-  const [mobile, setMobile] = useState(''); // For STC Pay
-  const [showSTCOTP, setShowSTCOTP] = useState(false); // STC OTP Phase
+  const { items: cartItems, clearCart, totalPrice } = useCartStore();
+  
+  // State
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'stcpay' | 'applepay' | 'cash'>('card');
+  const [cardData, setCardData] = useState({ name: '', number: '', cvc: '', month: '', year: '', save_card: false });
+  const [mobile, setMobile] = useState('');
+  
+  // UI State: Using Moyasar hook's loading/errors essentially, but we have local overrides too if needed
+  const [showSTCOTP, setShowSTCOTP] = useState(false);
   const [otpValue, setOtpValue] = useState('');
   const [stcTxUrl, setStcTxUrl] = useState('');
-  const [isVerifying] = useState(false);
+  const [localError, setLocalError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false); // Restored
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  // Gateway logic: Trust server -> Fallback to client
+  // We need these flags for UI logic as well (e.g. showing "Subscribe" text)
+  const hasSubscription = isMounted && cartItems.some(i => i.type === 'subscription');
+  const hasDigital = isMounted && cartItems.some(i => i.type === 'digital');
+
+  const clientHasPolarItems = hasSubscription || hasDigital;
+  const clientShouldUsePolar = clientHasPolarItems && cartItems.length > 0;
   
-  const [cardData, setCardData] = useState({
-    name: '',
-    number: '',
-    cvc: '',
-    month: '12',
-    year: '28',
-    save_card: false, // For tokenization
-  });
+  const activeGateway = initialGateway ?? (clientShouldUsePolar ? 'polar' : 'moyasar');
+  
+  const finalAmount = totalPrice();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -212,9 +230,78 @@ export function CheckoutFlow({ translations, locale, amount: initialAmount = 0, 
     );
   }
 
+  const handlePolarCheckout = async () => {
+       try {
+          const { cartId } = await syncCartWithDB(userId, undefined, cartItems);
+          if (!cartId) {
+             setLocalError('Failed to sync cart');
+             return;
+          }
+
+          const callbackUrl = `${window.location.origin}/api/payment/callback?locale=${locale}&gateway=polar`; // Tag gateway
+          
+          // Import dynamically or use the action passed as prop/imported
+          const { createPaymentIntentAction } = await import('@void/payment/actions');
+          
+          const result = await createPaymentIntentAction('polar', {
+             amount: finalAmount * 100,
+             currency: 'USD', // Polar usually USD or global currencies. Double check if SAR supported. Assuming USD for digital.
+             description: `Order from ${userId || 'Guest'}`,
+             callbackUrl,
+             metadata: {
+                cartId,
+                userId
+             }
+          });
+
+          if (result.status === 'success') {
+             if (result.data.metadata?.checkoutUrl) {
+                window.location.href = result.data.metadata.checkoutUrl;
+             } else {
+                setLocalError('Checkout URL missing from provider');
+             }
+          } else {
+             setLocalError(result.message || 'Failed to initiate Polar checkout');
+          }
+
+       } catch (err: any) {
+           console.error(err);
+           setLocalError(err.message || 'Error initializing checkout');
+       }
+  };
+
+  if (activeGateway === 'polar') {
+     return (
+        <div className="space-y-6 mt-8 animate-in fade-in">
+             <div className="bg-primary/5 p-8 rounded-2xl border-2 border-primary/20 text-center space-y-6">
+                 <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Wallet className="h-8 w-8 text-primary" />
+                 </div>
+                 <div className="space-y-2">
+                     <h3 className="text-xl font-bold">إتمام الدفع الآمن</h3>
+                     <p className="text-muted-foreground">
+                        {hasSubscription ? 'اشتراكك يتطلب دفع دوري آمن.' : 'سيتم تحويلك لصفحة الدفع المشفرة.'}
+                     </p>
+                 </div>
+                 
+                 <Button onClick={handlePolarCheckout} className="w-full h-12 text-lg font-bold">
+                    الذهاب للدفع
+                 </Button>
+                 
+                 <div className="text-xs text-muted-foreground/50 pt-4 flex justify-center gap-4">
+                    <span>Powered by Polar</span>
+                    <span>Secure SSL</span>
+                 </div>
+             </div>
+        </div>
+     )
+  }
+
+  // Legacy Moyasar Flow for Physical Products
   return (
     <div className="space-y-8">
       <div className="space-y-6 mt-8">
+            {/* Header and existing Moyasar UI */}
             <h3 className="text-xl font-bold border-b pb-4 text-start">{translations["checkout.paymentMethod"]}</h3>
             <div className="grid grid-cols-1 gap-4">
                 
@@ -230,7 +317,7 @@ export function CheckoutFlow({ translations, locale, amount: initialAmount = 0, 
                             </div>
                             <div className="text-start">
                                 <p className="font-semibold">بطاقة مدى / ائتمانية</p>
-                                <p className="text-sm text-muted-foreground">دفع آمن و سريع</p>
+                                <p className="text-sm text-muted-foreground">دفع آمن و سريع (للمنتجات المادية)</p>
                             </div>
                         </div>
                         <input type="radio" checked={paymentMethod === 'card'} readOnly className="h-5 w-5 accent-primary" />
@@ -403,7 +490,7 @@ export function CheckoutFlow({ translations, locale, amount: initialAmount = 0, 
             </div>
       </div>
 
-      {(paymentError || localError) && (
+       {(paymentError || localError) && (
         <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm border border-red-200 text-start">
           {paymentError || localError}
         </div>

@@ -12,7 +12,9 @@ export async function ProductActions({ locale, product }: { locale: string, prod
             <div className="flex items-center gap-4">
                 <AddToCartButton size="lg" className="flex-1 h-12 text-lg font-bold" product={product}>
                     <ShoppingCart className="mr-2 h-5 w-5" />
-                    {t("common.addToCart")}
+                    {product.type === 'subscription' 
+                        ? (locale === 'ar' ? 'اشترك الآن' : 'Subscribe Now') 
+                        : t("common.addToCart")}
                 </AddToCartButton>
                 <Button size="lg" variant="outline" className="h-12 w-12 p-0 rounded-full border-muted-foreground/20 hover:text-red-500 hover:border-red-500 transition-colors">
                     <Heart className="h-6 w-6" />

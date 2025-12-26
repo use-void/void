@@ -42,3 +42,14 @@ export async function getCart(userId: string | undefined, sessionId: string | un
     
     return cart;
 }
+
+export async function getCartById(cartId: string) {
+    if (!cartId) return null;
+    await connectToDatabase();
+    try {
+        const cart = await (Cart as any).findById(cartId).lean();
+        return cart;
+    } catch (e) {
+        return null;
+    }
+}

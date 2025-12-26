@@ -8,6 +8,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   slug: string;
+  type?: 'physical' | 'digital' | 'subscription'; // Added for smart checkout
 }
 
 interface CartState {

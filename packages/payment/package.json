@@ -18,6 +18,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@polar-sh/sdk": "^0.42.1",
     "@void/db": "^0.0.0",
     "ofetch": "^1.4.1",
     "server-only": "^0.0.1",
